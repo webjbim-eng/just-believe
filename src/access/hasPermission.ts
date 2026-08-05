@@ -38,6 +38,8 @@ export const hasPermission = (permissionKey: string): Access => {
     })
     if (!role) return false
 
-    return role.permissions.some((p) => typeof p === 'object' && p !== null && p.key === permissionKey)
+    // Empty/undefined for roles like Translator that hold no collection-
+    // level permissions by design (see Roles.ts) — nothing to match.
+    return (role.permissions ?? []).some((p) => typeof p === 'object' && p !== null && p.key === permissionKey)
   }
 }

@@ -314,7 +314,7 @@ export interface Role {
    */
   tenant?: (number | null) | Tenant;
   name: string;
-  permissions: (number | Permission)[];
+  permissions?: (number | Permission)[] | null;
   /**
    * Seeded default role — editable, but protected from deletion
    */

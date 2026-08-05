@@ -59,7 +59,10 @@ export const Roles: CollectionConfig = {
       type: 'relationship',
       relationTo: 'permissions',
       hasMany: true,
-      required: true,
+      // Not required: the Translator system role (docs/04-auth-rbac.md
+      // §2.4/§2.5) deliberately holds zero collection-level permissions —
+      // its access is enforced entirely at the field level via locale
+      // checks, not through this list.
     },
     {
       name: 'isSystemRole',
