@@ -23,6 +23,17 @@ export default buildConfig({
   },
   collections: [Tenants, Users, Roles, Permissions, Media, AuditLogs],
   editor: lexicalEditor(),
+  // Platform-wide set of locales content CAN exist in (FR-SITE-03, NFR-07).
+  // This is distinct from a given tenant's *active* subset — Tenant.locales
+  // .defaultLocale/.supportedLocales (Tenants.ts) is what the public site's
+  // locale switcher and fallback logic actually read at render time; this
+  // config only bounds what's selectable at the field level and what the
+  // API defaults to when no locale is requested explicitly.
+  localization: {
+    locales: ['en', 'fr', 'it', 'es'],
+    defaultLocale: 'en',
+    fallback: true,
+  },
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),

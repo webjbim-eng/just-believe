@@ -94,10 +94,11 @@ export interface Config {
   db: {
     defaultIDType: number;
   };
-  fallbackLocale: null;
+  fallbackLocale:
+    ('false' | 'none' | 'null') | false | null | ('en' | 'fr' | 'it' | 'es') | ('en' | 'fr' | 'it' | 'es')[];
   globals: {};
   globalsSelect: {};
-  locale: null;
+  locale: 'en' | 'fr' | 'it' | 'es';
   widgets: {
     collections: CollectionsWidget;
   };
@@ -192,7 +193,7 @@ export interface Media {
   id: number;
   tenant: number | Tenant;
   /**
-   * Required for accessibility (NFR-06, WCAG 2.1 AA)
+   * Required for accessibility (NFR-06, WCAG 2.1 AA). Localized per NFR-07.
    */
   alt: string;
   tags?: string[] | null;
