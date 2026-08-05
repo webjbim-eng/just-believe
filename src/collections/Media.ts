@@ -2,6 +2,7 @@ import type { CollectionConfig } from 'payload'
 import { composeAccess } from '../access/composeAccess'
 import { hasPermission } from '../access/hasPermission'
 import { withTenantScope } from '../access/withTenantScope'
+import { tenantField } from '../fields/tenantField'
 import { createAuditAfterChangeHook, createAuditAfterDeleteHook } from '../hooks/auditLog'
 
 /**
@@ -28,7 +29,7 @@ export const Media: CollectionConfig = {
     mimeTypes: ['image/*', 'video/*', 'application/pdf'],
   },
   fields: [
-    { name: 'tenant', type: 'relationship', relationTo: 'tenants', required: true, index: true, admin: { position: 'sidebar' } },
+    tenantField,
     {
       name: 'alt',
       type: 'text',

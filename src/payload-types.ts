@@ -73,6 +73,29 @@ export interface Config {
     permissions: Permission;
     media: Media;
     'audit-logs': AuditLog;
+    categories: Category;
+    tags: Tag;
+    pages: Page;
+    ministries: Ministry;
+    leadership: Leadership;
+    events: Event;
+    'event-registrations': EventRegistration;
+    sermons: Sermon;
+    devotionals: Devotional;
+    books: Book;
+    resources: Resource;
+    'blog-posts': BlogPost;
+    'site-settings': SiteSetting;
+    navigation: Navigation;
+    footer: Footer;
+    'homepage-layout': HomepageLayout;
+    'prayer-requests': PrayerRequest;
+    'counseling-requests': CounselingRequest;
+    'volunteer-applications': VolunteerApplication;
+    partners: Partner;
+    testimonials: Testimonial;
+    'newsletter-subscribers': NewsletterSubscriber;
+    donations: Donation;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -86,6 +109,29 @@ export interface Config {
     permissions: PermissionsSelect<false> | PermissionsSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     'audit-logs': AuditLogsSelect<false> | AuditLogsSelect<true>;
+    categories: CategoriesSelect<false> | CategoriesSelect<true>;
+    tags: TagsSelect<false> | TagsSelect<true>;
+    pages: PagesSelect<false> | PagesSelect<true>;
+    ministries: MinistriesSelect<false> | MinistriesSelect<true>;
+    leadership: LeadershipSelect<false> | LeadershipSelect<true>;
+    events: EventsSelect<false> | EventsSelect<true>;
+    'event-registrations': EventRegistrationsSelect<false> | EventRegistrationsSelect<true>;
+    sermons: SermonsSelect<false> | SermonsSelect<true>;
+    devotionals: DevotionalsSelect<false> | DevotionalsSelect<true>;
+    books: BooksSelect<false> | BooksSelect<true>;
+    resources: ResourcesSelect<false> | ResourcesSelect<true>;
+    'blog-posts': BlogPostsSelect<false> | BlogPostsSelect<true>;
+    'site-settings': SiteSettingsSelect<false> | SiteSettingsSelect<true>;
+    navigation: NavigationSelect<false> | NavigationSelect<true>;
+    footer: FooterSelect<false> | FooterSelect<true>;
+    'homepage-layout': HomepageLayoutSelect<false> | HomepageLayoutSelect<true>;
+    'prayer-requests': PrayerRequestsSelect<false> | PrayerRequestsSelect<true>;
+    'counseling-requests': CounselingRequestsSelect<false> | CounselingRequestsSelect<true>;
+    'volunteer-applications': VolunteerApplicationsSelect<false> | VolunteerApplicationsSelect<true>;
+    partners: PartnersSelect<false> | PartnersSelect<true>;
+    testimonials: TestimonialsSelect<false> | TestimonialsSelect<true>;
+    'newsletter-subscribers': NewsletterSubscribersSelect<false> | NewsletterSubscribersSelect<true>;
+    donations: DonationsSelect<false> | DonationsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -337,6 +383,645 @@ export interface AuditLog {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "categories".
+ */
+export interface Category {
+  id: number;
+  tenant: number | Tenant;
+  name: string;
+  slug: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tags".
+ */
+export interface Tag {
+  id: number;
+  tenant: number | Tenant;
+  name: string;
+  slug: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pages".
+ */
+export interface Page {
+  id: number;
+  tenant: number | Tenant;
+  title: string;
+  slug: string;
+  blocks?:
+    | {
+        content?: {
+          root: {
+            type: string;
+            children: {
+              type: any;
+              version: number;
+              [k: string]: unknown;
+            }[];
+            direction: ('ltr' | 'rtl') | null;
+            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+            indent: number;
+            version: number;
+          };
+          [k: string]: unknown;
+        } | null;
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'richText';
+      }[]
+    | null;
+  seo?: {
+    metaTitle?: string | null;
+    metaDescription?: string | null;
+    ogImage?: (number | null) | Media;
+    noIndex?: boolean | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ministries".
+ */
+export interface Ministry {
+  id: number;
+  tenant: number | Tenant;
+  name: string;
+  slug: string;
+  description?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  leader?: (number | null) | Leadership;
+  image?: (number | null) | Media;
+  order?: number | null;
+  seo?: {
+    metaTitle?: string | null;
+    metaDescription?: string | null;
+    ogImage?: (number | null) | Media;
+    noIndex?: boolean | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "leadership".
+ */
+export interface Leadership {
+  id: number;
+  tenant: number | Tenant;
+  name: string;
+  title?: string | null;
+  bio?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  photo?: (number | null) | Media;
+  /**
+   * Books.author defaults to whichever record has this set
+   */
+  isFounder?: boolean | null;
+  order?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "events".
+ */
+export interface Event {
+  id: number;
+  tenant: number | Tenant;
+  title: string;
+  slug: string;
+  type: 'in-person' | 'online' | 'hybrid';
+  startDate: string;
+  endDate?: string | null;
+  /**
+   * For in-person/hybrid events
+   */
+  location?: string | null;
+  /**
+   * For online/hybrid events — external embed only, see docs/02-architecture.md §8
+   */
+  livestreamUrl?: string | null;
+  /**
+   * Leave empty for uncapped — EventRegistrations only auto-waitlists once this is set (FR-EVT-06)
+   */
+  capacity?: number | null;
+  registrationOpen?: string | null;
+  registrationClose?: string | null;
+  materials?: (number | Media)[] | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "event-registrations".
+ */
+export interface EventRegistration {
+  id: number;
+  event: number | Event;
+  name: string;
+  email: string;
+  phone?: string | null;
+  registeredAt?: string | null;
+  checkedIn?: boolean | null;
+  /**
+   * Set automatically once event.capacity is reached (FR-EVT-06)
+   */
+  waitlisted?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "sermons".
+ */
+export interface Sermon {
+  id: number;
+  tenant: number | Tenant;
+  title: string;
+  type: 'audio' | 'video' | 'written';
+  speaker?: string | null;
+  scripture?: string[] | null;
+  topics?: (number | Category)[] | null;
+  /**
+   * For self-hosted audio/video, mutually exclusive with embedUrl
+   */
+  mediaFile?: (number | null) | Media;
+  /**
+   * For an external embed (e.g. YouTube), mutually exclusive with mediaFile
+   */
+  embedUrl?: string | null;
+  date: string;
+  seo?: {
+    metaTitle?: string | null;
+    metaDescription?: string | null;
+    ogImage?: (number | null) | Media;
+    noIndex?: boolean | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "devotionals".
+ */
+export interface Devotional {
+  id: number;
+  tenant: number | Tenant;
+  title: string;
+  body?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  cadence: 'daily' | 'weekly' | 'series';
+  /**
+   * Groups this devotional under a parent series entry
+   */
+  series?: (number | null) | Devotional;
+  date: string;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "books".
+ */
+export interface Book {
+  id: number;
+  tenant: number | Tenant;
+  title: string;
+  author?: (number | null) | Leadership;
+  coverImage?: (number | null) | Media;
+  /**
+   * Mutually exclusive with coverImage+file, for an external retailer/listing link
+   */
+  externalLink?: string | null;
+  description?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "resources".
+ */
+export interface Resource {
+  id: number;
+  tenant: number | Tenant;
+  title: string;
+  author?: (number | null) | Leadership;
+  coverImage?: (number | null) | Media;
+  externalLink?: string | null;
+  description?: string | null;
+  type: 'study-guide' | 'prayer-guide' | 'discipleship-manual' | 'teaching-notes';
+  /**
+   * Requires visitor contact info to download
+   */
+  gated?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "blog-posts".
+ */
+export interface BlogPost {
+  id: number;
+  tenant: number | Tenant;
+  title: string;
+  slug: string;
+  body?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  categories?: (number | Category)[] | null;
+  tags?: (number | Tag)[] | null;
+  author?:
+    | ({
+        relationTo: 'users';
+        value: number | User;
+      } | null)
+    | ({
+        relationTo: 'leadership';
+        value: number | Leadership;
+      } | null);
+  publishedAt?: string | null;
+  seo?: {
+    metaTitle?: string | null;
+    metaDescription?: string | null;
+    ogImage?: (number | null) | Media;
+    noIndex?: boolean | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site-settings".
+ */
+export interface SiteSetting {
+  id: number;
+  tenant: number | Tenant;
+  siteName: string;
+  contactEmail?: string | null;
+  contactPhone?: string | null;
+  socialLinks?:
+    | {
+        platform: 'facebook' | 'instagram' | 'youtube' | 'x' | 'tiktok';
+        url: string;
+        id?: string | null;
+      }[]
+    | null;
+  notificationPreferences?: {
+    newPrayerRequest?: boolean | null;
+    newCounselingRequest?: boolean | null;
+    newVolunteerApplication?: boolean | null;
+    newEventRegistration?: boolean | null;
+    newDonation?: boolean | null;
+  };
+  analytics?: {
+    /**
+     * Google Analytics
+     */
+    gaId?: string | null;
+    /**
+     * Google Search Console
+     */
+    gscId?: string | null;
+    /**
+     * Microsoft Clarity
+     */
+    clarityId?: string | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "navigation".
+ */
+export interface Navigation {
+  id: number;
+  tenant: number | Tenant;
+  items?:
+    | {
+        label: string;
+        link: string;
+        order?: number | null;
+        children?:
+          | {
+              label: string;
+              link: string;
+              order?: number | null;
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "footer".
+ */
+export interface Footer {
+  id: number;
+  tenant: number | Tenant;
+  columns?:
+    | {
+        title: string;
+        links?:
+          | {
+              label: string;
+              url: string;
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  socialLinks?:
+    | {
+        platform: 'facebook' | 'instagram' | 'youtube' | 'x' | 'tiktok';
+        url: string;
+        id?: string | null;
+      }[]
+    | null;
+  copyrightText?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "homepage-layout".
+ */
+export interface HomepageLayout {
+  id: number;
+  tenant: number | Tenant;
+  sections?:
+    | {
+        blockType:
+          | 'Hero'
+          | 'WelcomeMessage'
+          | 'FeaturedSermons'
+          | 'FeaturedEvents'
+          | 'FeaturedBooks'
+          | 'MinistriesOverview'
+          | 'Testimonials'
+          | 'PartnershipInvitation'
+          | 'NewsletterSignup'
+          | 'RichText'
+          | 'CTA';
+        order?: number | null;
+        visible?: boolean | null;
+        /**
+         * Per-block instance config — shape depends on blockType
+         */
+        config?:
+          | {
+              [k: string]: unknown;
+            }
+          | unknown[]
+          | string
+          | number
+          | boolean
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "prayer-requests".
+ */
+export interface PrayerRequest {
+  id: number;
+  tenant: number | Tenant;
+  name: string;
+  contact: string;
+  requestText: string;
+  isPrivate?: boolean | null;
+  status?: ('new' | 'in-prayer' | 'answered' | 'closed') | null;
+  assignedTo?: (number | null) | User;
+  /**
+   * Staff-only — never exposed on public read
+   */
+  internalNotes?:
+    | {
+        author?: (number | null) | User;
+        note: string;
+        createdAt?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "counseling-requests".
+ */
+export interface CounselingRequest {
+  id: number;
+  tenant: number | Tenant;
+  name: string;
+  contact: string;
+  requestText: string;
+  type: 'biblical' | 'family' | 'marriage' | 'individual';
+  isPrivate?: boolean | null;
+  status?: ('new' | 'in-prayer' | 'answered' | 'closed') | null;
+  assignedTo?: (number | null) | User;
+  /**
+   * Staff-only — never exposed on public read
+   */
+  internalNotes?:
+    | {
+        author?: (number | null) | User;
+        note: string;
+        createdAt?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "volunteer-applications".
+ */
+export interface VolunteerApplication {
+  id: number;
+  tenant: number | Tenant;
+  name: string;
+  contact: string;
+  areaOfInterest?: string | null;
+  message?: string | null;
+  status?: ('new' | 'reviewing' | 'approved' | 'declined') | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "partners".
+ */
+export interface Partner {
+  id: number;
+  tenant: number | Tenant;
+  /**
+   * Leave empty for an individual partner — use individualName instead
+   */
+  orgName?: string | null;
+  individualName?: string | null;
+  contact: string;
+  engagementType: 'prayer' | 'financial' | 'volunteer' | 'project-sponsor' | 'mission-trip';
+  /**
+   * Optional — shown in the public "Partner Logos" display
+   */
+  logo?: (number | null) | Media;
+  status?: ('new' | 'active' | 'inactive') | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "testimonials".
+ */
+export interface Testimonial {
+  id: number;
+  tenant: number | Tenant;
+  submitterName: string;
+  content: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  photo?: (number | null) | Media;
+  status?: ('submitted' | 'approved' | 'published') | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "newsletter-subscribers".
+ */
+export interface NewsletterSubscriber {
+  id: number;
+  tenant: number | Tenant;
+  email: string;
+  /**
+   * Double opt-in confirmation, per docs/02-architecture.md §1 (Resend)
+   */
+  confirmed?: boolean | null;
+  confirmedAt?: string | null;
+  /**
+   * Presence of a value = inactive subscriber
+   */
+  unsubscribedAt?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "donations".
+ */
+export interface Donation {
+  id: number;
+  tenant: number | Tenant;
+  /**
+   * Empty if the donor chose to give anonymously
+   */
+  donorName?: string | null;
+  donorEmail?: string | null;
+  amount: number;
+  currency: string;
+  usdAmount: number;
+  fund: 'general' | 'mission-projects' | 'child-sponsorship' | 'special-campaign';
+  paypalTransactionId: string;
+  /**
+   * Set only for recurring donations
+   */
+  paypalSubscriptionId?: string | null;
+  status: 'completed' | 'refunded' | 'failed';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -382,6 +1067,98 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'audit-logs';
         value: number | AuditLog;
+      } | null)
+    | ({
+        relationTo: 'categories';
+        value: number | Category;
+      } | null)
+    | ({
+        relationTo: 'tags';
+        value: number | Tag;
+      } | null)
+    | ({
+        relationTo: 'pages';
+        value: number | Page;
+      } | null)
+    | ({
+        relationTo: 'ministries';
+        value: number | Ministry;
+      } | null)
+    | ({
+        relationTo: 'leadership';
+        value: number | Leadership;
+      } | null)
+    | ({
+        relationTo: 'events';
+        value: number | Event;
+      } | null)
+    | ({
+        relationTo: 'event-registrations';
+        value: number | EventRegistration;
+      } | null)
+    | ({
+        relationTo: 'sermons';
+        value: number | Sermon;
+      } | null)
+    | ({
+        relationTo: 'devotionals';
+        value: number | Devotional;
+      } | null)
+    | ({
+        relationTo: 'books';
+        value: number | Book;
+      } | null)
+    | ({
+        relationTo: 'resources';
+        value: number | Resource;
+      } | null)
+    | ({
+        relationTo: 'blog-posts';
+        value: number | BlogPost;
+      } | null)
+    | ({
+        relationTo: 'site-settings';
+        value: number | SiteSetting;
+      } | null)
+    | ({
+        relationTo: 'navigation';
+        value: number | Navigation;
+      } | null)
+    | ({
+        relationTo: 'footer';
+        value: number | Footer;
+      } | null)
+    | ({
+        relationTo: 'homepage-layout';
+        value: number | HomepageLayout;
+      } | null)
+    | ({
+        relationTo: 'prayer-requests';
+        value: number | PrayerRequest;
+      } | null)
+    | ({
+        relationTo: 'counseling-requests';
+        value: number | CounselingRequest;
+      } | null)
+    | ({
+        relationTo: 'volunteer-applications';
+        value: number | VolunteerApplication;
+      } | null)
+    | ({
+        relationTo: 'partners';
+        value: number | Partner;
+      } | null)
+    | ({
+        relationTo: 'testimonials';
+        value: number | Testimonial;
+      } | null)
+    | ({
+        relationTo: 'newsletter-subscribers';
+        value: number | NewsletterSubscriber;
+      } | null)
+    | ({
+        relationTo: 'donations';
+        value: number | Donation;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -563,6 +1340,460 @@ export interface AuditLogsSelect<T extends boolean = true> {
   documentId?: T;
   previousValue?: T;
   newValue?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "categories_select".
+ */
+export interface CategoriesSelect<T extends boolean = true> {
+  tenant?: T;
+  name?: T;
+  slug?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tags_select".
+ */
+export interface TagsSelect<T extends boolean = true> {
+  tenant?: T;
+  name?: T;
+  slug?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pages_select".
+ */
+export interface PagesSelect<T extends boolean = true> {
+  tenant?: T;
+  title?: T;
+  slug?: T;
+  blocks?:
+    | T
+    | {
+        richText?:
+          | T
+          | {
+              content?: T;
+              id?: T;
+              blockName?: T;
+            };
+      };
+  seo?:
+    | T
+    | {
+        metaTitle?: T;
+        metaDescription?: T;
+        ogImage?: T;
+        noIndex?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ministries_select".
+ */
+export interface MinistriesSelect<T extends boolean = true> {
+  tenant?: T;
+  name?: T;
+  slug?: T;
+  description?: T;
+  leader?: T;
+  image?: T;
+  order?: T;
+  seo?:
+    | T
+    | {
+        metaTitle?: T;
+        metaDescription?: T;
+        ogImage?: T;
+        noIndex?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "leadership_select".
+ */
+export interface LeadershipSelect<T extends boolean = true> {
+  tenant?: T;
+  name?: T;
+  title?: T;
+  bio?: T;
+  photo?: T;
+  isFounder?: T;
+  order?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "events_select".
+ */
+export interface EventsSelect<T extends boolean = true> {
+  tenant?: T;
+  title?: T;
+  slug?: T;
+  type?: T;
+  startDate?: T;
+  endDate?: T;
+  location?: T;
+  livestreamUrl?: T;
+  capacity?: T;
+  registrationOpen?: T;
+  registrationClose?: T;
+  materials?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "event-registrations_select".
+ */
+export interface EventRegistrationsSelect<T extends boolean = true> {
+  event?: T;
+  name?: T;
+  email?: T;
+  phone?: T;
+  registeredAt?: T;
+  checkedIn?: T;
+  waitlisted?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "sermons_select".
+ */
+export interface SermonsSelect<T extends boolean = true> {
+  tenant?: T;
+  title?: T;
+  type?: T;
+  speaker?: T;
+  scripture?: T;
+  topics?: T;
+  mediaFile?: T;
+  embedUrl?: T;
+  date?: T;
+  seo?:
+    | T
+    | {
+        metaTitle?: T;
+        metaDescription?: T;
+        ogImage?: T;
+        noIndex?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "devotionals_select".
+ */
+export interface DevotionalsSelect<T extends boolean = true> {
+  tenant?: T;
+  title?: T;
+  body?: T;
+  cadence?: T;
+  series?: T;
+  date?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "books_select".
+ */
+export interface BooksSelect<T extends boolean = true> {
+  tenant?: T;
+  title?: T;
+  author?: T;
+  coverImage?: T;
+  externalLink?: T;
+  description?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "resources_select".
+ */
+export interface ResourcesSelect<T extends boolean = true> {
+  tenant?: T;
+  title?: T;
+  author?: T;
+  coverImage?: T;
+  externalLink?: T;
+  description?: T;
+  type?: T;
+  gated?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "blog-posts_select".
+ */
+export interface BlogPostsSelect<T extends boolean = true> {
+  tenant?: T;
+  title?: T;
+  slug?: T;
+  body?: T;
+  categories?: T;
+  tags?: T;
+  author?: T;
+  publishedAt?: T;
+  seo?:
+    | T
+    | {
+        metaTitle?: T;
+        metaDescription?: T;
+        ogImage?: T;
+        noIndex?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site-settings_select".
+ */
+export interface SiteSettingsSelect<T extends boolean = true> {
+  tenant?: T;
+  siteName?: T;
+  contactEmail?: T;
+  contactPhone?: T;
+  socialLinks?:
+    | T
+    | {
+        platform?: T;
+        url?: T;
+        id?: T;
+      };
+  notificationPreferences?:
+    | T
+    | {
+        newPrayerRequest?: T;
+        newCounselingRequest?: T;
+        newVolunteerApplication?: T;
+        newEventRegistration?: T;
+        newDonation?: T;
+      };
+  analytics?:
+    | T
+    | {
+        gaId?: T;
+        gscId?: T;
+        clarityId?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "navigation_select".
+ */
+export interface NavigationSelect<T extends boolean = true> {
+  tenant?: T;
+  items?:
+    | T
+    | {
+        label?: T;
+        link?: T;
+        order?: T;
+        children?:
+          | T
+          | {
+              label?: T;
+              link?: T;
+              order?: T;
+              id?: T;
+            };
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "footer_select".
+ */
+export interface FooterSelect<T extends boolean = true> {
+  tenant?: T;
+  columns?:
+    | T
+    | {
+        title?: T;
+        links?:
+          | T
+          | {
+              label?: T;
+              url?: T;
+              id?: T;
+            };
+        id?: T;
+      };
+  socialLinks?:
+    | T
+    | {
+        platform?: T;
+        url?: T;
+        id?: T;
+      };
+  copyrightText?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "homepage-layout_select".
+ */
+export interface HomepageLayoutSelect<T extends boolean = true> {
+  tenant?: T;
+  sections?:
+    | T
+    | {
+        blockType?: T;
+        order?: T;
+        visible?: T;
+        config?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "prayer-requests_select".
+ */
+export interface PrayerRequestsSelect<T extends boolean = true> {
+  tenant?: T;
+  name?: T;
+  contact?: T;
+  requestText?: T;
+  isPrivate?: T;
+  status?: T;
+  assignedTo?: T;
+  internalNotes?:
+    | T
+    | {
+        author?: T;
+        note?: T;
+        createdAt?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "counseling-requests_select".
+ */
+export interface CounselingRequestsSelect<T extends boolean = true> {
+  tenant?: T;
+  name?: T;
+  contact?: T;
+  requestText?: T;
+  type?: T;
+  isPrivate?: T;
+  status?: T;
+  assignedTo?: T;
+  internalNotes?:
+    | T
+    | {
+        author?: T;
+        note?: T;
+        createdAt?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "volunteer-applications_select".
+ */
+export interface VolunteerApplicationsSelect<T extends boolean = true> {
+  tenant?: T;
+  name?: T;
+  contact?: T;
+  areaOfInterest?: T;
+  message?: T;
+  status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "partners_select".
+ */
+export interface PartnersSelect<T extends boolean = true> {
+  tenant?: T;
+  orgName?: T;
+  individualName?: T;
+  contact?: T;
+  engagementType?: T;
+  logo?: T;
+  status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "testimonials_select".
+ */
+export interface TestimonialsSelect<T extends boolean = true> {
+  tenant?: T;
+  submitterName?: T;
+  content?: T;
+  photo?: T;
+  status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "newsletter-subscribers_select".
+ */
+export interface NewsletterSubscribersSelect<T extends boolean = true> {
+  tenant?: T;
+  email?: T;
+  confirmed?: T;
+  confirmedAt?: T;
+  unsubscribedAt?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "donations_select".
+ */
+export interface DonationsSelect<T extends boolean = true> {
+  tenant?: T;
+  donorName?: T;
+  donorEmail?: T;
+  amount?: T;
+  currency?: T;
+  usdAmount?: T;
+  fund?: T;
+  paypalTransactionId?: T;
+  paypalSubscriptionId?: T;
+  status?: T;
   updatedAt?: T;
   createdAt?: T;
 }
