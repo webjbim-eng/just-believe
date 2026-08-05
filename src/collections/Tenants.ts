@@ -2,6 +2,7 @@ import type { Access, CollectionConfig } from 'payload'
 import { getResolvedTenantId } from '../access/getResolvedTenantId'
 import { hasPermission } from '../access/hasPermission'
 import { isPlatformSuperAdmin, platformSuperAdminOnly, platformSuperAdminOnlyField } from '../access/isPlatformSuperAdmin'
+import { createAuditAfterChangeHook, createAuditAfterDeleteHook } from '../hooks/auditLog'
 
 /**
  * The tenant IS the top-level scope, so it can't be scoped by a `tenant`
@@ -37,6 +38,10 @@ export const Tenants: CollectionConfig = {
     create: platformSuperAdminOnly,
     update: ownTenantWithSettingsPermission,
     delete: platformSuperAdminOnly,
+  },
+  hooks: {
+    afterChange: [createAuditAfterChangeHook('tenants')],
+    afterDelete: [createAuditAfterDeleteHook('tenants')],
   },
   fields: [
     { name: 'name', type: 'text', required: true },

@@ -2,6 +2,7 @@ import type { CollectionConfig } from 'payload'
 import { composeAccess } from '../access/composeAccess'
 import { hasPermission } from '../access/hasPermission'
 import { withTenantScope } from '../access/withTenantScope'
+import { createAuditAfterChangeHook, createAuditAfterDeleteHook } from '../hooks/auditLog'
 
 /**
  * Upload storage location (Cloudflare R2, per docs/02-architecture.md) is
@@ -18,6 +19,10 @@ export const Media: CollectionConfig = {
     create: composeAccess(hasPermission('media.upload'), withTenantScope()),
     update: composeAccess(hasPermission('media.manage'), withTenantScope()),
     delete: composeAccess(hasPermission('media.manage'), withTenantScope()),
+  },
+  hooks: {
+    afterChange: [createAuditAfterChangeHook('media')],
+    afterDelete: [createAuditAfterDeleteHook('media')],
   },
   upload: {
     mimeTypes: ['image/*', 'video/*', 'application/pdf'],

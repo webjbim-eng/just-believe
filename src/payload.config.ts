@@ -7,6 +7,7 @@ import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import { buildConfig } from 'payload'
 import sharp from 'sharp'
 
+import { AuditLogs } from './collections/AuditLogs'
 import { Media } from './collections/Media'
 import { Permissions } from './collections/Permissions'
 import { Roles } from './collections/Roles'
@@ -20,7 +21,7 @@ export default buildConfig({
   admin: {
     user: Users.slug,
   },
-  collections: [Tenants, Users, Roles, Permissions, Media],
+  collections: [Tenants, Users, Roles, Permissions, Media, AuditLogs],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {

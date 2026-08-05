@@ -2,6 +2,7 @@ import type { Access, CollectionConfig, FieldAccess, Where } from 'payload'
 import { getResolvedTenantId } from '../access/getResolvedTenantId'
 import { hasPermission } from '../access/hasPermission'
 import { isPlatformSuperAdmin, platformSuperAdminOnlyField } from '../access/isPlatformSuperAdmin'
+import { createAuditAfterChangeHook, createAuditAfterDeleteHook } from '../hooks/auditLog'
 
 /**
  * Users are NOT tenant-owned the way Sermons/Events/etc. are — a single
@@ -64,6 +65,12 @@ export const Users: CollectionConfig = {
     create: scopedUserAccess('users.create'),
     update: scopedUserAccess('users.update'),
     delete: scopedUserAccess('users.delete'),
+  },
+  hooks: {
+    // password/twoFactor.secret are stripped via the hook's default redact
+    // list before the audit entry is ever written — see src/hooks/auditLog.ts
+    afterChange: [createAuditAfterChangeHook('users')],
+    afterDelete: [createAuditAfterDeleteHook('users')],
   },
   fields: [
     { name: 'name', type: 'text', required: true },

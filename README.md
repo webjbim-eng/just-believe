@@ -18,13 +18,14 @@ Next.js 15 (App Router) · Payload CMS 3 · Neon (Postgres) · Cloudflare R2 (me
 
 ## Status
 
-**Foundation module only.** What's implemented and reviewable right now:
+**Foundation modules only.** What's implemented and reviewable right now:
 - `Tenants`, `Users`, `Roles`, `Permissions`, `Media` collections
 - The database-driven RBAC pattern (`src/access/hasPermission.ts`, `withTenantScope.ts`, `composeAccess.ts`) exactly as designed in `docs/04-auth-rbac.md`
+- `AuditLogs` collection (append-only — `create`/`update`/`delete` all blocked at the API level) plus the shared `afterChange`/`afterDelete` hook (`src/hooks/auditLog.ts`) wired into every collection above, with secret fields (password, 2FA secret) redacted before storage per FR-AUDIT
 - Tenant-resolution middleware (currently a subdomain-only stub — custom-domain resolution needs real Tenant data to work against, see the comment in `src/middleware.ts`)
 - Payload admin mounted at `/admin`, public site placeholder at `/`
 
-**Not yet built** (see `docs/01-srs.md` for the full module list): homepage builder, content collections (Pages, Sermons, Events, Blog, etc.), prayer/counseling workflows, donations/PayPal integration, audit logging, 2FA, localization routing, design system/component library (Phase 4 UX).
+**Not yet built** (see `docs/01-srs.md` for the full module list): a seed script for the Permissions/Roles reference data (nothing in Roles/Permissions exists yet in a real database, so `hasPermission()` has nothing to check against until this exists), homepage builder, content collections (Pages, Sermons, Events, Blog, etc.), prayer/counseling workflows, donations/PayPal integration, 2FA enforcement, localization routing, design system/component library (Phase 4 UX).
 
 ## Local development
 

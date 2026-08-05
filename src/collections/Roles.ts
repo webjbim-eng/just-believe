@@ -2,6 +2,7 @@ import type { CollectionConfig } from 'payload'
 import { composeAccess } from '../access/composeAccess'
 import { hasPermission } from '../access/hasPermission'
 import { withTenantScope } from '../access/withTenantScope'
+import { createAuditAfterChangeHook, createAuditAfterDeleteHook } from '../hooks/auditLog'
 
 /**
  * A Role is a named, tenant-scoped collection of Permissions — the entire
@@ -35,6 +36,8 @@ export const Roles: CollectionConfig = {
         }
       },
     ],
+    afterChange: [createAuditAfterChangeHook('roles')],
+    afterDelete: [createAuditAfterDeleteHook('roles')],
   },
   fields: [
     {

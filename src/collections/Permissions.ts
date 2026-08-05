@@ -1,5 +1,6 @@
 import type { CollectionConfig } from 'payload'
 import { platformSuperAdminOnly } from '../access/isPlatformSuperAdmin'
+import { createAuditAfterChangeHook, createAuditAfterDeleteHook } from '../hooks/auditLog'
 
 /**
  * Reference/seed data, not meant for ad-hoc creation through the UI — new
@@ -22,6 +23,10 @@ export const Permissions: CollectionConfig = {
     create: platformSuperAdminOnly,
     update: platformSuperAdminOnly,
     delete: platformSuperAdminOnly,
+  },
+  hooks: {
+    afterChange: [createAuditAfterChangeHook('permissions')],
+    afterDelete: [createAuditAfterDeleteHook('permissions')],
   },
   fields: [
     {
