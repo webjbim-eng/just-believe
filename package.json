@@ -2,6 +2,7 @@
   "name": "jbim-platform",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "description": "JBIM Ministry Management Platform — multi-tenant public site + admin dashboard",
   "scripts": {
     "dev": "next dev",
@@ -11,7 +12,8 @@
     "typecheck": "tsc --noEmit",
     "generate:types": "payload generate:types",
     "generate:importmap": "payload generate:importmap",
-    "payload": "payload"
+    "payload": "payload",
+    "seed": "node --import tsx/esm src/seed/run.ts"
   },
   "dependencies": {
     "@payloadcms/db-postgres": "^3.0.0",
@@ -32,6 +34,7 @@
     "@types/react-dom": "^19.0.0",
     "eslint": "^9.0.0",
     "eslint-config-next": "15.4.11",
+    "tsx": "^4.22.4",
     "typescript": "^5.6.0"
   },
   "engines": {

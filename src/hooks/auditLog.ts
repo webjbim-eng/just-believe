@@ -1,4 +1,4 @@
-import type { CollectionAfterChangeHook, CollectionAfterDeleteHook } from 'payload'
+import type { CollectionAfterChangeHook, CollectionAfterDeleteHook, PayloadRequest } from 'payload'
 import { getResolvedTenantId } from '../access/getResolvedTenantId'
 
 /**
@@ -15,8 +15,8 @@ const REDACTED = '[REDACTED]'
 
 const DEFAULT_REDACT_PATHS = ['password', 'salt', 'hash', 'twoFactor.secret']
 
-function redact(value: unknown, paths: string[]): unknown {
-  if (!value || typeof value !== 'object') return value
+function redact(value: unknown, paths: string[]): Record<string, unknown> | null {
+  if (!value || typeof value !== 'object') return null
   const clone = JSON.parse(JSON.stringify(value)) as Record<string, unknown>
 
   for (const path of paths) {
@@ -38,6 +38,23 @@ function redact(value: unknown, paths: string[]): unknown {
   return clone
 }
 
+/**
+ * Resolves the numeric tenant id to attach to the audit entry: prefer the
+ * request-header-resolved tenant (a string, coerced to a number), falling
+ * back to the mutated document's own `tenant` relationship field if present
+ * (covers hooks running outside a tenant-resolved request context, e.g. a
+ * future admin script). Returns null for platform-scope documents (Tenants
+ * itself, or genuinely tenant-less records).
+ */
+function resolveAuditTenantId(doc: unknown, req: PayloadRequest): number | null {
+  const headerTenantId = getResolvedTenantId(req)
+  if (headerTenantId) return Number(headerTenantId)
+
+  const docTenant = (doc as { tenant?: number | { id: number } | null } | null)?.tenant
+  if (docTenant == null) return null
+  return typeof docTenant === 'object' ? docTenant.id : docTenant
+}
+
 type AuditableOptions = {
   redactPaths?: string[]
 }
@@ -50,7 +67,6 @@ export const createAuditAfterChangeHook = (
     if (operation !== 'create' && operation !== 'update') return doc
 
     const redactPaths = options.redactPaths ?? DEFAULT_REDACT_PATHS
-    const tenantId = getResolvedTenantId(req) ?? (doc as { tenant?: string }).tenant ?? null
 
     await req.payload.create({
       collection: 'audit-logs',
@@ -59,7 +75,7 @@ export const createAuditAfterChangeHook = (
         action: operation,
         collectionSlug,
         documentId: String(doc.id),
-        tenant: tenantId,
+        tenant: resolveAuditTenantId(doc, req),
         previousValue: operation === 'update' ? redact(previousDoc, redactPaths) : null,
         newValue: redact(doc, redactPaths),
       },
@@ -77,7 +93,6 @@ export const createAuditAfterDeleteHook = (
 ): CollectionAfterDeleteHook => {
   return async ({ doc, id, req }) => {
     const redactPaths = options.redactPaths ?? DEFAULT_REDACT_PATHS
-    const tenantId = getResolvedTenantId(req) ?? (doc as { tenant?: string })?.tenant ?? null
 
     await req.payload.create({
       collection: 'audit-logs',
@@ -86,7 +101,7 @@ export const createAuditAfterDeleteHook = (
         action: 'delete',
         collectionSlug,
         documentId: String(id),
-        tenant: tenantId,
+        tenant: resolveAuditTenantId(doc, req),
         previousValue: redact(doc, redactPaths),
         newValue: null,
       },

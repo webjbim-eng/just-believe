@@ -1,4 +1,5 @@
 import type { Access } from 'payload'
+import type { User } from '../payload-types'
 import { getResolvedTenantId } from './getResolvedTenantId'
 import { isPlatformSuperAdmin } from './isPlatformSuperAdmin'
 
@@ -7,45 +8,36 @@ import { isPlatformSuperAdmin } from './isPlatformSuperAdmin'
  * calls instead of hardcoding role logic. Adding a new permission or
  * reshaping a role is a data change in the Roles/Permissions collections —
  * this function never changes to support it. See docs/04-auth-rbac.md §2.1.
- *
- * NOTE: `TenantMembership` is hand-typed here rather than imported from the
- * generated payload-types.ts, which doesn't exist until `npm run
- * generate:types` has run against a configured database. Once generated,
- * prefer importing the real `User` type instead of this local shape.
  */
-type TenantMembership = {
-  tenant: string
-  role: string
-}
-
-type PermissionAwareUser = {
-  id: string
-  isPlatformSuperAdmin?: boolean
-  tenantMemberships?: TenantMembership[]
-}
-
 export const hasPermission = (permissionKey: string): Access => {
   return async ({ req }) => {
-    const user = req.user as PermissionAwareUser | null | undefined
+    const user = req.user as User | null | undefined
     if (!user) return false
     if (isPlatformSuperAdmin(user)) return true
 
     const tenantId = getResolvedTenantId(req)
     if (!tenantId) return false
 
-    const membership = user.tenantMemberships?.find((m) => m.tenant === tenantId)
+    // Relationship fields on req.user are typically un-populated (plain ids,
+    // typed number | Tenant by the generated types) — coerce to string
+    // before comparing against tenantId, which comes from a request header
+    // and is therefore always a string. A bare `===` here would silently
+    // never match and lock every tenant-scoped user out.
+    const membership = user.tenantMemberships?.find((m) => {
+      const membershipTenantId = typeof m.tenant === 'object' ? m.tenant.id : m.tenant
+      return String(membershipTenantId) === tenantId
+    })
     if (!membership) return false
 
+    const roleId = typeof membership.role === 'object' ? membership.role.id : membership.role
     const role = await req.payload.findByID({
       collection: 'roles',
-      id: membership.role,
+      id: roleId,
       depth: 1,
       req,
     })
-
     if (!role) return false
 
-    const permissions = (role.permissions ?? []) as Array<{ key?: string } | string>
-    return permissions.some((p) => (typeof p === 'string' ? p === permissionKey : p.key === permissionKey))
+    return role.permissions.some((p) => typeof p === 'object' && p !== null && p.key === permissionKey)
   }
 }
