@@ -57,8 +57,25 @@ async function resolveTenantIdForHost(hostname: string, requestUrl: string): Pro
   return tenantId
 }
 
+/**
+ * Dev-only convenience: there's no way to type jbim.jbim-platform.app (or
+ * a custom domain) into a browser against a local dev server without
+ * editing /etc/hosts, so ?tenant=<slug> lets you preview a specific
+ * tenant locally (e.g. http://localhost:3000/?tenant=jbim). Synthesizes a
+ * fake hostname and reuses the exact same subdomain-slug lookup path
+ * above rather than adding a second code path. Gated on NODE_ENV so this
+ * can never be used to override tenant resolution in production.
+ */
+function devTenantOverrideHostname(request: NextRequest): string | null {
+  if (process.env.NODE_ENV === 'production') return null
+  const slug = request.nextUrl.searchParams.get('tenant')
+  if (!slug) return null
+  const platformRootDomain = process.env.NEXT_PUBLIC_PLATFORM_ROOT_DOMAIN || 'jbim-platform.app'
+  return `${slug}.${platformRootDomain}`
+}
+
 export async function middleware(request: NextRequest) {
-  const hostname = request.headers.get('host') || ''
+  const hostname = devTenantOverrideHostname(request) || request.headers.get('host') || ''
   const tenantId = await resolveTenantIdForHost(hostname, request.url)
 
   const requestHeaders = new Headers(request.headers)
