@@ -92,6 +92,48 @@ async function seed() {
     }
   }
 
+  // Minimal real starter content so the homepage isn't empty — copy drawn
+  // from docs/source/About us - JustBelieveInt.docx and the logo's "Hub of
+  // Transformation" tagline; the YouTube link is the real channel from the
+  // client intake questionnaire. Backfilled once only, same as
+  // branding.colors above — never overwrite an admin's later edits.
+  const existingLayout = (
+    await payload.find({
+      collection: 'homepage-layout',
+      where: { tenant: { equals: tenant.id } },
+      limit: 1,
+      overrideAccess: true,
+    })
+  ).docs[0]
+
+  if (!existingLayout) {
+    await payload.create({
+      collection: 'homepage-layout',
+      data: {
+        tenant: tenant.id,
+        sections: [
+          {
+            blockType: 'Hero',
+            order: 0,
+            visible: true,
+            config: {
+              eyebrow: 'Hub of Transformation',
+              heading: 'Just Believe International Missions',
+              subheading:
+                "A Christ-centered, faith-based nonprofit committed to advancing God's Kingdom by transforming lives, strengthening families, developing leaders, and serving communities around the world.",
+              ctaLabel: 'Watch Our Story',
+              ctaHref: 'https://youtube.com/@jbiminc?si=Q26o6jq34zseGPaF',
+            },
+          },
+        ],
+      },
+      overrideAccess: true,
+    })
+    payload.logger.info('Created starter HomepageLayout (Hero section).')
+  } else {
+    payload.logger.info('HomepageLayout already exists — leaving as-is.')
+  }
+
   payload.logger.info('Seeding system roles...')
   const roleIdByName = new Map<string, number>()
   for (const roleDef of systemRoleDefinitions) {
