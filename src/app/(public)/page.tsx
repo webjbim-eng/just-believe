@@ -6,9 +6,12 @@
  */
 export default function HomePage() {
   return (
-    <main style={{ fontFamily: 'system-ui, sans-serif', padding: '4rem 2rem', maxWidth: 640, margin: '0 auto' }}>
+    <main style={{ padding: '4rem 2rem', maxWidth: 640, margin: '0 auto' }}>
       <h1>Just Believe International Missions</h1>
       <p>Platform foundation is live. Public site content ships module-by-module.</p>
+      <button className="btn-accent" type="button">
+        Example accent button
+      </button>
     </main>
   )
 }
