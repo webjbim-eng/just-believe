@@ -20,7 +20,7 @@ export const Events: CollectionConfig = {
   fields: [
     tenantField,
     { name: 'title', type: 'text', required: true, localized: true },
-    slugField,
+    slugField('events'),
     {
       name: 'type',
       type: 'select',

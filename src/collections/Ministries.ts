@@ -22,7 +22,7 @@ export const Ministries: CollectionConfig = {
   fields: [
     tenantField,
     { name: 'name', type: 'text', required: true, localized: true },
-    slugField,
+    slugField('ministries'),
     { name: 'description', type: 'richText', editor: lexicalEditor(), localized: true },
     { name: 'leader', type: 'relationship', relationTo: 'leadership' },
     { name: 'image', type: 'upload', relationTo: 'media' },

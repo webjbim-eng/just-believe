@@ -13,7 +13,7 @@
     "generate:types": "payload generate:types",
     "generate:importmap": "payload generate:importmap",
     "payload": "payload",
-    "seed": "node --import tsx/esm src/seed/run.ts"
+    "seed": "node --env-file=.env.local --import tsx/esm src/seed/run.ts"
   },
   "dependencies": {
     "@payloadcms/db-postgres": "^3.0.0",

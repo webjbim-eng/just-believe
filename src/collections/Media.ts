@@ -16,7 +16,11 @@ export const Media: CollectionConfig = {
   slug: 'media',
   admin: { group: 'Content' },
   access: {
-    read: () => true,
+    // Was unconditionally public (`() => true`) — an unscoped read let any
+    // request enumerate every tenant's media, not just the resolved
+    // tenant's. Same "public but tenant-filtered" shape as
+    // publicContentAccess uses everywhere else.
+    read: withTenantScope(),
     create: composeAccess(hasPermission('media.upload'), withTenantScope()),
     update: composeAccess(hasPermission('media.manage'), withTenantScope()),
     delete: composeAccess(hasPermission('media.manage'), withTenantScope()),

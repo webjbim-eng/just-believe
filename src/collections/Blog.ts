@@ -22,7 +22,7 @@ export const BlogPosts: CollectionConfig = {
   fields: [
     tenantField,
     { name: 'title', type: 'text', required: true, localized: true },
-    slugField,
+    slugField('blog-posts'),
     { name: 'body', type: 'richText', editor: lexicalEditor(), localized: true },
     { name: 'categories', type: 'relationship', relationTo: 'categories', hasMany: true },
     { name: 'tags', type: 'relationship', relationTo: 'tags', hasMany: true },

@@ -24,6 +24,6 @@ export const Categories: CollectionConfig = {
   fields: [
     tenantField,
     { name: 'name', type: 'text', required: true, localized: true },
-    slugField,
+    slugField('categories'),
   ],
 }

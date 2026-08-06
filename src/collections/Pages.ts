@@ -30,7 +30,7 @@ export const Pages: CollectionConfig = {
   fields: [
     tenantField,
     { name: 'title', type: 'text', required: true, localized: true },
-    slugField,
+    slugField('pages'),
     {
       name: 'blocks',
       type: 'blocks',

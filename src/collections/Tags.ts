@@ -23,6 +23,6 @@ export const Tags: CollectionConfig = {
   fields: [
     tenantField,
     { name: 'name', type: 'text', required: true, localized: true },
-    slugField,
+    slugField('tags'),
   ],
 }

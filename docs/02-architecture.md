@@ -85,7 +85,7 @@ Why: hundreds of ministries as described in the brief's north-star question woul
 
 - Every tenant-owned collection carries a `tenant` relationship field, populated automatically on create and immutable after.
 - Every collection's `access` functions filter by `req.user`'s tenant membership **and** the resolved-domain tenant — a user authenticated for Tenant A cannot read Tenant B's data even by guessing an ID, because the query itself is scoped, not just the UI.
-- Global singletons (Site Settings, Navigation, Footer) are tenant-scoped Globals, one instance per tenant, not one shared instance with per-tenant fields bolted on.
+- Global singletons (Site Settings, Navigation, Footer, Homepage Layout) are tenant-scoped, one instance per tenant, not one shared instance with per-tenant fields bolted on. **Implementation note (2026-08-06):** these actually ship as ordinary `collections/` entries with a `unique: true` tenant field, not Payload's native `globals` — Payload Globals are process-wide singletons with no tenant dimension, and `@payloadcms/plugin-multi-tenant` (which could reconcile that) is named below but was never installed; every collection instead uses the hand-rolled `hasPermission`/`withTenantScope` access pattern. Revisit if/when the plugin is actually adopted.
 - The `Tenants` collection itself and the `Platform Super Admin` role are the only cross-tenant-visible constructs in the system.
 - NFR-11's automated test (forged tenant ID → must fail closed) runs against every tenant-owned collection in CI, not spot-checked manually.
 
@@ -142,12 +142,10 @@ jbim-platform/
 │  │  ├─ NewsletterSubscribers.ts
 │  │  ├─ Donations.ts
 │  │  ├─ Leadership.ts
-│  │  └─ AuditLogs.ts              # write-only from hooks, read via UI
-│  ├─ globals/                     # tenant-scoped singletons
-│  │  ├─ SiteSettings.ts
-│  │  ├─ Navigation.ts
-│  │  ├─ Footer.ts
-│  │  └─ HomepageLayout.ts         # ordered block array, see FR-HOME
+│  │  ├─ AuditLogs.ts              # write-only from hooks, read via UI
+│  │  └─ SiteSettings.ts / Navigation.ts / Footer.ts / HomepageLayout.ts
+│  │                               # ^ tenant-scoped singletons — live here,
+│  │                               #   not in a separate globals/, see §3 note
 │  ├─ blocks/                      # reusable homepage/page builder blocks
 │  │  ├─ Hero/ WelcomeMessage/ FeaturedSermons/ FeaturedEvents/
 │  │  │  FeaturedBooks/ MinistriesOverview/ Testimonials/
