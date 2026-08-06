@@ -15,6 +15,7 @@
  */
 import { getPayload } from 'payload'
 import config from '../payload.config'
+import type { HomepageLayout } from '../payload-types'
 import { permissionCatalog } from './permissions'
 import { systemRoleDefinitions } from './roles'
 
@@ -93,10 +94,59 @@ async function seed() {
   }
 
   // Minimal real starter content so the homepage isn't empty — copy drawn
-  // from docs/source/About us - JustBelieveInt.docx and the logo's "Hub of
-  // Transformation" tagline; the YouTube link is the real channel from the
-  // client intake questionnaire. Backfilled once only, same as
-  // branding.colors above — never overwrite an admin's later edits.
+  // from docs/source/About us - JustBelieveInt.docx, the logo's "Hub of
+  // Transformation" tagline, and the real YouTube channel/email from the
+  // client intake questionnaire (no lorem ipsum). The data-driven blocks
+  // (MinistriesOverview, FeaturedSermons, FeaturedEvents, Testimonials)
+  // are included even though nothing exists in those collections yet —
+  // their empty states are honest, working UI, not something to hide
+  // until content shows up.
+  const homepageSections: NonNullable<HomepageLayout['sections']> = [
+    {
+      blockType: 'Hero',
+      order: 0,
+      visible: true,
+      config: {
+        eyebrow: 'Hub of Transformation',
+        heading: 'Just Believe International Missions',
+        subheading:
+          "A Christ-centered, faith-based nonprofit committed to advancing God's Kingdom by transforming lives, strengthening families, developing leaders, and serving communities around the world.",
+        ctaLabel: 'Watch Our Story',
+        ctaHref: 'https://youtube.com/@jbiminc?si=Q26o6jq34zseGPaF',
+      },
+    },
+    {
+      blockType: 'WelcomeMessage',
+      order: 1,
+      visible: true,
+      config: {
+        heading: 'Our Mission',
+        body: "To glorify God by making disciples of Jesus Christ, equipping believers for Kingdom service, strengthening families, developing ethical leaders, and extending Christ's compassion to communities through evangelism, discipleship, education, leadership development, and practical outreach.",
+      },
+    },
+    { blockType: 'MinistriesOverview', order: 2, visible: true, config: {} },
+    { blockType: 'FeaturedSermons', order: 3, visible: true, config: {} },
+    { blockType: 'FeaturedEvents', order: 4, visible: true, config: {} },
+    { blockType: 'Testimonials', order: 5, visible: true, config: {} },
+    {
+      blockType: 'PartnershipInvitation',
+      order: 6,
+      visible: true,
+      config: {
+        heading: 'Partner With Us',
+        body: 'Join us in transforming lives, strengthening families, and serving communities around the world.',
+        ctaLabel: 'Contact Us',
+        ctaHref: 'mailto:justbelieveinthot@gmail.com',
+      },
+    },
+    {
+      blockType: 'NewsletterSignup',
+      order: 7,
+      visible: true,
+      config: { heading: 'Stay Connected', subheading: 'Get updates on new sermons, events, and ways to get involved.' },
+    },
+  ]
+
   const existingLayout = (
     await payload.find({
       collection: 'homepage-layout',
@@ -109,29 +159,56 @@ async function seed() {
   if (!existingLayout) {
     await payload.create({
       collection: 'homepage-layout',
+      data: { tenant: tenant.id, sections: homepageSections },
+      overrideAccess: true,
+    })
+    payload.logger.info(`Created starter HomepageLayout (${homepageSections.length} sections).`)
+  } else if ((existingLayout.sections?.length ?? 0) < 2) {
+    // Still just the single Hero section from an earlier seed run, not
+    // anything an admin has customized yet (no admin login exists) — safe
+    // to fill out with the fuller starter set.
+    await payload.update({
+      collection: 'homepage-layout',
+      id: existingLayout.id,
+      data: { sections: homepageSections },
+      overrideAccess: true,
+    })
+    payload.logger.info(`Expanded HomepageLayout to ${homepageSections.length} sections.`)
+  } else {
+    payload.logger.info('HomepageLayout already exists — leaving as-is.')
+  }
+
+  // Same reasoning as branding.colors/HomepageLayout above — only ever
+  // backfill when genuinely empty, never overwrite an admin's edits.
+  const existingNavigation = (
+    await payload.find({ collection: 'navigation', where: { tenant: { equals: tenant.id } }, limit: 1, overrideAccess: true })
+  ).docs[0]
+  if (!existingNavigation) {
+    await payload.create({
+      collection: 'navigation',
+      data: { tenant: tenant.id, items: [{ label: 'Home', link: '/', order: 0 }] },
+      overrideAccess: true,
+    })
+    payload.logger.info('Created starter Navigation.')
+  }
+
+  const existingFooter = (
+    await payload.find({ collection: 'footer', where: { tenant: { equals: tenant.id } }, limit: 1, overrideAccess: true })
+  ).docs[0]
+  if (!existingFooter) {
+    await payload.create({
+      collection: 'footer',
       data: {
         tenant: tenant.id,
-        sections: [
-          {
-            blockType: 'Hero',
-            order: 0,
-            visible: true,
-            config: {
-              eyebrow: 'Hub of Transformation',
-              heading: 'Just Believe International Missions',
-              subheading:
-                "A Christ-centered, faith-based nonprofit committed to advancing God's Kingdom by transforming lives, strengthening families, developing leaders, and serving communities around the world.",
-              ctaLabel: 'Watch Our Story',
-              ctaHref: 'https://youtube.com/@jbiminc?si=Q26o6jq34zseGPaF',
-            },
-          },
+        socialLinks: [
+          { platform: 'youtube', url: 'https://youtube.com/@jbiminc?si=Q26o6jq34zseGPaF' },
+          { platform: 'facebook', url: 'https://www.facebook.com/profile.php?id=61570983282514' },
         ],
+        copyrightText: `© ${new Date().getFullYear()} Just Believe International Missions. All rights reserved.`,
       },
       overrideAccess: true,
     })
-    payload.logger.info('Created starter HomepageLayout (Hero section).')
-  } else {
-    payload.logger.info('HomepageLayout already exists — leaving as-is.')
+    payload.logger.info('Created starter Footer.')
   }
 
   payload.logger.info('Seeding system roles...')

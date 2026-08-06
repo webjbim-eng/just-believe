@@ -5,6 +5,8 @@ import { headers } from 'next/headers'
 import { getPayload } from 'payload'
 import config from '@payload-config'
 import { TENANT_HEADER } from '../../access/getResolvedTenantId'
+import { SiteNavigation } from '../../components/SiteNavigation'
+import { SiteFooter } from '../../components/SiteFooter'
 import './globals.css'
 
 const heading = Playfair_Display({ subsets: ['latin'], variable: '--font-heading', display: 'swap' })
@@ -28,8 +30,7 @@ const DEFAULT_COLORS: BrandColors = {
   accent: '#C9A227',
 }
 
-async function getTenantBrandColors(): Promise<BrandColors> {
-  const tenantId = (await headers()).get(TENANT_HEADER)
+async function getTenantBrandColors(tenantId: string | null): Promise<BrandColors> {
   if (!tenantId) return DEFAULT_COLORS
 
   try {
@@ -46,7 +47,8 @@ async function getTenantBrandColors(): Promise<BrandColors> {
 }
 
 export default async function PublicLayout({ children }: { children: React.ReactNode }) {
-  const colors = await getTenantBrandColors()
+  const tenantId = (await headers()).get(TENANT_HEADER)
+  const colors = await getTenantBrandColors(tenantId)
 
   const cssVars = {
     '--color-primary': colors.primary,
@@ -56,7 +58,11 @@ export default async function PublicLayout({ children }: { children: React.React
 
   return (
     <html lang="en" className={`${heading.variable} ${body.variable}`} style={cssVars}>
-      <body>{children}</body>
+      <body>
+        {tenantId && <SiteNavigation tenantId={tenantId} />}
+        {children}
+        {tenantId && <SiteFooter tenantId={tenantId} />}
+      </body>
     </html>
   )
 }

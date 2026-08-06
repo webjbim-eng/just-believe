@@ -35,7 +35,7 @@ export default async function HomePage() {
       {visibleSections.map((section, index) => {
         const Block = blockRegistry[section.blockType]
         if (!Block) return null // block not built yet — skip, don't crash the page
-        return <Block key={index} config={section.config ?? {}} />
+        return <Block key={index} config={section.config ?? {}} tenantId={tenantId} />
       })}
     </main>
   )

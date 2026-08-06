@@ -22,7 +22,9 @@ export const setTenantFromRequest: CollectionBeforeChangeHook = ({ data, req, op
 
   const tenantId = getResolvedTenantId(req)
   if (tenantId) {
-    data.tenant = tenantId
+    // Header values are always strings; relationship fields need the
+    // numeric id (same coercion as auditLog.ts's resolveAuditTenantId).
+    data.tenant = Number(tenantId)
   }
   return data
 }

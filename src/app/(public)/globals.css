@@ -120,3 +120,54 @@ a {
   box-shadow: var(--shadow-card);
   padding: var(--card-padding);
 }
+
+/*
+ * Card content primitives (Refero references: Cushion's blog cards —
+ * small muted eyebrow label, then bold title, then metadata, consistent
+ * vertical rhythm; Dribbble's testimonial cards — circular avatar, bold
+ * name, quote). Reused across every "Featured X" / overview block instead
+ * of each one inventing its own card internals.
+ */
+.card-eyebrow {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-accent);
+  margin-bottom: 0.5rem;
+}
+
+.card-meta {
+  font-size: var(--text-body-sm);
+  color: var(--color-text-muted);
+  margin: 0;
+}
+
+.card-title {
+  margin: 0 0 0.5rem;
+  font-size: var(--text-heading-sm);
+}
+
+.avatar-circle {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  color: var(--color-text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-family: var(--font-heading), Georgia, serif;
+  margin-bottom: 1rem;
+  flex-shrink: 0;
+}
+
+.quote-mark {
+  font-family: var(--font-heading), Georgia, serif;
+  font-size: 3rem;
+  line-height: 1;
+  color: var(--color-accent);
+  margin: 0 0 0.5rem;
+  display: block;
+}
