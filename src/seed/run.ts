@@ -55,6 +55,17 @@ async function seed() {
     })
   ).docs[0]
 
+  // Confirmed with Jimmy 2026-08-06: follow docs/source/JBIM WEBSITE
+  // PROJECT BRIEF.docx's "Suggested colors" section literally (Royal Blue/
+  // Deep Purple/Gold), not the fire-gradient logo asset. Only ever set on
+  // first create below — re-running seed must never clobber colors an
+  // admin has since customized via the UI.
+  const brandColors = {
+    primary: '#1E3A8A', // Royal Blue — Truth & Faithfulness
+    secondary: '#4C1D95', // Deep Purple — Royal Priesthood
+    accent: '#C9A227', // Gold — Glory of God
+  }
+
   if (!tenant) {
     tenant = await payload.create({
       collection: 'tenants',
@@ -63,12 +74,22 @@ async function seed() {
         slug: tenantSlug,
         domains: tenantDomain ? [{ domain: tenantDomain }] : [],
         status: 'active',
+        branding: { colors: brandColors },
       },
       overrideAccess: true,
     })
     payload.logger.info(`Created tenant "${tenantName}" (${tenant.id}).`)
   } else {
     payload.logger.info(`Tenant "${tenantName}" already exists (${tenant.id}).`)
+    if (!tenant.branding?.colors?.primary) {
+      tenant = await payload.update({
+        collection: 'tenants',
+        id: tenant.id,
+        data: { branding: { colors: brandColors } },
+        overrideAccess: true,
+      })
+      payload.logger.info('Backfilled branding.colors (was unset).')
+    }
   }
 
   payload.logger.info('Seeding system roles...')
