@@ -2,6 +2,7 @@ import type { CollectionConfig } from 'payload'
 import { publicContentAccess } from '../access/publicContentAccess'
 import { tenantField } from '../fields/tenantField'
 import { seoFields } from '../fields/seo'
+import { setTenantFromRequest } from '../hooks/setTenantFromRequest'
 import { createAuditAfterChangeHook, createAuditAfterDeleteHook } from '../hooks/auditLog'
 
 export const Sermons: CollectionConfig = {
@@ -14,6 +15,7 @@ export const Sermons: CollectionConfig = {
   versions: { drafts: true },
   access: publicContentAccess('sermons.publish'),
   hooks: {
+    beforeChange: [setTenantFromRequest],
     afterChange: [createAuditAfterChangeHook('sermons')],
     afterDelete: [createAuditAfterDeleteHook('sermons')],
   },

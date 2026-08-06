@@ -2,6 +2,7 @@ import type { CollectionConfig } from 'payload'
 import { publicContentAccess } from '../access/publicContentAccess'
 import { tenantField } from '../fields/tenantField'
 import { slugField } from '../fields/slug'
+import { setTenantFromRequest } from '../hooks/setTenantFromRequest'
 import { createAuditAfterChangeHook, createAuditAfterDeleteHook } from '../hooks/auditLog'
 
 export const Events: CollectionConfig = {
@@ -14,6 +15,7 @@ export const Events: CollectionConfig = {
   versions: { drafts: true },
   access: publicContentAccess('events.manage'),
   hooks: {
+    beforeChange: [setTenantFromRequest],
     afterChange: [createAuditAfterChangeHook('events')],
     afterDelete: [createAuditAfterDeleteHook('events')],
   },

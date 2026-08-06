@@ -2,6 +2,7 @@ import type { CollectionConfig } from 'payload'
 import { submissionAccess } from '../access/publicContentAccess'
 import { filterUsersByRoleName } from '../access/filterUsersByRoleName'
 import { tenantField } from '../fields/tenantField'
+import { setTenantFromRequest } from '../hooks/setTenantFromRequest'
 import { createAuditAfterChangeHook, createAuditAfterDeleteHook } from '../hooks/auditLog'
 
 export const PrayerRequests: CollectionConfig = {
@@ -13,6 +14,7 @@ export const PrayerRequests: CollectionConfig = {
   },
   access: submissionAccess('prayer.view', 'prayer.manage'),
   hooks: {
+    beforeChange: [setTenantFromRequest],
     afterChange: [createAuditAfterChangeHook('prayer-requests')],
     afterDelete: [createAuditAfterDeleteHook('prayer-requests')],
   },

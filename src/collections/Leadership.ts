@@ -2,6 +2,7 @@ import type { CollectionConfig } from 'payload'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import { publicContentAccess } from '../access/publicContentAccess'
 import { tenantField } from '../fields/tenantField'
+import { setTenantFromRequest } from '../hooks/setTenantFromRequest'
 import { createAuditAfterChangeHook, createAuditAfterDeleteHook } from '../hooks/auditLog'
 
 /**
@@ -18,6 +19,7 @@ export const Leadership: CollectionConfig = {
   },
   access: publicContentAccess('leadership.manage'),
   hooks: {
+    beforeChange: [setTenantFromRequest],
     afterChange: [createAuditAfterChangeHook('leadership')],
     afterDelete: [createAuditAfterDeleteHook('leadership')],
   },

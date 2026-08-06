@@ -3,6 +3,7 @@ import { composeAccess } from '../access/composeAccess'
 import { hasPermission } from '../access/hasPermission'
 import { withTenantScope } from '../access/withTenantScope'
 import { tenantField } from '../fields/tenantField'
+import { setTenantFromRequest } from '../hooks/setTenantFromRequest'
 import { createAuditAfterChangeHook, createAuditAfterDeleteHook } from '../hooks/auditLog'
 
 /**
@@ -26,6 +27,7 @@ export const Media: CollectionConfig = {
     delete: composeAccess(hasPermission('media.manage'), withTenantScope()),
   },
   hooks: {
+    beforeChange: [setTenantFromRequest],
     afterChange: [createAuditAfterChangeHook('media')],
     afterDelete: [createAuditAfterDeleteHook('media')],
   },

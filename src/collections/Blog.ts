@@ -4,6 +4,7 @@ import { publicContentAccess } from '../access/publicContentAccess'
 import { tenantField } from '../fields/tenantField'
 import { slugField } from '../fields/slug'
 import { seoFields } from '../fields/seo'
+import { setTenantFromRequest } from '../hooks/setTenantFromRequest'
 import { createAuditAfterChangeHook, createAuditAfterDeleteHook } from '../hooks/auditLog'
 
 export const BlogPosts: CollectionConfig = {
@@ -16,6 +17,7 @@ export const BlogPosts: CollectionConfig = {
   versions: { drafts: true },
   access: publicContentAccess('blog.publish'),
   hooks: {
+    beforeChange: [setTenantFromRequest],
     afterChange: [createAuditAfterChangeHook('blog-posts')],
     afterDelete: [createAuditAfterDeleteHook('blog-posts')],
   },

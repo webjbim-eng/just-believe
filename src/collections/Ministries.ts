@@ -4,6 +4,7 @@ import { publicContentAccess } from '../access/publicContentAccess'
 import { tenantField } from '../fields/tenantField'
 import { slugField } from '../fields/slug'
 import { seoFields } from '../fields/seo'
+import { setTenantFromRequest } from '../hooks/setTenantFromRequest'
 import { createAuditAfterChangeHook, createAuditAfterDeleteHook } from '../hooks/auditLog'
 
 export const Ministries: CollectionConfig = {
@@ -16,6 +17,7 @@ export const Ministries: CollectionConfig = {
   versions: { drafts: true },
   access: publicContentAccess('ministries.manage'),
   hooks: {
+    beforeChange: [setTenantFromRequest],
     afterChange: [createAuditAfterChangeHook('ministries')],
     afterDelete: [createAuditAfterDeleteHook('ministries')],
   },

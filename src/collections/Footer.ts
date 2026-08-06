@@ -1,6 +1,7 @@
 import type { CollectionConfig } from 'payload'
 import { publicContentAccess } from '../access/publicContentAccess'
 import { tenantField } from '../fields/tenantField'
+import { setTenantFromRequest } from '../hooks/setTenantFromRequest'
 import { createAuditAfterChangeHook, createAuditAfterDeleteHook } from '../hooks/auditLog'
 
 // See SiteSettings.ts for why this is a collection (unique tenant) rather
@@ -13,6 +14,7 @@ export const Footer: CollectionConfig = {
   },
   access: publicContentAccess('navigation.manage'),
   hooks: {
+    beforeChange: [setTenantFromRequest],
     afterChange: [createAuditAfterChangeHook('footer')],
     afterDelete: [createAuditAfterDeleteHook('footer')],
   },

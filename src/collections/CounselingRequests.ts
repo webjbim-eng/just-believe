@@ -2,6 +2,7 @@ import type { CollectionConfig } from 'payload'
 import { submissionAccess } from '../access/publicContentAccess'
 import { filterUsersByRoleName } from '../access/filterUsersByRoleName'
 import { tenantField } from '../fields/tenantField'
+import { setTenantFromRequest } from '../hooks/setTenantFromRequest'
 import { createAuditAfterChangeHook, createAuditAfterDeleteHook } from '../hooks/auditLog'
 
 /**
@@ -19,6 +20,7 @@ export const CounselingRequests: CollectionConfig = {
   },
   access: submissionAccess('counseling.view', 'counseling.manage'),
   hooks: {
+    beforeChange: [setTenantFromRequest],
     afterChange: [createAuditAfterChangeHook('counseling-requests')],
     afterDelete: [createAuditAfterDeleteHook('counseling-requests')],
   },

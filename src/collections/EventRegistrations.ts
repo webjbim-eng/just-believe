@@ -1,5 +1,7 @@
 import type { CollectionConfig } from 'payload'
 import { submissionAccess } from '../access/publicContentAccess'
+import { tenantField } from '../fields/tenantField'
+import { setTenantFromRequest } from '../hooks/setTenantFromRequest'
 import { createAuditAfterChangeHook, createAuditAfterDeleteHook } from '../hooks/auditLog'
 
 export const EventRegistrations: CollectionConfig = {
@@ -15,6 +17,7 @@ export const EventRegistrations: CollectionConfig = {
     // submitter never sets this themselves, so it belongs in beforeChange,
     // not as a client-suppliable field.
     beforeChange: [
+      setTenantFromRequest,
       async ({ data, req, operation }) => {
         if (operation !== 'create' || !data.event) return data
 
@@ -36,6 +39,7 @@ export const EventRegistrations: CollectionConfig = {
     afterDelete: [createAuditAfterDeleteHook('event-registrations')],
   },
   fields: [
+    tenantField,
     { name: 'event', type: 'relationship', relationTo: 'events', required: true, index: true },
     { name: 'name', type: 'text', required: true },
     { name: 'email', type: 'email', required: true },

@@ -2,6 +2,7 @@ import type { CollectionConfig } from 'payload'
 import { composeAccess } from '../access/composeAccess'
 import { hasPermission } from '../access/hasPermission'
 import { withTenantScope } from '../access/withTenantScope'
+import { setTenantFromRequest } from '../hooks/setTenantFromRequest'
 import { createAuditAfterChangeHook, createAuditAfterDeleteHook } from '../hooks/auditLog'
 
 /**
@@ -28,6 +29,7 @@ export const Roles: CollectionConfig = {
     delete: composeAccess(hasPermission('roles.manage'), withTenantScope()),
   },
   hooks: {
+    beforeChange: [setTenantFromRequest],
     beforeDelete: [
       async ({ req, id }) => {
         const role = await req.payload.findByID({ collection: 'roles', id, req })

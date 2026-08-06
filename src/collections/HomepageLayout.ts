@@ -1,6 +1,7 @@
 import type { CollectionConfig } from 'payload'
 import { publicContentAccess } from '../access/publicContentAccess'
 import { tenantField } from '../fields/tenantField'
+import { setTenantFromRequest } from '../hooks/setTenantFromRequest'
 import { createAuditAfterChangeHook, createAuditAfterDeleteHook } from '../hooks/auditLog'
 
 /**
@@ -21,6 +22,7 @@ export const HomepageLayout: CollectionConfig = {
   versions: { drafts: true },
   access: publicContentAccess('homepage.manage'),
   hooks: {
+    beforeChange: [setTenantFromRequest],
     afterChange: [createAuditAfterChangeHook('homepage-layout')],
     afterDelete: [createAuditAfterDeleteHook('homepage-layout')],
   },

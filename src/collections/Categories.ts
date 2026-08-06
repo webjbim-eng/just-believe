@@ -2,6 +2,7 @@ import type { CollectionConfig } from 'payload'
 import { publicContentAccess } from '../access/publicContentAccess'
 import { tenantField } from '../fields/tenantField'
 import { slugField } from '../fields/slug'
+import { setTenantFromRequest } from '../hooks/setTenantFromRequest'
 import { createAuditAfterChangeHook, createAuditAfterDeleteHook } from '../hooks/auditLog'
 
 /**
@@ -18,6 +19,7 @@ export const Categories: CollectionConfig = {
   },
   access: publicContentAccess('blog.categories.manage'),
   hooks: {
+    beforeChange: [setTenantFromRequest],
     afterChange: [createAuditAfterChangeHook('categories')],
     afterDelete: [createAuditAfterDeleteHook('categories')],
   },

@@ -4,6 +4,7 @@ import { publicContentAccess } from '../access/publicContentAccess'
 import { tenantField } from '../fields/tenantField'
 import { slugField } from '../fields/slug'
 import { seoFields } from '../fields/seo'
+import { setTenantFromRequest } from '../hooks/setTenantFromRequest'
 import { createAuditAfterChangeHook, createAuditAfterDeleteHook } from '../hooks/auditLog'
 
 /**
@@ -24,6 +25,7 @@ export const Pages: CollectionConfig = {
   versions: { drafts: true },
   access: publicContentAccess('pages.publish'),
   hooks: {
+    beforeChange: [setTenantFromRequest],
     afterChange: [createAuditAfterChangeHook('pages')],
     afterDelete: [createAuditAfterDeleteHook('pages')],
   },

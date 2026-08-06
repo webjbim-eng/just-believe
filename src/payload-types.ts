@@ -553,6 +553,7 @@ export interface Event {
  */
 export interface EventRegistration {
   id: number;
+  tenant: number | Tenant;
   event: number | Event;
   name: string;
   email: string;
@@ -1461,6 +1462,7 @@ export interface EventsSelect<T extends boolean = true> {
  * via the `definition` "event-registrations_select".
  */
 export interface EventRegistrationsSelect<T extends boolean = true> {
+  tenant?: T;
   event?: T;
   name?: T;
   email?: T;

@@ -2,6 +2,7 @@ import type { CollectionConfig } from 'payload'
 import { publicContentAccess } from '../access/publicContentAccess'
 import { tenantField } from '../fields/tenantField'
 import { getResolvedTenantId } from '../access/getResolvedTenantId'
+import { setTenantFromRequest } from '../hooks/setTenantFromRequest'
 import { createAuditAfterChangeHook, createAuditAfterDeleteHook } from '../hooks/auditLog'
 
 export const Books: CollectionConfig = {
@@ -14,6 +15,7 @@ export const Books: CollectionConfig = {
   versions: { drafts: true },
   access: publicContentAccess('books.manage'),
   hooks: {
+    beforeChange: [setTenantFromRequest],
     afterChange: [createAuditAfterChangeHook('books')],
     afterDelete: [createAuditAfterDeleteHook('books')],
   },

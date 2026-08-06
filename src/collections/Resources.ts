@@ -2,6 +2,7 @@ import type { CollectionConfig } from 'payload'
 import { publicContentAccess } from '../access/publicContentAccess'
 import { tenantField } from '../fields/tenantField'
 import { getResolvedTenantId } from '../access/getResolvedTenantId'
+import { setTenantFromRequest } from '../hooks/setTenantFromRequest'
 import { createAuditAfterChangeHook, createAuditAfterDeleteHook } from '../hooks/auditLog'
 
 export const Resources: CollectionConfig = {
@@ -13,6 +14,7 @@ export const Resources: CollectionConfig = {
   },
   access: publicContentAccess('resources.manage'),
   hooks: {
+    beforeChange: [setTenantFromRequest],
     afterChange: [createAuditAfterChangeHook('resources')],
     afterDelete: [createAuditAfterDeleteHook('resources')],
   },

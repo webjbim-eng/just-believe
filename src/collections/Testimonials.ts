@@ -6,6 +6,7 @@ import { withTenantScope } from '../access/withTenantScope'
 import { getResolvedTenantId } from '../access/getResolvedTenantId'
 import { isPlatformSuperAdmin } from '../access/isPlatformSuperAdmin'
 import { tenantField } from '../fields/tenantField'
+import { setTenantFromRequest } from '../hooks/setTenantFromRequest'
 import { createAuditAfterChangeHook, createAuditAfterDeleteHook } from '../hooks/auditLog'
 
 /**
@@ -47,6 +48,7 @@ export const Testimonials: CollectionConfig = {
     delete: composeAccess(hasPermission('testimonials.approve'), withTenantScope()),
   },
   hooks: {
+    beforeChange: [setTenantFromRequest],
     afterChange: [createAuditAfterChangeHook('testimonials')],
     afterDelete: [createAuditAfterDeleteHook('testimonials')],
   },
