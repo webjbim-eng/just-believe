@@ -138,6 +138,9 @@ async function seed() {
         ctaHref: '/about',
         secondaryCtaLabel: 'Watch Our Story',
         secondaryCtaHref: 'https://youtube.com/@jbiminc?si=Q26o6jq34zseGPaF',
+        // Real Unsplash photo (free/commercial license), downloaded to
+        // public/images/ — see git log for the source URL/photographer.
+        backgroundImage: '/images/hero-worship-sunset.jpg',
       },
     },
     {
@@ -162,6 +165,7 @@ async function seed() {
         body: 'Join us in transforming lives, strengthening families, and serving communities around the world.',
         ctaLabel: 'Contact Us',
         ctaHref: 'mailto:justbelieveinthot@gmail.com',
+        backgroundImage: '/images/worship-service.jpg',
       },
     },
     {
@@ -201,20 +205,31 @@ async function seed() {
     payload.logger.info(`Expanded HomepageLayout to ${homepageSections.length} sections.`)
   } else {
     // Same "still just my own seed output, not an admin edit" reasoning —
-    // sync just the Hero section's config if it's still the earlier
-    // single-CTA version, without touching any other section.
-    const sections = existingLayout.sections ?? []
-    const heroSection = sections[0]
-    if (heroSection?.blockType === 'Hero' && !(heroSection.config as { secondaryCtaLabel?: string })?.secondaryCtaLabel) {
-      const updatedSections = [...sections]
-      updatedSections[0] = { ...heroSection, config: homepageSections[0].config }
+    // sync any section still missing fields this seed script has since
+    // added (secondaryCtaLabel, backgroundImage, ...) against the latest
+    // starter config for that blockType, without touching sections an
+    // admin may have reordered/customized differently.
+    const sections = [...(existingLayout.sections ?? [])]
+    let changed = false
+    for (let i = 0; i < sections.length; i++) {
+      const latest = homepageSections.find((s) => s.blockType === sections[i].blockType)
+      if (!latest) continue
+      const currentConfig = (sections[i].config ?? {}) as Record<string, unknown>
+      const latestConfig = (latest.config ?? {}) as Record<string, unknown>
+      const missingKeys = Object.keys(latestConfig).filter((key) => !(key in currentConfig))
+      if (missingKeys.length > 0) {
+        sections[i] = { ...sections[i], config: { ...currentConfig, ...Object.fromEntries(missingKeys.map((k) => [k, latestConfig[k]])) } }
+        changed = true
+      }
+    }
+    if (changed) {
       await payload.update({
         collection: 'homepage-layout',
         id: existingLayout.id,
-        data: { sections: updatedSections },
+        data: { sections },
         overrideAccess: true,
       })
-      payload.logger.info('Updated Hero section to add secondary CTA.')
+      payload.logger.info('Synced HomepageLayout sections with newer starter fields.')
     } else {
       payload.logger.info('HomepageLayout already exists — leaving as-is.')
     }
