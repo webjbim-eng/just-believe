@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { renderHeadingWithAccent } from '../../../lib/renderHeadingWithAccent'
 
 export const metadata: Metadata = {
   title: 'About — Just Believe International Missions',
@@ -18,7 +19,10 @@ export default function AboutPage() {
       <section className="section" style={{ paddingBottom: 0 }}>
         <div className="container container--narrow" style={{ textAlign: 'center' }}>
           <p className="section-eyebrow">About Us</p>
-          <h1 style={{ fontSize: 'var(--text-heading-lg)' }}>Just Believe International Missions</h1>
+          <h1 style={{ fontSize: 'var(--text-heading-lg)' }}>
+            {renderHeadingWithAccent('Just Believe International Missions', 'International Missions')}
+          </h1>
+          <hr className="heading-underline heading-underline--center" />
           <p style={{ fontSize: 'var(--text-subheading)' }}>
             A Christ-centered, faith-based nonprofit organization committed to advancing God&rsquo;s Kingdom by transforming
             lives, strengthening families, developing leaders, and serving communities around the world.
@@ -56,7 +60,10 @@ export default function AboutPage() {
 
       <section className="section section--primary">
         <div className="container container--narrow">
-          <h2 style={{ color: '#fff', textAlign: 'center' }}>Our Approach</h2>
+          <h2 style={{ color: '#fff', textAlign: 'center' }}>
+            Our <span className="text-accent">Approach</span>
+          </h2>
+          <hr className="heading-underline heading-underline--center" />
           <p style={{ color: 'rgba(255,255,255,0.85)', textAlign: 'center', marginBottom: '2.5rem' }}>
             Our ministry is built upon four foundational commitments.
           </p>
@@ -94,7 +101,10 @@ export default function AboutPage() {
 
       <section className="section section--surface">
         <div className="container container--narrow" style={{ textAlign: 'center' }}>
-          <h2>Join the Mission</h2>
+          <h2>
+            Join the <span className="text-accent">Mission</span>
+          </h2>
+          <hr className="heading-underline heading-underline--center" />
           <p style={{ fontSize: 'var(--text-subheading)', marginBottom: '2rem' }}>
             Whether through prayer, volunteering, financial partnership, community outreach, or collaborative ministry,
             we invite you to join us in sharing the hope of Jesus Christ and helping transform lives around the world.

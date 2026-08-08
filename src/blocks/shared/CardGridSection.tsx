@@ -22,6 +22,7 @@ export function CardGridSection<T>({
     <section className="section">
       <div className="container">
         <h2 style={{ textAlign: 'center' }}>{heading}</h2>
+        <hr className="heading-underline heading-underline--center" />
         {items.length === 0 ? (
           <p style={{ textAlign: 'center', color: 'var(--color-text-muted)' }}>{emptyMessage}</p>
         ) : (

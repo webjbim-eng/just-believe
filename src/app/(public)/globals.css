@@ -1,17 +1,20 @@
 /*
- * Design-token layer, v2 (2026-08-08 full redesign pass). Colors:
- * docs/source/JBIM WEBSITE PROJECT BRIEF.docx palette, confirmed
- * 2026-08-06 (project_jbim_design_system.md). Visual language synthesized
- * from Refero reference styles:
- *   - Kindsight (academic/heritage editorial — serif display + clean
- *     grotesk body, warm parchment surfaces, rounded solid buttons)
- *   - Airbnb.org (oversized tight-set headlines, high-contrast restraint,
- *     single filled CTA standing out through contrast not ornament)
- *   - Medium (literary hero rhythm, generous negative space, small pill CTA)
- *   - Dribbble testimonials / Cushion blog (card component patterns,
- *     already applied — avatar+quote, eyebrow+title+meta)
- *   - Symbolic.ai (tactile layered-card treatment, used sparingly for
- *     testimonial quote cards)
+ * Design-token layer, v3 (2026-08-08). Colors: docs/source/JBIM WEBSITE
+ * PROJECT BRIEF.docx palette, confirmed 2026-08-06
+ * (project_jbim_design_system.md) — Royal Blue / Deep Purple / Gold /
+ * White, White as the literal page base (not a dark reskin — Jimmy shared
+ * reachingthenationsministries.com as a *pattern* reference, not a visual
+ * one to clone: rich navigation, photography woven through every section
+ * rather than just the hero, sophisticated components, gold doing real
+ * structural work). This version keeps the confirmed light/parchment
+ * base and adopts the pattern-level techniques instead — two-tone
+ * headings (.text-accent), a short gold underline under section headings
+ * (.heading-underline), a dark-on-gold contrast fix for filled
+ * accent buttons/badges (--color-on-accent).
+ *
+ * Visual language also draws on the earlier Refero research (Kindsight/
+ * Airbnb.org/Medium editorial rhythm, Dribbble/Cushion card patterns,
+ * Symbolic.ai's tactile card treatment).
  *
  * :root values are fallback defaults only — the real per-tenant color
  * values are injected as inline CSS custom properties on <html> by
@@ -23,6 +26,10 @@
   --color-primary: #1e3a8a;
   --color-secondary: #4c1d95;
   --color-accent: #c9a227;
+  /* Dark text for anything filled with --color-accent (gold-on-white text
+     reads poorly) — gold buttons/badges use this, not --color-text. */
+  --color-on-accent: #1a1a1a;
+
   --color-base: #ffffff;
   /* Warm parchment, not stark gray — Kindsight/Medium's "vellum" surface */
   --color-surface: #faf7f0;
@@ -40,8 +47,8 @@
 
   --radius-button: 999px;
   --radius-card: 16px;
-  --shadow-card: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-  --shadow-card-lg: 0 20px 40px -12px rgb(0 0 0 / 0.18);
+  --shadow-card: 0 10px 15px -3px rgb(0 0 0 / 0.25), 0 4px 6px -4px rgb(0 0 0 / 0.25);
+  --shadow-card-lg: 0 20px 40px -12px rgb(0 0 0 / 0.4);
 
   --container-max-width: 1200px;
   --container-narrow: 720px;
@@ -114,7 +121,8 @@ a {
   background: var(--color-surface);
 }
 
-/* Filled, high-contrast section — Airbnb.org's restrained dark banners */
+/* Filled, high-contrast section — Airbnb.org's restrained dark banners,
+   now a step *lighter* than the page canvas rather than darker. */
 .section--primary {
   background: var(--color-primary);
 }
@@ -132,16 +140,39 @@ a {
   margin: 0 0 0.75rem;
 }
 
+/* Gold emphasis word inside an otherwise white heading — the RTNM
+   reference's most consistent, repeatable motif ("Welcome to RTNM"). */
+.text-accent {
+  color: var(--color-accent);
+}
+
+/* Short gold bar under a heading — pair with a centered or left-aligned
+   heading; RTNM uses this under nearly every section title. */
+.heading-underline {
+  width: 3.5rem;
+  height: 3px;
+  background: var(--color-accent);
+  border: none;
+  margin: 0 0 1.5rem;
+  border-radius: 2px;
+}
+
+.heading-underline--center {
+  margin-left: auto;
+  margin-right: auto;
+}
+
 /*
  * Accent is deliberately the ONLY vivid brand color used for a primary
  * action — Royal Blue/Deep Purple stay restrained to text, headings, and
  * structure. This mirrors the "single dominant accent" rule pulled from
- * the Raise reference style.
+ * the Raise reference style. Dark text (--color-on-accent), not white —
+ * gold-on-white barely passes contrast.
  */
 .btn-accent {
   display: inline-block;
   background: var(--color-accent);
-  color: var(--color-text);
+  color: var(--color-on-accent);
   border: none;
   padding: 1rem 2.25rem;
   border-radius: var(--radius-button);
@@ -161,8 +192,8 @@ a {
 .btn-outline {
   display: inline-block;
   background: transparent;
-  color: inherit;
-  border: 1.5px solid currentColor;
+  color: var(--color-accent);
+  border: 1.5px solid var(--color-accent);
   padding: 0.9375rem 2.1875rem;
   border-radius: var(--radius-button);
   font-family: var(--font-body), system-ui, sans-serif;
@@ -212,7 +243,7 @@ a {
   height: 52px;
   border-radius: 50%;
   background: var(--color-accent);
-  color: var(--color-text);
+  color: var(--color-on-accent);
   display: flex;
   align-items: center;
   justify-content: center;

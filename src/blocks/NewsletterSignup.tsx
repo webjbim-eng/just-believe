@@ -52,6 +52,8 @@ export function NewsletterSignup({ config }: { config: NewsletterSignupConfig })
                 padding: '0.875rem 1rem',
                 borderRadius: 'var(--radius-button)',
                 border: '1px solid var(--color-border)',
+                background: 'var(--color-base)',
+                color: 'var(--color-text)',
                 flex: '1 1 16rem',
                 fontFamily: 'var(--font-body), system-ui, sans-serif',
                 fontSize: 'var(--text-body-sm)',

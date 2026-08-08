@@ -132,6 +132,7 @@ async function seed() {
       config: {
         eyebrow: 'Hub of Transformation',
         heading: 'Just Believe International Missions',
+        accentWord: 'International Missions',
         subheading:
           "A Christ-centered, faith-based nonprofit committed to advancing God's Kingdom by transforming lives, strengthening families, developing leaders, and serving communities around the world.",
         ctaLabel: 'Learn More',

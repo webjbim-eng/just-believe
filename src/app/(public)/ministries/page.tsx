@@ -32,7 +32,10 @@ export default async function MinistriesPage() {
       <section className="section" style={{ paddingBottom: 0, textAlign: 'center' }}>
         <div className="container container--narrow">
           <p className="section-eyebrow">What We Do</p>
-          <h1 style={{ fontSize: 'var(--text-heading-lg)' }}>Our Ministries</h1>
+          <h1 style={{ fontSize: 'var(--text-heading-lg)' }}>
+            Our <span className="text-accent">Ministries</span>
+          </h1>
+          <hr className="heading-underline heading-underline--center" />
           <p style={{ fontSize: 'var(--text-subheading)' }}>
             Lasting change begins with transformed hearts. Through evangelism, discipleship, leadership development,
             prayer, and compassionate outreach, we demonstrate both the truth and the love of Christ.
@@ -49,6 +52,7 @@ export default async function MinistriesPage() {
               {ministries.map((ministry) => (
                 <div key={ministry.id} className="card">
                   <span className="avatar-circle">{ministry.name.charAt(0).toUpperCase()}</span>
+                  <p className="card-eyebrow">Ministry</p>
                   <h3 className="card-title">{ministry.name}</h3>
                   {ministry.description && <p>{lexicalToPlainText(ministry.description)}</p>}
                 </div>

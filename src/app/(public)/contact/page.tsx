@@ -17,7 +17,10 @@ export default function ContactPage() {
       <section className="section" style={{ textAlign: 'center' }}>
         <div className="container container--narrow">
           <p className="section-eyebrow">Get In Touch</p>
-          <h1 style={{ fontSize: 'var(--text-heading-lg)' }}>Contact Us</h1>
+          <h1 style={{ fontSize: 'var(--text-heading-lg)' }}>
+            Contact <span className="text-accent">Us</span>
+          </h1>
+          <hr className="heading-underline heading-underline--center" />
           <p style={{ fontSize: 'var(--text-subheading)', marginBottom: '3rem' }}>
             Whether through prayer, volunteering, financial partnership, community outreach, or collaborative ministry —
             we&rsquo;d love to hear from you.

@@ -1,6 +1,10 @@
+import { renderHeadingWithAccent } from '../lib/renderHeadingWithAccent'
+
 export type HeroConfig = {
   eyebrow?: string
   heading: string
+  /** Substring within `heading` to render in gold — e.g. "International Missions". */
+  accentWord?: string
   subheading?: string
   ctaLabel?: string
   ctaHref?: string
@@ -81,7 +85,7 @@ export function Hero({ config }: { config: HeroConfig }) {
           </p>
         )}
         <h1 style={{ fontSize: 'var(--text-display)', maxWidth: '56rem', margin: '0 auto 1.5rem', color: textColor }}>
-          {config.heading}
+          {renderHeadingWithAccent(config.heading, config.accentWord)}
         </h1>
         {config.subheading && (
           <p
