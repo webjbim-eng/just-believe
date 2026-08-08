@@ -1,11 +1,17 @@
 /*
- * Base design-token layer. Colors: docs/source/JBIM WEBSITE PROJECT
- * BRIEF.docx palette, confirmed 2026-08-06 (project_jbim_design_system.md).
- * Type scale/spacing/radius/shadow: synthesized from Refero reference
- * styles "Raise" (opencollective.com — single dominant accent reserved
- * for primary CTAs, Inter body, generous spacing) and "Airbnb.org"
- * (high-contrast editorial, 48-64px section rhythm), adapted to our
- * serif-heading/sans-body pairing instead of their sans-only systems.
+ * Design-token layer, v2 (2026-08-08 full redesign pass). Colors:
+ * docs/source/JBIM WEBSITE PROJECT BRIEF.docx palette, confirmed
+ * 2026-08-06 (project_jbim_design_system.md). Visual language synthesized
+ * from Refero reference styles:
+ *   - Kindsight (academic/heritage editorial — serif display + clean
+ *     grotesk body, warm parchment surfaces, rounded solid buttons)
+ *   - Airbnb.org (oversized tight-set headlines, high-contrast restraint,
+ *     single filled CTA standing out through contrast not ornament)
+ *   - Medium (literary hero rhythm, generous negative space, small pill CTA)
+ *   - Dribbble testimonials / Cushion blog (card component patterns,
+ *     already applied — avatar+quote, eyebrow+title+meta)
+ *   - Symbolic.ai (tactile layered-card treatment, used sparingly for
+ *     testimonial quote cards)
  *
  * :root values are fallback defaults only — the real per-tenant color
  * values are injected as inline CSS custom properties on <html> by
@@ -18,26 +24,30 @@
   --color-secondary: #4c1d95;
   --color-accent: #c9a227;
   --color-base: #ffffff;
-  --color-surface: #f7f7f5;
+  /* Warm parchment, not stark gray — Kindsight/Medium's "vellum" surface */
+  --color-surface: #faf7f0;
   --color-text: #1a1a1a;
   --color-text-muted: #5f5f5f;
-  --color-border: #e5e5e0;
+  --color-border: #e8e2d4;
 
   --text-body-sm: 1rem;
   --text-body: 1.125rem;
-  --text-subheading: 1.25rem;
-  --text-heading-sm: 2rem;
-  --text-heading: 2.5rem;
+  --text-subheading: 1.375rem;
+  --text-heading-sm: 1.75rem;
+  --text-heading: 2.75rem;
   --text-heading-lg: 3.75rem;
-  --text-display: 4.5rem;
+  --text-display: 5rem;
 
   --radius-button: 999px;
-  --radius-card: 12px;
+  --radius-card: 16px;
   --shadow-card: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-card-lg: 0 20px 40px -12px rgb(0 0 0 / 0.18);
 
   --container-max-width: 1200px;
-  --section-gap: 4rem;
-  --card-padding: 2rem;
+  --container-narrow: 720px;
+  --section-gap: 6rem;
+  --section-gap-sm: 3.5rem;
+  --card-padding: 2.25rem;
 }
 
 * {
@@ -55,7 +65,7 @@ body {
   font-size: var(--text-body-sm);
   color: var(--color-text);
   background: var(--color-base);
-  line-height: 1.6;
+  line-height: 1.65;
 }
 
 h1,
@@ -66,9 +76,13 @@ h5,
 h6 {
   font-family: var(--font-heading), Georgia, serif;
   color: var(--color-text);
-  line-height: 1.15;
-  letter-spacing: -0.01em;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
   margin: 0 0 1rem;
+}
+
+h2 {
+  font-size: var(--text-heading);
 }
 
 p {
@@ -86,12 +100,36 @@ a {
   padding: 0 1.5rem;
 }
 
+.container--narrow {
+  max-width: var(--container-narrow);
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
 .section {
   padding: var(--section-gap) 0;
 }
 
 .section--surface {
   background: var(--color-surface);
+}
+
+/* Filled, high-contrast section — Airbnb.org's restrained dark banners */
+.section--primary {
+  background: var(--color-primary);
+}
+
+.section--secondary {
+  background: var(--color-secondary);
+}
+
+.section-eyebrow {
+  color: var(--color-accent);
+  font-weight: 600;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin: 0 0 0.75rem;
 }
 
 /*
@@ -105,7 +143,27 @@ a {
   background: var(--color-accent);
   color: var(--color-text);
   border: none;
-  padding: 0.875rem 2rem;
+  padding: 1rem 2.25rem;
+  border-radius: var(--radius-button);
+  font-family: var(--font-body), system-ui, sans-serif;
+  font-weight: 600;
+  font-size: var(--text-body-sm);
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.btn-accent:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-card);
+}
+
+.btn-outline {
+  display: inline-block;
+  background: transparent;
+  color: inherit;
+  border: 1.5px solid currentColor;
+  padding: 0.9375rem 2.1875rem;
   border-radius: var(--radius-button);
   font-family: var(--font-body), system-ui, sans-serif;
   font-weight: 600;
@@ -116,6 +174,7 @@ a {
 
 .card {
   background: var(--color-base);
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-card);
   box-shadow: var(--shadow-card);
   padding: var(--card-padding);
@@ -149,8 +208,8 @@ a {
 }
 
 .avatar-circle {
-  width: 48px;
-  height: 48px;
+  width: 52px;
+  height: 52px;
   border-radius: 50%;
   background: var(--color-accent);
   color: var(--color-text);
@@ -158,16 +217,38 @@ a {
   align-items: center;
   justify-content: center;
   font-weight: 700;
+  font-size: 1.25rem;
   font-family: var(--font-heading), Georgia, serif;
-  margin-bottom: 1rem;
+  margin-bottom: 1.25rem;
   flex-shrink: 0;
 }
 
 .quote-mark {
   font-family: var(--font-heading), Georgia, serif;
-  font-size: 3rem;
+  font-size: 3.5rem;
   line-height: 1;
   color: var(--color-accent);
   margin: 0 0 0.5rem;
   display: block;
+}
+
+/* Symbolic.ai's tactile layered-paper card, used for testimonial quotes */
+.card--tactile {
+  transform: rotate(-0.6deg);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card--tactile:nth-child(even) {
+  transform: rotate(0.6deg);
+}
+
+.card--tactile:hover {
+  transform: rotate(0deg);
+  box-shadow: var(--shadow-card-lg);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.75rem;
 }

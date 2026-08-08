@@ -18,6 +18,29 @@ import config from '../payload.config'
 import type { HomepageLayout } from '../payload-types'
 import { permissionCatalog } from './permissions'
 import { systemRoleDefinitions } from './roles'
+import { ministryDefinitions } from './ministries'
+
+function toLexicalParagraph(text: string) {
+  return {
+    root: {
+      type: 'root',
+      direction: 'ltr' as const,
+      format: '' as const,
+      indent: 0,
+      version: 1,
+      children: [
+        {
+          type: 'paragraph',
+          direction: 'ltr' as const,
+          format: '' as const,
+          indent: 0,
+          version: 1,
+          children: [{ type: 'text', text, format: 0, detail: 0, mode: 'normal', style: '', version: 1 }],
+        },
+      ],
+    },
+  }
+}
 
 async function seed() {
   const payload = await getPayload({ config })
@@ -111,8 +134,10 @@ async function seed() {
         heading: 'Just Believe International Missions',
         subheading:
           "A Christ-centered, faith-based nonprofit committed to advancing God's Kingdom by transforming lives, strengthening families, developing leaders, and serving communities around the world.",
-        ctaLabel: 'Watch Our Story',
-        ctaHref: 'https://youtube.com/@jbiminc?si=Q26o6jq34zseGPaF',
+        ctaLabel: 'Learn More',
+        ctaHref: '/about',
+        secondaryCtaLabel: 'Watch Our Story',
+        secondaryCtaHref: 'https://youtube.com/@jbiminc?si=Q26o6jq34zseGPaF',
       },
     },
     {
@@ -175,7 +200,57 @@ async function seed() {
     })
     payload.logger.info(`Expanded HomepageLayout to ${homepageSections.length} sections.`)
   } else {
-    payload.logger.info('HomepageLayout already exists — leaving as-is.')
+    // Same "still just my own seed output, not an admin edit" reasoning —
+    // sync just the Hero section's config if it's still the earlier
+    // single-CTA version, without touching any other section.
+    const sections = existingLayout.sections ?? []
+    const heroSection = sections[0]
+    if (heroSection?.blockType === 'Hero' && !(heroSection.config as { secondaryCtaLabel?: string })?.secondaryCtaLabel) {
+      const updatedSections = [...sections]
+      updatedSections[0] = { ...heroSection, config: homepageSections[0].config }
+      await payload.update({
+        collection: 'homepage-layout',
+        id: existingLayout.id,
+        data: { sections: updatedSections },
+        overrideAccess: true,
+      })
+      payload.logger.info('Updated Hero section to add secondary CTA.')
+    } else {
+      payload.logger.info('HomepageLayout already exists — leaving as-is.')
+    }
+  }
+
+  // Real ministry copy (src/seed/ministries.ts), not placeholder content —
+  // only backfilled when the collection is genuinely empty for this
+  // tenant, so an admin's edits/additions are never touched.
+  const { totalDocs: existingMinistryCount } = await payload.find({
+    collection: 'ministries',
+    where: { tenant: { equals: tenant.id } },
+    limit: 0,
+    overrideAccess: true,
+  })
+  if (existingMinistryCount === 0) {
+    for (const [index, ministry] of ministryDefinitions.entries()) {
+      await payload.create({
+        collection: 'ministries',
+        data: {
+          tenant: tenant.id,
+          name: ministry.name,
+          slug: ministry.name
+            .toLowerCase()
+            .replace(/&/g, 'and')
+            .replace(/[^a-z0-9]+/g, '-')
+            .replace(/(^-|-$)/g, ''),
+          description: toLexicalParagraph(ministry.description),
+          order: index,
+          _status: 'published',
+        },
+        overrideAccess: true,
+      })
+    }
+    payload.logger.info(`Created ${ministryDefinitions.length} starter Ministries.`)
+  } else {
+    payload.logger.info('Ministries already exist — leaving as-is.')
   }
 
   // Same reasoning as branding.colors/HomepageLayout above — only ever
@@ -186,10 +261,37 @@ async function seed() {
   if (!existingNavigation) {
     await payload.create({
       collection: 'navigation',
-      data: { tenant: tenant.id, items: [{ label: 'Home', link: '/', order: 0 }] },
+      data: {
+        tenant: tenant.id,
+        items: [
+          { label: 'Home', link: '/', order: 0 },
+          { label: 'About', link: '/about', order: 1 },
+          { label: 'Ministries', link: '/ministries', order: 2 },
+          { label: 'Contact', link: '/contact', order: 3 },
+        ],
+      },
       overrideAccess: true,
     })
     payload.logger.info('Created starter Navigation.')
+  } else if (existingNavigation.items?.length === 1) {
+    // Still just the single "Home" link from the earlier seed run, not
+    // anything an admin has customized yet (no admin login exists) — safe
+    // to fill out with the fuller starter set, same reasoning as
+    // HomepageLayout's section backfill above.
+    await payload.update({
+      collection: 'navigation',
+      id: existingNavigation.id,
+      data: {
+        items: [
+          { label: 'Home', link: '/', order: 0 },
+          { label: 'About', link: '/about', order: 1 },
+          { label: 'Ministries', link: '/ministries', order: 2 },
+          { label: 'Contact', link: '/contact', order: 3 },
+        ],
+      },
+      overrideAccess: true,
+    })
+    payload.logger.info('Expanded Navigation to 4 items.')
   }
 
   const existingFooter = (

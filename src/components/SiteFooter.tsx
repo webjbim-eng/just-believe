@@ -12,15 +12,23 @@ export async function SiteFooter({ tenantId }: { tenantId: string }) {
   const footer = docs[0]
 
   return (
-    <footer style={{ borderTop: '1px solid var(--color-border)', marginTop: '2rem' }}>
-      <div className="container" style={{ padding: '3rem 1.5rem', display: 'flex', flexWrap: 'wrap', gap: '2rem', justifyContent: 'space-between' }}>
+    <footer style={{ background: 'var(--color-primary)', color: 'rgba(255,255,255,0.85)', marginTop: '2rem' }}>
+      <div className="container" style={{ padding: '4rem 1.5rem 2rem', display: 'flex', flexWrap: 'wrap', gap: '3rem', justifyContent: 'space-between' }}>
+        <div style={{ maxWidth: '20rem' }}>
+          <p style={{ fontFamily: 'var(--font-heading), Georgia, serif', fontWeight: 700, fontSize: '1.25rem', color: '#fff', margin: '0 0 0.75rem' }}>
+            Just Believe International Missions
+          </p>
+          <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: 'var(--text-body-sm)' }}>
+            Proclaiming the Gospel, equipping believers, and serving communities around the world.
+          </p>
+        </div>
         {footer?.columns?.map((column, index) => (
           <div key={index}>
-            <p style={{ fontWeight: 600, color: 'var(--color-text)' }}>{column.title}</p>
+            <p style={{ fontWeight: 600, color: '#fff', margin: '0 0 0.75rem' }}>{column.title}</p>
             <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>
               {column.links?.map((link, linkIndex) => (
                 <li key={linkIndex} style={{ marginBottom: '0.5rem' }}>
-                  <a href={link.url} style={{ color: 'var(--color-text-muted)', textDecoration: 'none' }}>
+                  <a href={link.url} style={{ color: 'rgba(255,255,255,0.7)', textDecoration: 'none' }}>
                     {link.label}
                   </a>
                 </li>
@@ -29,17 +37,29 @@ export async function SiteFooter({ tenantId }: { tenantId: string }) {
           </div>
         ))}
         {footer?.socialLinks && footer.socialLinks.length > 0 && (
-          <div style={{ display: 'flex', gap: '1rem' }}>
-            {footer.socialLinks.map((social, index) => (
-              <a key={index} href={social.url} style={{ color: 'var(--color-text-muted)', textDecoration: 'none' }}>
-                {social.platform}
-              </a>
-            ))}
+          <div>
+            <p style={{ fontWeight: 600, color: '#fff', margin: '0 0 0.75rem' }}>Connect</p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+              {footer.socialLinks.map((social, index) => (
+                <a key={index} href={social.url} style={{ color: 'rgba(255,255,255,0.7)', textDecoration: 'none', textTransform: 'capitalize' }}>
+                  {social.platform}
+                </a>
+              ))}
+            </div>
           </div>
         )}
       </div>
       {footer?.copyrightText && (
-        <div className="container" style={{ padding: '0 1.5rem 1.5rem', color: 'var(--color-text-muted)', fontSize: 'var(--text-body-sm)' }}>
+        <div
+          className="container"
+          style={{
+            padding: '1.5rem',
+            borderTop: '1px solid rgba(255,255,255,0.15)',
+            color: 'rgba(255,255,255,0.6)',
+            fontSize: '0.875rem',
+            marginTop: '1rem',
+          }}
+        >
           {footer.copyrightText}
         </div>
       )}
