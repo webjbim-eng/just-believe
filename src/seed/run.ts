@@ -151,6 +151,26 @@ async function seed() {
       config: {
         heading: 'Our Mission',
         body: "To glorify God by making disciples of Jesus Christ, equipping believers for Kingdom service, strengthening families, developing ethical leaders, and extending Christ's compassion to communities through evangelism, discipleship, education, leadership development, and practical outreach.",
+        actions: [
+          {
+            heading: 'New Here?',
+            body: "We'd love to get to know you better. Reach out and one of our team members will connect with you.",
+            ctaLabel: 'Get In Touch',
+            ctaHref: '/contact',
+          },
+          {
+            heading: 'Stay Connected',
+            body: 'Get updates on new sermons, events, and ways to get involved with JBIM.',
+            ctaLabel: 'Subscribe',
+            ctaHref: '#newsletter',
+          },
+          {
+            heading: 'Ask a Question',
+            body: "We're here to help. If you're curious about our beliefs, leadership, or ministries, just ask.",
+            ctaLabel: 'Reach Out',
+            ctaHref: 'mailto:justbelieveinthot@gmail.com',
+          },
+        ],
       },
     },
     { blockType: 'MinistriesOverview', order: 2, visible: true, config: {} },

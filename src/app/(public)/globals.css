@@ -1,20 +1,20 @@
 /*
- * Design-token layer, v3 (2026-08-08). Colors: docs/source/JBIM WEBSITE
+ * Design-token layer, v4 (2026-08-08). Colors: docs/source/JBIM WEBSITE
  * PROJECT BRIEF.docx palette, confirmed 2026-08-06
  * (project_jbim_design_system.md) — Royal Blue / Deep Purple / Gold /
- * White, White as the literal page base (not a dark reskin — Jimmy shared
- * reachingthenationsministries.com as a *pattern* reference, not a visual
- * one to clone: rich navigation, photography woven through every section
- * rather than just the hero, sophisticated components, gold doing real
- * structural work). This version keeps the confirmed light/parchment
- * base and adopts the pattern-level techniques instead — two-tone
- * headings (.text-accent), a short gold underline under section headings
- * (.heading-underline), a dark-on-gold contrast fix for filled
- * accent buttons/badges (--color-on-accent).
+ * White. Jimmy asked for a direct structural + visual replication of
+ * reachingthenationsministries.com, explicitly authorizing recoloring to
+ * our brand palette: dark Royal-Blue-dominant page background (not their
+ * generic navy), Gold doing the same structural work theirs does
+ * (two-tone headings, underline accents, outlined secondary buttons,
+ * icon accents), White as text rather than page background. Royal Blue
+ * (#1E3A8A) is already dark/navy-adjacent, so --color-base below is a
+ * deepened step further down for the same base-vs-panel depth their site
+ * uses; --color-surface uses --color-primary itself as the panel tone.
  *
  * Visual language also draws on the earlier Refero research (Kindsight/
  * Airbnb.org/Medium editorial rhythm, Dribbble/Cushion card patterns,
- * Symbolic.ai's tactile card treatment).
+ * Symbolic.ai's tactile card treatment) layered on top.
  *
  * :root values are fallback defaults only — the real per-tenant color
  * values are injected as inline CSS custom properties on <html> by
@@ -28,14 +28,17 @@
   --color-accent: #c9a227;
   /* Dark text for anything filled with --color-accent (gold-on-white text
      reads poorly) — gold buttons/badges use this, not --color-text. */
-  --color-on-accent: #1a1a1a;
+  --color-on-accent: #0b1730;
 
-  --color-base: #ffffff;
-  /* Warm parchment, not stark gray — Kindsight/Medium's "vellum" surface */
-  --color-surface: #faf7f0;
-  --color-text: #1a1a1a;
-  --color-text-muted: #5f5f5f;
-  --color-border: #e8e2d4;
+  /* Page background: deeper than --color-primary itself, same family. */
+  --color-base: #0b1730;
+  /* Card/panel surface: --color-primary itself — reads as a lighter step
+     up from the page background, same relationship RTNM's cards have to
+     their page canvas. */
+  --color-surface: #1e3a8a;
+  --color-text: #ffffff;
+  --color-text-muted: #b7c2dd;
+  --color-border: rgba(201, 162, 39, 0.3);
 
   --text-body-sm: 1rem;
   --text-body: 1.125rem;
@@ -98,7 +101,7 @@ p {
 }
 
 a {
-  color: var(--color-primary);
+  color: var(--color-accent);
 }
 
 .container {
@@ -204,7 +207,7 @@ a {
 }
 
 .card {
-  background: var(--color-base);
+  background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-card);
   box-shadow: var(--shadow-card);

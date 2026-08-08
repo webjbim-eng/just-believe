@@ -34,7 +34,7 @@ export function NewsletterSignup({ config }: { config: NewsletterSignupConfig })
   }
 
   return (
-    <section className="section section--surface">
+    <section id="newsletter" className="section section--surface">
       <div className="container" style={{ textAlign: 'center', maxWidth: '32rem', margin: '0 auto' }}>
         <h2>{config.heading || 'Stay Connected'}</h2>
         {config.subheading && <p>{config.subheading}</p>}

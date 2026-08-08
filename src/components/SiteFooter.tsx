@@ -1,5 +1,6 @@
 import { getPayload } from 'payload'
 import config from '@payload-config'
+import { SocialIcon } from './SocialIcon'
 
 export async function SiteFooter({ tenantId }: { tenantId: string }) {
   const payload = await getPayload({ config })
@@ -38,11 +39,16 @@ export async function SiteFooter({ tenantId }: { tenantId: string }) {
         ))}
         {footer?.socialLinks && footer.socialLinks.length > 0 && (
           <div>
-            <p style={{ fontWeight: 600, color: '#fff', margin: '0 0 0.75rem' }}>Connect</p>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+            <p style={{ fontWeight: 600, color: '#fff', margin: '0 0 0.75rem' }}>Follow Us</p>
+            <div style={{ display: 'flex', gap: '0.75rem' }}>
               {footer.socialLinks.map((social, index) => (
-                <a key={index} href={social.url} style={{ color: 'rgba(255,255,255,0.7)', textDecoration: 'none', textTransform: 'capitalize' }}>
-                  {social.platform}
+                <a
+                  key={index}
+                  href={social.url}
+                  aria-label={social.platform}
+                  style={{ textDecoration: 'none' }}
+                >
+                  <SocialIcon platform={social.platform} />
                 </a>
               ))}
             </div>

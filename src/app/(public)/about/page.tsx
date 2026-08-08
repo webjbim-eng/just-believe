@@ -1,5 +1,7 @@
 import type { Metadata } from 'next'
 import { renderHeadingWithAccent } from '../../../lib/renderHeadingWithAccent'
+import { Accordion } from '../../../components/Accordion'
+import { ministryDefinitions } from '../../../seed/ministries'
 
 export const metadata: Metadata = {
   title: 'About — Just Believe International Missions',
@@ -55,6 +57,20 @@ export default function AboutPage() {
               </p>
             </div>
           </div>
+        </div>
+      </section>
+
+      <section className="section section--surface">
+        <div className="container container--narrow">
+          <h2 style={{ textAlign: 'center' }}>
+            What <span className="text-accent">We Do</span>
+          </h2>
+          <hr className="heading-underline heading-underline--center" />
+          <p style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
+            Lasting change begins with transformed hearts — through evangelism, discipleship, leadership development,
+            prayer, and compassionate outreach.
+          </p>
+          <Accordion items={ministryDefinitions.map((ministry) => ({ title: ministry.name, body: ministry.description }))} />
         </div>
       </section>
 
