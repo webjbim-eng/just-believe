@@ -1,20 +1,25 @@
 /*
- * Design-token layer, v4 (2026-08-08). Colors: docs/source/JBIM WEBSITE
- * PROJECT BRIEF.docx palette, confirmed 2026-08-06
- * (project_jbim_design_system.md) — Royal Blue / Deep Purple / Gold /
- * White. Jimmy asked for a direct structural + visual replication of
- * reachingthenationsministries.com, explicitly authorizing recoloring to
- * our brand palette: dark Royal-Blue-dominant page background (not their
- * generic navy), Gold doing the same structural work theirs does
- * (two-tone headings, underline accents, outlined secondary buttons,
- * icon accents), White as text rather than page background. Royal Blue
- * (#1E3A8A) is already dark/navy-adjacent, so --color-base below is a
- * deepened step further down for the same base-vs-panel depth their site
- * uses; --color-surface uses --color-primary itself as the panel tone.
+ * Design-token layer, v6 (2026-08-10). Colors: docs/source/JBIM WEBSITE
+ * PROJECT BRIEF.docx palette — Royal Blue / Deep Purple / Gold / White.
  *
- * Visual language also draws on the earlier Refero research (Kindsight/
- * Airbnb.org/Medium editorial rhythm, Dribbble/Cushion card patterns,
- * Symbolic.ai's tactile card treatment) layered on top.
+ * v6 is a full structural + visual replication of a "Chapel"-style church
+ * template Jimmy provided (warm cream page canvas, dark maroon accent
+ * panels, elegant italic serif display type, floral flourish motifs),
+ * explicitly authorized to recolor to our brand palette rather than
+ * theirs. This REVERSES v4/v5's dark-Royal-Blue-dominant page background:
+ * the page canvas is now light (White is one of the four confirmed brand
+ * colors — docs/source brief: "Holiness"), and Royal Blue/Deep Purple do
+ * the reference's dark-maroon-panel job instead (.section--primary/
+ * --secondary already existed for this and needed no structural change,
+ * only the token flip below). Gold remains the sole accent — still "an
+ * accent of significance, not a dominant decorative color."
+ *
+ * Every existing dark-panel component (PartnershipInvitation, Prayer,
+ * About's "Our Approach", SiteNavigation, SiteFooter) already sets its own
+ * white text explicitly via inline styles rather than relying on the
+ * global h1-h6 default, which is what makes this flip safe — body text
+ * outside those panels now correctly follows --color-text (dark-on-cream)
+ * while the explicit overrides keep dark panels white-on-blue/purple.
  *
  * :root values are fallback defaults only — the real per-tenant color
  * values are injected as inline CSS custom properties on <html> by
@@ -30,15 +35,23 @@
      reads poorly) — gold buttons/badges use this, not --color-text. */
   --color-on-accent: #0b1730;
 
-  /* Page background: deeper than --color-primary itself, same family. */
-  --color-base: #0b1730;
-  /* Card/panel surface: --color-primary itself — reads as a lighter step
-     up from the page background, same relationship RTNM's cards have to
-     their page canvas. */
-  --color-surface: #1e3a8a;
-  --color-text: #ffffff;
-  --color-text-muted: #b7c2dd;
-  --color-border: rgba(201, 162, 39, 0.3);
+  /* Page background: warm cream/ivory, not literal white — same "paper"
+     feel the reference's canvas has. */
+  --color-base: #f8f4ec;
+  /* Card/panel surface: crisp white, one step lighter than --color-base,
+     so .section--surface and .card read as a distinct plane against the
+     cream page. */
+  --color-surface: #ffffff;
+  --color-text: #1a2138;
+  --color-text-muted: #6b6a63;
+  --color-border: rgba(30, 58, 138, 0.12);
+
+  /* Dark-panel-only counterparts — used by components that render on
+     --color-primary/--color-secondary and need to know they're on a dark
+     fill without hardcoding raw white/rgba values everywhere. */
+  --color-text-on-dark: #ffffff;
+  --color-text-muted-on-dark: rgba(255, 255, 255, 0.78);
+  --color-border-on-dark: rgba(255, 255, 255, 0.18);
 
   --text-body-sm: 1rem;
   --text-body: 1.125rem;
@@ -50,14 +63,17 @@
 
   --radius-button: 999px;
   --radius-card: 16px;
-  --shadow-card: 0 10px 15px -3px rgb(0 0 0 / 0.25), 0 4px 6px -4px rgb(0 0 0 / 0.25);
-  --shadow-card-lg: 0 20px 40px -12px rgb(0 0 0 / 0.4);
+  --shadow-card: 0 10px 15px -3px rgb(26 33 56 / 0.08), 0 4px 6px -4px rgb(26 33 56 / 0.08);
+  --shadow-card-lg: 0 20px 40px -12px rgb(26 33 56 / 0.18);
 
   --container-max-width: 1200px;
   --container-narrow: 720px;
   --section-gap: 6rem;
   --section-gap-sm: 3.5rem;
   --card-padding: 2.25rem;
+
+  --motion-reveal-duration: 0.7s;
+  --motion-reveal-distance: 28px;
 }
 
 * {
@@ -196,6 +212,33 @@ a {
 .btn-accent:hover {
   transform: translateY(-1px);
   box-shadow: var(--shadow-card);
+}
+
+/*
+ * Solid Royal Blue pill — the reference's dark "View All" button role on
+ * light/cream sections. Distinct from .btn-accent (gold): gold stays
+ * reserved for the one or two moments that deserve it (2026-08-08
+ * directive), everyday "View All"/"See More" actions use brand-primary
+ * instead of spending the accent color everywhere.
+ */
+.btn-primary-pill {
+  display: inline-block;
+  background: var(--color-primary);
+  color: #fff;
+  border: none;
+  padding: 1rem 2.25rem;
+  border-radius: var(--radius-button);
+  font-family: var(--font-body), system-ui, sans-serif;
+  font-weight: 600;
+  font-size: var(--text-body-sm);
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.btn-primary-pill:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-card-lg);
 }
 
 .btn-outline {
@@ -407,16 +450,308 @@ a {
   }
 }
 
-/* Footer's fixed 4-column grid (logo + Explore + Connect + Stay Connected,
-   plus any admin-added columns) needs a real collapse too. */
+/* Footer's fixed 5-column grid (logo + Explore + Connect + Stay Connected
+   + Gallery, plus any admin-added columns) needs a real collapse too. */
 @media (max-width: 860px) {
   .footer-grid {
     grid-template-columns: 1fr 1fr !important;
   }
 }
 
+.footer-gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+}
+
 @media (max-width: 540px) {
   .footer-grid {
     grid-template-columns: 1fr !important;
+  }
+}
+
+/*
+ * ===== v6 "Chapel" replication additions (2026-08-10) =====
+ */
+
+/* ---- Motion: scroll-reveal (see src/components/ScrollReveal.tsx) ----
+   Server Components render the section markup normally; ScrollReveal is a
+   thin client wrapper that just toggles this class via
+   IntersectionObserver — no layout shift, no dependency on JS for content
+   to exist (progressive enhancement: unrevealed state is still readable,
+   just static, if JS fails). */
+.reveal {
+  opacity: 0;
+  transform: translateY(var(--motion-reveal-distance));
+  transition: opacity var(--motion-reveal-duration) cubic-bezier(0.16, 1, 0.3, 1),
+    transform var(--motion-reveal-duration) cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* Hero background Ken Burns drift — slow, subtle, never distracting. */
+@keyframes ken-burns {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.08);
+  }
+}
+
+.ken-burns {
+  animation: ken-burns 24s ease-in-out infinite alternate;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ken-burns {
+    animation: none;
+  }
+}
+
+/* Photo-grid hover zoom (PhotoCaptionGrid, ministry grids). */
+.hover-zoom {
+  overflow: hidden;
+}
+
+.hover-zoom img,
+.hover-zoom .hover-zoom-bg {
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.hover-zoom:hover img,
+.hover-zoom:hover .hover-zoom-bg {
+  transform: scale(1.07);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hover-zoom img,
+  .hover-zoom .hover-zoom-bg {
+    transition: none;
+  }
+  .hover-zoom:hover img,
+  .hover-zoom:hover .hover-zoom-bg {
+    transform: none;
+  }
+}
+
+/* ---- Decorative flourish (reference's floral line-art corner motif) ----
+   A single reusable inline-SVG background, Gold at low opacity — applied
+   as an absolutely-positioned pseudo-element via a wrapping element with
+   position:relative, not a real DOM image (purely decorative, no content,
+   so aria-hidden semantics come for free by not being in the a11y tree). */
+.decorative-flourish {
+  position: relative;
+}
+
+.decorative-flourish::before {
+  content: '';
+  position: absolute;
+  top: -2rem;
+  right: -2rem;
+  width: 14rem;
+  height: 14rem;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200' fill='none' stroke='%23C9A227' stroke-width='1.25'%3E%3Cpath d='M100 190C100 190 40 160 40 100C40 55 70 20 100 10'/%3E%3Cpath d='M60 150C60 150 30 120 45 80'/%3E%3Cpath d='M80 170C80 170 55 145 65 110'/%3E%3Cpath d='M110 40C110 40 140 55 135 85'/%3E%3Cpath d='M95 15C95 15 120 25 118 50'/%3E%3Ccircle cx='100' cy='10' r='4'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-size: contain;
+  opacity: 0.35;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.decorative-flourish--left::before {
+  right: auto;
+  left: -2rem;
+  transform: scaleX(-1);
+}
+
+.decorative-flourish > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* ---- Elegant italic display type (hero heading) ---- */
+.text-display-italic {
+  font-family: var(--font-heading), Georgia, serif;
+  font-style: italic;
+  font-weight: 600;
+  font-size: var(--text-display);
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+}
+
+/* ---- Pill buttons on photography (hero "Know All"-style CTA) ---- */
+.btn-pill-light {
+  display: inline-block;
+  background: var(--color-surface);
+  color: var(--color-text);
+  border: none;
+  padding: 1rem 2.25rem;
+  border-radius: var(--radius-button);
+  font-family: var(--font-body), system-ui, sans-serif;
+  font-weight: 600;
+  font-size: var(--text-body-sm);
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.btn-pill-light:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-card-lg);
+}
+
+/* ---- Photo caption overlay (PhotoCaptionGrid + media-strip tiles) ---- */
+.photo-caption {
+  position: relative;
+  border-radius: var(--radius-card);
+  overflow: hidden;
+  aspect-ratio: 4 / 5;
+}
+
+.photo-caption img,
+.photo-caption .hover-zoom-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.photo-caption::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(26, 33, 56, 0) 40%, rgba(11, 23, 48, 0.85) 100%);
+  z-index: 1;
+}
+
+.photo-caption-label {
+  position: absolute;
+  left: 1.25rem;
+  right: 1.25rem;
+  bottom: 1.1rem;
+  z-index: 2;
+  color: #fff;
+}
+
+.photo-caption-label .card-eyebrow {
+  color: var(--color-accent);
+}
+
+.photo-caption-label p:last-child {
+  margin: 0;
+  font-weight: 600;
+  font-family: var(--font-heading), Georgia, serif;
+  font-size: var(--text-heading-sm);
+}
+
+/* ---- Play button (video-style hero media tile) ---- */
+.play-button {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 4rem;
+  height: 4rem;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.92);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  box-shadow: var(--shadow-card-lg);
+}
+
+/* ---- Month-badge event list (Pilgrimage-of-Faith-style panel) ---- */
+.event-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding: 1.25rem 0;
+  border-bottom: 1px solid var(--color-border-on-dark);
+}
+
+.event-row:last-of-type {
+  border-bottom: none;
+}
+
+.event-row-month {
+  font-family: var(--font-heading), Georgia, serif;
+  font-size: 0.875rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+  flex-shrink: 0;
+}
+
+/* ---- Hero media strip's badge/video split ratio (overrides
+   .split-layout's default 1fr/1fr, still collapses at the same 860px
+   breakpoint since .split-layout's own media query still applies). ---- */
+.media-badge-split {
+  grid-template-columns: 0.85fr 1.15fr;
+}
+
+@media (max-width: 860px) {
+  .media-badge-split {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---- Hero media strip's 4-photo texture row ---- */
+.media-strip-grid {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+@media (max-width: 640px) {
+  .media-strip-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ---- MinistryPathways' icon-feature row (2-4 items) ---- */
+.icon-feature-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 2rem;
+}
+
+/* ---- PhotoCaptionGrid variants ---- */
+.photo-caption-grid-2,
+.photo-caption-grid-4 {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.photo-caption-grid-2 {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.photo-caption-grid-4 {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+@media (max-width: 860px) {
+  .photo-caption-grid-4 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 540px) {
+  .photo-caption-grid-2,
+  .photo-caption-grid-4 {
+    grid-template-columns: 1fr;
   }
 }

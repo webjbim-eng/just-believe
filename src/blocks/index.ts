@@ -1,11 +1,16 @@
 import type { ComponentType } from 'react'
 import { Hero } from './Hero'
+import { HeroMediaStrip } from './HeroMediaStrip'
 import { WelcomeMessage } from './WelcomeMessage'
+import { MinistryPathways } from './MinistryPathways'
+import { PhotoCaptionGrid } from './PhotoCaptionGrid'
+import { MinistryFeatureGrid } from './MinistryFeatureGrid'
 import { CTA } from './CTA'
 import { PartnershipInvitation } from './PartnershipInvitation'
 import { RichText } from './RichText'
 import { NewsletterSignup } from './NewsletterSignup'
 import { MinistriesOverview } from './MinistriesOverview'
+import { BlogSpotlight } from './BlogSpotlight'
 import { Prayer } from './Prayer'
 import { FeaturedSermons } from './FeaturedSermons'
 import { FeaturedEvents } from './FeaturedEvents'
@@ -22,11 +27,16 @@ import { Testimonials } from './Testimonials'
  */
 export const blockRegistry: Record<string, ComponentType<{ config: any; tenantId: string }>> = {
   Hero,
+  HeroMediaStrip,
   WelcomeMessage,
+  MinistryPathways,
+  PhotoCaptionGrid,
+  MinistryFeatureGrid,
   FeaturedSermons,
   FeaturedEvents,
   FeaturedBooks,
   MinistriesOverview,
+  BlogSpotlight,
   Prayer,
   Testimonials,
   PartnershipInvitation,

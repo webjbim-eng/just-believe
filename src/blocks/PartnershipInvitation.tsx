@@ -1,3 +1,5 @@
+import { ScrollReveal } from '../components/ScrollReveal'
+
 export type PartnershipInvitationWay = {
   label: string
   description: string
@@ -70,35 +72,37 @@ export function PartnershipInvitation({ config }: { config: PartnershipInvitatio
           />
         </>
       )}
-      <div className="container container--narrow" style={{ textAlign: 'center', position: 'relative', zIndex: 2 }}>
-        <p className="section-eyebrow">Giving</p>
-        <h2 style={{ color: '#fff' }}>{config.heading}</h2>
-        {config.body && (
-          <p style={{ maxWidth: '36rem', margin: '0 auto 2rem', color: 'rgba(255,255,255,0.85)' }}>{config.body}</p>
-        )}
+      <ScrollReveal>
+        <div className="container container--narrow" style={{ textAlign: 'center', position: 'relative', zIndex: 2 }}>
+          <p className="section-eyebrow">Giving</p>
+          <h2 style={{ color: '#fff' }}>{config.heading}</h2>
+          {config.body && (
+            <p style={{ maxWidth: '36rem', margin: '0 auto 2rem', color: 'rgba(255,255,255,0.85)' }}>{config.body}</p>
+          )}
 
-        {config.ways && config.ways.length > 0 && (
-          <div className="grid" style={{ textAlign: 'left', marginBottom: '2.5rem' }}>
-            {config.ways.map((way) => (
-              <div
-                key={way.label}
-                style={{
-                  padding: '1.5rem',
-                  border: '1px solid rgba(255,255,255,0.18)',
-                  borderRadius: 'var(--radius-card)',
-                }}
-              >
-                <p className="card-eyebrow">{way.label}</p>
-                <p style={{ color: 'rgba(255,255,255,0.8)', margin: 0, fontSize: 'var(--text-body-sm)' }}>{way.description}</p>
-              </div>
-            ))}
-          </div>
-        )}
+          {config.ways && config.ways.length > 0 && (
+            <div className="grid" style={{ textAlign: 'left', marginBottom: '2.5rem' }}>
+              {config.ways.map((way) => (
+                <div
+                  key={way.label}
+                  style={{
+                    padding: '1.5rem',
+                    border: '1px solid rgba(255,255,255,0.18)',
+                    borderRadius: 'var(--radius-card)',
+                  }}
+                >
+                  <p className="card-eyebrow">{way.label}</p>
+                  <p style={{ color: 'rgba(255,255,255,0.8)', margin: 0, fontSize: 'var(--text-body-sm)' }}>{way.description}</p>
+                </div>
+              ))}
+            </div>
+          )}
 
-        <a className="btn-accent" href={config.ctaHref}>
-          {config.ctaLabel}
-        </a>
-      </div>
+          <a className="btn-accent" href={config.ctaHref}>
+            {config.ctaLabel}
+          </a>
+        </div>
+      </ScrollReveal>
     </section>
   )
 }

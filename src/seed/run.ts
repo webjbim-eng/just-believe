@@ -116,104 +116,155 @@ async function seed() {
     }
   }
 
-  // Minimal real starter content so the homepage isn't empty — copy drawn
-  // from docs/source/About us - JustBelieveInt.docx, the logo's "Hub of
-  // Transformation" tagline, and the real YouTube channel/email from the
-  // client intake questionnaire (no lorem ipsum). The data-driven blocks
-  // (MinistriesOverview, FeaturedSermons, FeaturedEvents, Testimonials)
-  // are included even though nothing exists in those collections yet —
-  // their empty states are honest, working UI, not something to hide
-  // until content shows up.
+  // v2 (2026-08-10): full structural replication of a "Chapel"-style
+  // church template Jimmy provided, recolored to our brand — see
+  // globals.css's v6 token-layer comment for the color-system side of
+  // this. Section order/composition now follows that reference exactly:
+  // Hero -> media strip -> ministry pathways (+ icon row) -> photo grid ->
+  // ministry feature cards -> events (dark panel) -> testimonial spotlight
+  // -> photo grid -> blog spotlight -> closing CTA. WelcomeMessage,
+  // PartnershipInvitation, and NewsletterSignup aren't part of this
+  // reference's section list, so they're left out of the default homepage
+  // — still fully built and registered in src/blocks/index.ts, just not
+  // seeded here. Giving/newsletter capture still work via the header
+  // "Partner With Us" CTA, footer "Give" link, and footer's newsletter
+  // mini-form. Copy is JBIM's own throughout — the reference's liturgical
+  // wording (e.g. "Diverse Paths of Worship") only supplied the structural
+  // pattern, not the words.
   const homepageSections: NonNullable<HomepageLayout['sections']> = [
     {
       blockType: 'Hero',
       order: 0,
       visible: true,
       config: {
-        eyebrow: 'Hub of Transformation',
-        heading: 'Just Believe International Missions',
-        accentWord: 'International Missions',
-        subheading:
-          "A Christ-centered, faith-based nonprofit committed to advancing God's Kingdom by transforming lives, strengthening families, developing leaders, and serving communities around the world.",
+        heading: 'For the Nations',
+        accentWord: 'Nations',
+        subheading: 'A Hub of Transformation, proclaiming the Gospel and equipping believers around the world.',
         ctaLabel: 'Learn More',
         ctaHref: '/about',
-        secondaryCtaLabel: 'Watch Our Story',
-        secondaryCtaHref: 'https://youtube.com/@jbiminc?si=Q26o6jq34zseGPaF',
-        // Real Unsplash photo (free/commercial license), downloaded to
-        // public/images/ — see git log for the source URL/photographer.
-        backgroundImage: '/images/hero-worship-sunset.jpg',
+        backgroundImage: '/images/prayer-sanctuary.jpg',
       },
     },
     {
-      blockType: 'WelcomeMessage',
+      blockType: 'HeroMediaStrip',
       order: 1,
       visible: true,
       config: {
-        eyebrow: 'Who We Are',
-        heading: 'Our Mission',
-        body: "To glorify God by making disciples of Jesus Christ, equipping believers for Kingdom service, strengthening families, developing ethical leaders, and extending Christ's compassion to communities through evangelism, discipleship, education, leadership development, and practical outreach.",
-        image: '/images/open-bible.jpg',
-        actions: [
-          {
-            heading: 'New Here?',
-            body: "We'd love to get to know you better. Reach out and one of our team members will connect with you.",
-            ctaLabel: 'Get In Touch',
-            ctaHref: '/contact',
-          },
-          {
-            heading: 'Stay Connected',
-            body: 'Get updates on new sermons, events, and ways to get involved with JBIM.',
-            ctaLabel: 'Subscribe',
-            ctaHref: '#newsletter',
-          },
-          {
-            heading: 'Ask a Question',
-            body: "We're here to help. If you're curious about our beliefs, leadership, or ministries, just ask.",
-            ctaLabel: 'Reach Out',
-            ctaHref: 'mailto:justbelieveinthot@gmail.com',
-          },
+        badgeImage: '/images/hands-on-bible.jpg',
+        badgeHeading: "Faith: The Soul's Heartbeat",
+        badgeSubheading: "God's Word, daily",
+        videoImage: '/images/hero-worship-sunset.jpg',
+        videoHref: 'https://youtube.com/@jbiminc?si=Q26o6jq34zseGPaF',
+        stripImages: ['/images/worship-service.jpg', '/images/candlelight.jpg', '/images/community-hands.jpg', '/images/congregation-seated.jpg'],
+      },
+    },
+    {
+      blockType: 'MinistryPathways',
+      order: 2,
+      visible: true,
+      config: {
+        eyebrow: 'A Ministry for Every Season',
+        heading: 'Pathways to Purpose',
+        accentWord: 'Purpose',
+        body: "Lasting change begins with transformed hearts. Through evangelism, discipleship, and prayer, we walk with people at every stage of their journey with Christ.",
+        image: '/images/worship-service.jpg',
+        imageCaptionEyebrow: 'Featured',
+        imageCaptionTitle: 'Prayer & Intercession',
+        listItems: [
+          { title: ministryDefinitions[0].name, body: ministryDefinitions[0].description },
+          { title: ministryDefinitions[1].name, body: ministryDefinitions[1].description },
+        ],
+        ctaLabel: 'Contact Us',
+        ctaHref: '/contact',
+        iconFeatures: [ministryDefinitions[0].name, ministryDefinitions[1].name, ministryDefinitions[2].name, ministryDefinitions[7].name],
+      },
+    },
+    {
+      blockType: 'PhotoCaptionGrid',
+      order: 3,
+      visible: true,
+      config: {
+        columns: 2,
+        items: [
+          { image: '/images/congregation-seated.jpg', eyebrow: 'Gather', title: 'Sunday Worship' },
+          { image: '/images/hands-on-bible.jpg', eyebrow: 'Reflect', title: 'Scripture & Study' },
+          { image: '/images/worship-hands-raised.jpg', eyebrow: 'Praise', title: 'Times of Worship' },
+          { image: '/images/community-hands.jpg', eyebrow: 'Belong', title: 'Community Life' },
         ],
       },
     },
-    { blockType: 'MinistriesOverview', order: 2, visible: true, config: {} },
-    { blockType: 'FeaturedSermons', order: 3, visible: true, config: {} },
-    { blockType: 'FeaturedEvents', order: 4, visible: true, config: {} },
     {
-      blockType: 'Prayer',
+      blockType: 'MinistryFeatureGrid',
+      order: 4,
+      visible: true,
+      config: {
+        eyebrow: 'Connecting in Spirit',
+        heading: 'Our Ministries',
+        ctaLabel: 'View All',
+        ctaHref: '/ministries',
+        items: [
+          { image: '/images/worship-service.jpg', title: ministryDefinitions[0].name, subtitle: 'Outreach & discipleship' },
+          { image: '/images/prayer-silhouette.jpg', title: ministryDefinitions[1].name, subtitle: 'Intercession & fasting' },
+          { image: '/images/pastoral-moment.jpg', title: ministryDefinitions[2].name, subtitle: 'Servant leadership' },
+          { image: '/images/community-hands.jpg', title: ministryDefinitions[7].name, subtitle: 'Compassion in action' },
+        ],
+      },
+    },
+    {
+      blockType: 'FeaturedEvents',
       order: 5,
       visible: true,
       config: {
-        eyebrow: 'Prayer',
-        heading: 'Prayer is central to everything we do.',
-        body: 'Before any ministry, any outreach, any decision — we pray. Join us in bringing your requests before God, or partner with us in praying for the nations.',
-        ctaLabel: 'Share a Prayer Request',
-        ctaHref: '/contact',
-        backgroundImage: '/images/prayer-silhouette.jpg',
+        eyebrow: 'Seeking the Divine Connection',
+        heading: 'Upcoming Events',
+        body: 'Join us as we gather to worship, learn, and grow together.',
+        image: '/images/congregation-seated.jpg',
       },
     },
-    { blockType: 'Testimonials', order: 6, visible: true, config: {} },
     {
-      blockType: 'PartnershipInvitation',
+      blockType: 'Testimonials',
+      order: 6,
+      visible: true,
+      config: {
+        eyebrow: 'Changed Lives',
+        heading: 'What People Are Saying',
+        image: '/images/hands-on-bible.jpg',
+      },
+    },
+    {
+      blockType: 'PhotoCaptionGrid',
       order: 7,
       visible: true,
       config: {
-        heading: 'Partner With Us',
-        body: 'Every gift is stewarded with integrity and used to advance real ministry — transforming lives, strengthening families, and serving communities around the world.',
-        ctaLabel: 'Contact Us',
-        ctaHref: 'mailto:justbelieveinthot@gmail.com',
-        backgroundImage: '/images/worship-service.jpg',
-        ways: [
-          { label: 'General Fund', description: 'Support the ongoing work of JBIM across every ministry area.' },
-          { label: 'Mission Projects', description: 'Fund a specific outreach or mission initiative in the field.' },
-          { label: 'Child Sponsorship', description: "Invest directly in a child's education, care, and future." },
+        columns: 4,
+        items: [
+          { image: '/images/prayer-sanctuary.jpg', eyebrow: 'Prayer', title: 'Prayer Gatherings' },
+          { image: '/images/pastoral-moment.jpg', eyebrow: 'Care', title: 'Comfort & Support' },
+          { image: '/images/community-hands.jpg', eyebrow: 'Youth', title: 'Youth Empowerment' },
+          { image: '/images/candlelight.jpg', eyebrow: 'Reflect', title: 'Sacred Moments' },
         ],
       },
     },
     {
-      blockType: 'NewsletterSignup',
+      blockType: 'BlogSpotlight',
       order: 8,
       visible: true,
-      config: { heading: 'Stay Connected', subheading: 'Get updates on new sermons, events, and ways to get involved.' },
+      config: {
+        eyebrow: 'Reflections',
+        heading: 'Soulful Reflections',
+      },
+    },
+    {
+      blockType: 'CTA',
+      order: 9,
+      visible: true,
+      config: {
+        heading: 'Discover the Power of Faith & Spiritual Growth',
+        body: 'Whether through prayer, worship, or service — there is a place for you here.',
+        ctaLabel: 'Get In Touch',
+        ctaHref: '/contact',
+        backgroundImage: '/images/worship-hands-raised.jpg',
+      },
     },
   ]
 
@@ -226,6 +277,12 @@ async function seed() {
     })
   ).docs[0]
 
+  // Full overwrite, not an additive field/section sync — this seed run is
+  // a structural redesign (new section list/order, not just new fields on
+  // existing sections), and no admin has ever logged in to hand-customize
+  // this content yet (no SEED_ADMIN_* has been used, no /admin user
+  // exists). Revisit this once a real client/admin starts editing the
+  // homepage — at that point this needs to stop clobbering their changes.
   if (!existingLayout) {
     await payload.create({
       collection: 'homepage-layout',
@@ -233,57 +290,14 @@ async function seed() {
       overrideAccess: true,
     })
     payload.logger.info(`Created starter HomepageLayout (${homepageSections.length} sections).`)
-  } else if ((existingLayout.sections?.length ?? 0) < 2) {
-    // Still just the single Hero section from an earlier seed run, not
-    // anything an admin has customized yet (no admin login exists) — safe
-    // to fill out with the fuller starter set.
+  } else {
     await payload.update({
       collection: 'homepage-layout',
       id: existingLayout.id,
       data: { sections: homepageSections },
       overrideAccess: true,
     })
-    payload.logger.info(`Expanded HomepageLayout to ${homepageSections.length} sections.`)
-  } else {
-    // Same "still just my own seed output, not an admin edit" reasoning —
-    // sync any section still missing fields this seed script has since
-    // added (secondaryCtaLabel, backgroundImage, ...) against the latest
-    // starter config for that blockType, without touching sections an
-    // admin may have reordered/customized differently.
-    const sections = [...(existingLayout.sections ?? [])]
-    let changed = false
-    for (let i = 0; i < sections.length; i++) {
-      const latest = homepageSections.find((s) => s.blockType === sections[i].blockType)
-      if (!latest) continue
-      const currentConfig = (sections[i].config ?? {}) as Record<string, unknown>
-      const latestConfig = (latest.config ?? {}) as Record<string, unknown>
-      const missingKeys = Object.keys(latestConfig).filter((key) => !(key in currentConfig))
-      if (missingKeys.length > 0) {
-        sections[i] = { ...sections[i], config: { ...currentConfig, ...Object.fromEntries(missingKeys.map((k) => [k, latestConfig[k]])) } }
-        changed = true
-      }
-    }
-    // Whole new blockTypes added to homepageSections since this tenant was
-    // first seeded (e.g. Prayer) are missing entirely, not just missing
-    // config keys — append those too, same "own seed output" reasoning.
-    const existingTypes = new Set(sections.map((s) => s.blockType))
-    for (const latest of homepageSections) {
-      if (!existingTypes.has(latest.blockType)) {
-        sections.push(latest)
-        changed = true
-      }
-    }
-    if (changed) {
-      await payload.update({
-        collection: 'homepage-layout',
-        id: existingLayout.id,
-        data: { sections },
-        overrideAccess: true,
-      })
-      payload.logger.info('Synced HomepageLayout sections with newer starter fields.')
-    } else {
-      payload.logger.info('HomepageLayout already exists — leaving as-is.')
-    }
+    payload.logger.info(`Replaced HomepageLayout with ${homepageSections.length} v2 sections.`)
   }
 
   // Real ministry copy (src/seed/ministries.ts), not placeholder content —

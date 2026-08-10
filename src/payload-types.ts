@@ -825,11 +825,16 @@ export interface HomepageLayout {
     | {
         blockType:
           | 'Hero'
+          | 'HeroMediaStrip'
           | 'WelcomeMessage'
+          | 'MinistryPathways'
+          | 'PhotoCaptionGrid'
+          | 'MinistryFeatureGrid'
           | 'FeaturedSermons'
           | 'FeaturedEvents'
           | 'FeaturedBooks'
           | 'MinistriesOverview'
+          | 'BlogSpotlight'
           | 'Prayer'
           | 'Testimonials'
           | 'PartnershipInvitation'

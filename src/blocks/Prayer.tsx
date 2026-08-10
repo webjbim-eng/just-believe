@@ -1,3 +1,5 @@
+import { ScrollReveal } from '../components/ScrollReveal'
+
 export type PrayerConfig = {
   eyebrow?: string
   heading: string
@@ -23,6 +25,7 @@ export function Prayer({ config }: { config: PrayerConfig }) {
         <>
           <div
             aria-hidden="true"
+            className="ken-burns"
             style={{
               position: 'absolute',
               inset: 0,
@@ -43,21 +46,23 @@ export function Prayer({ config }: { config: PrayerConfig }) {
           />
         </>
       )}
-      <div className="container container--narrow" style={{ textAlign: 'center', position: 'relative', zIndex: 2 }}>
-        {config.eyebrow && <p className="section-eyebrow">{config.eyebrow}</p>}
-        <h2 style={{ fontSize: 'var(--text-heading-lg)', color: '#fff' }}>{config.heading}</h2>
-        <hr className="heading-underline heading-underline--center" />
-        {config.body && (
-          <p style={{ fontSize: 'var(--text-subheading)', color: 'rgba(255,255,255,0.82)', maxWidth: '38rem', margin: '0 auto 2rem' }}>
-            {config.body}
-          </p>
-        )}
-        {config.ctaLabel && config.ctaHref && (
-          <a className="btn-outline" href={config.ctaHref}>
-            {config.ctaLabel}
-          </a>
-        )}
-      </div>
+      <ScrollReveal>
+        <div className="container container--narrow" style={{ textAlign: 'center', position: 'relative', zIndex: 2 }}>
+          {config.eyebrow && <p className="section-eyebrow">{config.eyebrow}</p>}
+          <h2 style={{ fontSize: 'var(--text-heading-lg)', color: '#fff' }}>{config.heading}</h2>
+          <hr className="heading-underline heading-underline--center" />
+          {config.body && (
+            <p style={{ fontSize: 'var(--text-subheading)', color: 'rgba(255,255,255,0.82)', maxWidth: '38rem', margin: '0 auto 2rem' }}>
+              {config.body}
+            </p>
+          )}
+          {config.ctaLabel && config.ctaHref && (
+            <a className="btn-outline" href={config.ctaHref}>
+              {config.ctaLabel}
+            </a>
+          )}
+        </div>
+      </ScrollReveal>
     </section>
   )
 }

@@ -10,6 +10,19 @@ const contactLinks = [
   { label: 'Facebook', value: 'Just Believe International Missions', href: 'https://www.facebook.com/profile.php?id=61570983282514' },
 ]
 
+/* Same real, licensed photography already used across the site (Hero,
+   Prayer, MinistryPathways, ...) — reused here purely as texture, same as
+   every other decorative use of these photos, not claimed to depict a
+   specific real JBIM event. */
+const galleryThumbnails = [
+  '/images/worship-service.jpg',
+  '/images/open-bible.jpg',
+  '/images/prayer-silhouette.jpg',
+  '/images/congregation-seated.jpg',
+  '/images/community-hands.jpg',
+  '/images/candlelight.jpg',
+]
+
 /**
  * A proper conclusion, not a link dump (2026-08-10 directive). Explore
  * queries the live `navigation` collection directly rather than a
@@ -32,7 +45,7 @@ export async function SiteFooter({ tenantId }: { tenantId: string }) {
 
   return (
     <footer style={{ background: 'var(--color-base)', color: 'rgba(255,255,255,0.85)', marginTop: '2rem', borderTop: '1px solid var(--color-border)' }}>
-      <div className="container footer-grid" style={{ padding: '4.5rem 1.5rem 3rem', display: 'grid', gridTemplateColumns: '1.4fr repeat(3, 1fr)', gap: '3rem' }}>
+      <div className="container footer-grid" style={{ padding: '4.5rem 1.5rem 3rem', display: 'grid', gridTemplateColumns: '1.4fr repeat(4, 1fr)', gap: '3rem' }}>
         <div style={{ maxWidth: '22rem' }}>
           <a href="/" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.75rem', textDecoration: 'none', marginBottom: '1.25rem' }}>
             <Image
@@ -100,6 +113,19 @@ export async function SiteFooter({ tenantId }: { tenantId: string }) {
             Get updates on new sermons, events, and ways to get involved.
           </p>
           <NewsletterMiniForm />
+        </div>
+
+        <div>
+          <p className="card-eyebrow">Gallery</p>
+          <div className="footer-gallery-grid">
+            {galleryThumbnails.map((src) => (
+              <div
+                key={src}
+                aria-hidden="true"
+                style={{ aspectRatio: '1 / 1', borderRadius: '6px', backgroundImage: `url(${src})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+              />
+            ))}
+          </div>
         </div>
 
         {footer?.columns?.map((column, index) => (
