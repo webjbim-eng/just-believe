@@ -2,6 +2,7 @@ import { getPayload } from 'payload'
 import config from '@payload-config'
 import { lexicalToPlainText } from '../lib/lexicalToPlainText'
 import { ScrollReveal } from '../components/ScrollReveal'
+import { Stagger, StaggerItem } from '../components/Stagger'
 
 export type MinistriesOverviewConfig = {
   heading?: string
@@ -32,30 +33,32 @@ export async function MinistriesOverview({ config: blockConfig, tenantId }: { co
         <ScrollReveal>
           <h2 style={{ textAlign: 'center' }}>{blockConfig.heading || 'Our Ministries'}</h2>
           <hr className="heading-underline heading-underline--center" />
-          {!featured ? (
-            <p style={{ textAlign: 'center', color: 'var(--color-text-muted)' }}>Ministry pages are coming soon.</p>
-          ) : (
-            <>
+        </ScrollReveal>
+        {!featured ? (
+          <p style={{ textAlign: 'center', color: 'var(--color-text-muted)' }}>Ministry pages are coming soon.</p>
+        ) : (
+          <>
+            <ScrollReveal delay={80}>
               <div className="card" style={{ marginBottom: supporting.length > 0 ? '1.75rem' : 0, padding: '3rem' }}>
                 <p className="card-eyebrow">Featured Ministry</p>
                 <h3 style={{ fontSize: 'var(--text-heading)', marginBottom: '1rem' }}>{featured.name}</h3>
                 {featured.description && <p style={{ fontSize: 'var(--text-body)', maxWidth: '48rem' }}>{lexicalToPlainText(featured.description)}</p>}
               </div>
-              {supporting.length > 0 && (
-                <div className="grid">
-                  {supporting.map((ministry, index) => (
-                    <ScrollReveal key={ministry.id} delay={index * 60}>
-                      <div className="card">
-                        <p className="card-eyebrow">Ministry</p>
-                        <h3 className="card-title">{ministry.name}</h3>
-                      </div>
-                    </ScrollReveal>
-                  ))}
-                </div>
-              )}
-            </>
-          )}
-        </ScrollReveal>
+            </ScrollReveal>
+            {supporting.length > 0 && (
+              <Stagger className="grid">
+                {supporting.map((ministry) => (
+                  <StaggerItem key={ministry.id}>
+                    <div className="card">
+                      <p className="card-eyebrow">Ministry</p>
+                      <h3 className="card-title">{ministry.name}</h3>
+                    </div>
+                  </StaggerItem>
+                ))}
+              </Stagger>
+            )}
+          </>
+        )}
       </div>
     </section>
   )

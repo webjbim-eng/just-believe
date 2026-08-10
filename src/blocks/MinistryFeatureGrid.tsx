@@ -1,4 +1,5 @@
 import { ScrollReveal } from '../components/ScrollReveal'
+import { Stagger, StaggerItem } from '../components/Stagger'
 
 export type MinistryFeatureGridItem = {
   image: string
@@ -38,9 +39,9 @@ export function MinistryFeatureGrid({ config }: { config: MinistryFeatureGridCon
           </div>
         </ScrollReveal>
 
-        <div className="photo-caption-grid-4">
-          {config.items.map((item, index) => (
-            <ScrollReveal key={item.title} delay={index * 80}>
+        <Stagger className="photo-caption-grid-4">
+          {config.items.map((item) => (
+            <StaggerItem key={item.title}>
               <div className="card" style={{ padding: 0, overflow: 'hidden', textAlign: 'center' }}>
                 <div className="hover-zoom" style={{ aspectRatio: '4 / 3', overflow: 'hidden' }}>
                   <div
@@ -56,9 +57,9 @@ export function MinistryFeatureGrid({ config }: { config: MinistryFeatureGridCon
                   {item.subtitle && <p style={{ margin: 0, fontSize: 'var(--text-body-sm)' }}>{item.subtitle}</p>}
                 </div>
               </div>
-            </ScrollReveal>
+            </StaggerItem>
           ))}
-        </div>
+        </Stagger>
       </div>
     </section>
   )

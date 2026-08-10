@@ -238,11 +238,35 @@ async function seed() {
       },
     },
     {
-      blockType: 'PhotoCaptionGrid',
+      // Restored 2026-08-11: the exact-reference replication had dropped
+      // this entirely, but the design directive explicitly names Giving
+      // as a section that deserves dignity, not an afterthought reachable
+      // only via the header/footer. Placed here (not next to
+      // FeaturedEvents, also a dark panel) to keep dark/light sections
+      // alternating rather than stacking two dark panels back to back.
+      blockType: 'PartnershipInvitation',
       order: 7,
       visible: true,
       config: {
+        heading: 'Partner With Us',
+        body: 'Every gift is stewarded with integrity and used to advance real ministry — transforming lives, strengthening families, and serving communities around the world.',
+        ctaLabel: 'Contact Us',
+        ctaHref: 'mailto:justbelieveinthot@gmail.com',
+        backgroundImage: '/images/worship-service.jpg',
+        ways: [
+          { label: 'General Fund', description: 'Support the ongoing work of JBIM across every ministry area.' },
+          { label: 'Mission Projects', description: 'Fund a specific outreach or mission initiative in the field.' },
+          { label: 'Child Sponsorship', description: "Invest directly in a child's education, care, and future." },
+        ],
+      },
+    },
+    {
+      blockType: 'PhotoCaptionGrid',
+      order: 8,
+      visible: true,
+      config: {
         columns: 4,
+        variant: 'featured',
         items: [
           { image: '/images/prayer-sanctuary.jpg', eyebrow: 'Prayer', title: 'Prayer Gatherings' },
           { image: '/images/pastoral-moment.jpg', eyebrow: 'Care', title: 'Comfort & Support' },
@@ -253,7 +277,7 @@ async function seed() {
     },
     {
       blockType: 'BlogSpotlight',
-      order: 8,
+      order: 9,
       visible: true,
       config: {
         eyebrow: 'Reflections',
@@ -262,7 +286,7 @@ async function seed() {
     },
     {
       blockType: 'CTA',
-      order: 9,
+      order: 10,
       visible: true,
       config: {
         heading: 'Discover the Power of Faith & Spiritual Growth',

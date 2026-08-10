@@ -1,5 +1,5 @@
 import { renderHeadingWithAccent } from '../lib/renderHeadingWithAccent'
-import { ScrollReveal } from '../components/ScrollReveal'
+import { Stagger, StaggerItem } from '../components/Stagger'
 
 export type HeroConfig = {
   eyebrow?: string
@@ -79,47 +79,52 @@ export function Hero({ config }: { config: HeroConfig }) {
         />
       )}
       <div className="container" style={{ textAlign: 'center', position: 'relative', zIndex: 2 }}>
-        <ScrollReveal>
+        <Stagger staggerDelay={0.12}>
           {config.eyebrow && (
-            <p className="section-eyebrow" style={hasImage ? { color: 'var(--color-accent)' } : undefined}>
-              {config.eyebrow}
-            </p>
+            <StaggerItem>
+              <p className="section-eyebrow" style={hasImage ? { color: 'var(--color-accent)' } : undefined}>
+                {config.eyebrow}
+              </p>
+            </StaggerItem>
           )}
-          <h1
-            className="text-display-italic"
-            style={{ maxWidth: '48rem', margin: '0 auto 1.25rem', color: textColor }}
-          >
-            {renderHeadingWithAccent(config.heading, config.accentWord)}
-          </h1>
+          <StaggerItem>
+            <h1 className="text-display-italic" style={{ maxWidth: '48rem', margin: '0 auto 1.25rem', color: textColor }}>
+              {renderHeadingWithAccent(config.heading, config.accentWord)}
+            </h1>
+          </StaggerItem>
           {config.subheading && (
-            <p
-              style={{
-                fontSize: 'var(--text-subheading)',
-                maxWidth: '34rem',
-                margin: '0 auto 2.5rem',
-                color: hasImage ? 'rgba(255,255,255,0.85)' : undefined,
-              }}
-            >
-              {config.subheading}
-            </p>
-          )}
-          <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-            {config.ctaLabel && config.ctaHref && (
-              <a className={hasImage ? 'btn-pill-light' : 'btn-accent'} href={config.ctaHref}>
-                {config.ctaLabel}
-              </a>
-            )}
-            {config.secondaryCtaLabel && config.secondaryCtaHref && (
-              <a
-                className="btn-outline"
-                href={config.secondaryCtaHref}
-                style={hasImage ? { color: '#fff', borderColor: 'rgba(255,255,255,0.6)' } : undefined}
+            <StaggerItem>
+              <p
+                style={{
+                  fontSize: 'var(--text-subheading)',
+                  maxWidth: '34rem',
+                  margin: '0 auto 2.5rem',
+                  color: hasImage ? 'rgba(255,255,255,0.85)' : undefined,
+                }}
               >
-                {config.secondaryCtaLabel}
-              </a>
-            )}
-          </div>
-        </ScrollReveal>
+                {config.subheading}
+              </p>
+            </StaggerItem>
+          )}
+          <StaggerItem>
+            <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+              {config.ctaLabel && config.ctaHref && (
+                <a className={hasImage ? 'btn-pill-light' : 'btn-accent'} href={config.ctaHref}>
+                  {config.ctaLabel}
+                </a>
+              )}
+              {config.secondaryCtaLabel && config.secondaryCtaHref && (
+                <a
+                  className="btn-outline"
+                  href={config.secondaryCtaHref}
+                  style={hasImage ? { color: '#fff', borderColor: 'rgba(255,255,255,0.6)' } : undefined}
+                >
+                  {config.secondaryCtaLabel}
+                </a>
+              )}
+            </div>
+          </StaggerItem>
+        </Stagger>
       </div>
     </section>
   )

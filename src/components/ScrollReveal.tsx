@@ -1,45 +1,35 @@
 'use client'
 
-import { useEffect, useRef, useState, type ReactNode } from 'react'
+import { motion } from 'motion/react'
+import type { ReactNode } from 'react'
 
 /**
- * Thin progressive-enhancement wrapper: server-rendered content is fully
- * present and readable without JS (no opacity:0 baked into SSR markup that
- * would strand content invisible if hydration fails) — the reveal class
- * only gets added client-side once observed, then removed from
- * observation. See .reveal/.reveal.is-visible in globals.css.
+ * 2026-08-11: rebuilt on `motion` (was hand-rolled IntersectionObserver +
+ * CSS transition). Spring physics instead of a fixed ease curve, and
+ * MotionConfig at the layout root (reducedMotion="user") handles
+ * prefers-reduced-motion for every motion.* component site-wide, so this
+ * no longer needs its own guard. `viewport={{ once: true }}` keeps the
+ * same "reveal once, don't re-trigger on scroll-back" behavior the old
+ * IntersectionObserver version had.
  */
 export function ScrollReveal({
   children,
   delay = 0,
-  className = '',
+  className,
 }: {
   children: ReactNode
   delay?: number
   className?: string
 }) {
-  const ref = useRef<HTMLDivElement>(null)
-  const [visible, setVisible] = useState(false)
-
-  useEffect(() => {
-    const node = ref.current
-    if (!node) return
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setVisible(true)
-          observer.disconnect()
-        }
-      },
-      { threshold: 0.15, rootMargin: '0px 0px -60px 0px' },
-    )
-    observer.observe(node)
-    return () => observer.disconnect()
-  }, [])
-
   return (
-    <div ref={ref} className={`reveal ${visible ? 'is-visible' : ''} ${className}`} style={{ transitionDelay: delay ? `${delay}ms` : undefined }}>
+    <motion.div
+      className={className}
+      initial={{ opacity: 0, y: 28 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '0px 0px -60px 0px', amount: 0.15 }}
+      transition={{ type: 'spring', stiffness: 90, damping: 18, delay: delay / 1000 }}
+    >
       {children}
-    </div>
+    </motion.div>
   )
 }

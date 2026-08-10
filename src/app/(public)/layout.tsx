@@ -4,6 +4,7 @@ import { Inter, Playfair_Display } from 'next/font/google'
 import { headers } from 'next/headers'
 import { getPayload } from 'payload'
 import config from '@payload-config'
+import { MotionConfig } from 'motion/react'
 import { TENANT_HEADER } from '../../access/getResolvedTenantId'
 import { SiteNavigation } from '../../components/SiteNavigation'
 import { SiteFooter } from '../../components/SiteFooter'
@@ -59,9 +60,14 @@ export default async function PublicLayout({ children }: { children: React.React
   return (
     <html lang="en" className={`${heading.variable} ${body.variable}`} style={cssVars}>
       <body>
-        {tenantId && <SiteNavigation tenantId={tenantId} />}
-        {children}
-        {tenantId && <SiteFooter tenantId={tenantId} />}
+        {/* reducedMotion="user" makes every motion.* component site-wide
+            automatically honor prefers-reduced-motion — one place to get
+            this right instead of checking it in every component. */}
+        <MotionConfig reducedMotion="user">
+          {tenantId && <SiteNavigation tenantId={tenantId} />}
+          {children}
+          {tenantId && <SiteFooter tenantId={tenantId} />}
+        </MotionConfig>
       </body>
     </html>
   )
