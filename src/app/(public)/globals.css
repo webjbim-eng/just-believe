@@ -450,6 +450,26 @@ a {
   }
 }
 
+/*
+ * Header overflow fix (2026-08-11): logo + two-line wordmark + "Partner
+ * With Us" button + hamburger on one unwrapped flex row genuinely doesn't
+ * fit a ~375px phone (rough width math puts the two ends at 400px+
+ * combined, before even accounting for real font metrics) — this isn't
+ * cosmetic tightening, it was going to overflow/clip. Wordmark text drops
+ * first (logo mark alone is a standard, recognizable mobile pattern), CTA
+ * shrinks second if still tight.
+ */
+@media (max-width: 480px) {
+  .nav-wordmark {
+    display: none;
+  }
+
+  .nav-cta {
+    padding: 0.5rem 1rem !important;
+    font-size: 0.8125rem;
+  }
+}
+
 /* Footer's fixed 5-column grid (logo + Explore + Connect + Stay Connected
    + Gallery, plus any admin-added columns) needs a real collapse too. */
 @media (max-width: 860px) {
@@ -562,6 +582,13 @@ a {
  */
 .decorative-flourish {
   position: relative;
+  /* The ::before/::after flourishes sit on the outer <section> (full
+     viewport width), not the constrained .container — their negative
+     top/right/left/bottom offsets would otherwise push past the viewport
+     edge and force a site-wide horizontal scrollbar. Clipping here just
+     trims the flourish's imperceptible outer sliver, not a visible
+     compromise. */
+  overflow: hidden;
 }
 
 .decorative-flourish::before,

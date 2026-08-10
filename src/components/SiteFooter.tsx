@@ -30,9 +30,18 @@ const galleryThumbnails = [
  * SiteNavigation already uses, so it can never drift out of sync. No
  * "Ministries"/"Resources" columns: there's no per-ministry detail route
  * or resource library built yet, so a column of distinct links there would
- * be dead-end UX, not real content. Darker than every section above it
- * (--color-base, not --color-primary) so it reads as the page's actual
- * floor.
+ * be dead-end UX, not real content.
+ *
+ * Background is --color-primary (a fixed dark panel), NOT --color-base —
+ * --color-base used to be the darkest tone back when the whole theme was
+ * dark-dominant, which is what the white/rgba(255,255,255,...) text
+ * throughout this file was written for. globals.css's v6 rewrite flipped
+ * --color-base to mean the light cream page background instead, and this
+ * component never got updated — same class of bug SiteNavigation had
+ * (2026-08-11), just inverted (white text on a now-light background
+ * instead of dark text on dark). Always use a dark-panel-specific token
+ * or a fixed color here, never a bare --color-base/--color-text*, since
+ * this component is always dark regardless of the page theme.
  */
 export async function SiteFooter({ tenantId }: { tenantId: string }) {
   const payload = await getPayload({ config })
@@ -44,7 +53,7 @@ export async function SiteFooter({ tenantId }: { tenantId: string }) {
   const navItems = navDocs[0]?.items ?? []
 
   return (
-    <footer style={{ background: 'var(--color-base)', color: 'rgba(255,255,255,0.85)', marginTop: '2rem', borderTop: '1px solid var(--color-border)' }}>
+    <footer style={{ background: 'var(--color-primary)', color: 'var(--color-text-muted-on-dark)', marginTop: '2rem', borderTop: '1px solid var(--color-border-on-dark)' }}>
       <div className="container footer-grid" style={{ padding: '4.5rem 1.5rem 3rem', display: 'grid', gridTemplateColumns: '1.4fr repeat(4, 1fr)', gap: '3rem' }}>
         <div style={{ maxWidth: '22rem' }}>
           <a href="/" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.75rem', textDecoration: 'none', marginBottom: '1.25rem' }}>
@@ -61,7 +70,7 @@ export async function SiteFooter({ tenantId }: { tenantId: string }) {
               International Missions
             </span>
           </a>
-          <p style={{ color: 'rgba(255,255,255,0.65)', fontSize: 'var(--text-body-sm)', marginBottom: '1.5rem' }}>
+          <p style={{ color: 'var(--color-text-muted-on-dark)', fontSize: 'var(--text-body-sm)', marginBottom: '1.5rem' }}>
             A Christ-centered, faith-based nonprofit proclaiming the Gospel, equipping believers, and serving communities
             around the world.
           </p>
@@ -82,7 +91,7 @@ export async function SiteFooter({ tenantId }: { tenantId: string }) {
             <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>
               {navItems.map((item, index) => (
                 <li key={index} style={{ marginBottom: '0.625rem' }}>
-                  <a href={item.link} style={{ color: 'rgba(255,255,255,0.7)', textDecoration: 'none' }}>
+                  <a href={item.link} style={{ color: 'var(--color-text-muted-on-dark)', textDecoration: 'none' }}>
                     {item.label}
                   </a>
                 </li>
@@ -96,7 +105,7 @@ export async function SiteFooter({ tenantId }: { tenantId: string }) {
           <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>
             {contactLinks.map((link) => (
               <li key={link.label} style={{ marginBottom: '0.625rem' }}>
-                <a href={link.href} style={{ color: 'rgba(255,255,255,0.7)', textDecoration: 'none' }}>
+                <a href={link.href} style={{ color: 'var(--color-text-muted-on-dark)', textDecoration: 'none' }}>
                   {link.value}
                 </a>
               </li>
@@ -109,7 +118,7 @@ export async function SiteFooter({ tenantId }: { tenantId: string }) {
 
         <div>
           <p className="card-eyebrow">Stay Connected</p>
-          <p style={{ color: 'rgba(255,255,255,0.65)', fontSize: 'var(--text-body-sm)', marginBottom: '1rem' }}>
+          <p style={{ color: 'var(--color-text-muted-on-dark)', fontSize: 'var(--text-body-sm)', marginBottom: '1rem' }}>
             Get updates on new sermons, events, and ways to get involved.
           </p>
           <NewsletterMiniForm />
@@ -134,7 +143,7 @@ export async function SiteFooter({ tenantId }: { tenantId: string }) {
             <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>
               {column.links?.map((link, linkIndex) => (
                 <li key={linkIndex} style={{ marginBottom: '0.625rem' }}>
-                  <a href={link.url} style={{ color: 'rgba(255,255,255,0.7)', textDecoration: 'none' }}>
+                  <a href={link.url} style={{ color: 'var(--color-text-muted-on-dark)', textDecoration: 'none' }}>
                     {link.label}
                   </a>
                 </li>

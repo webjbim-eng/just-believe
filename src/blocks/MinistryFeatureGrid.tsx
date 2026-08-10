@@ -78,7 +78,7 @@ export function MinistryFeatureGrid({ config }: { config: MinistryFeatureGridCon
                       backgroundPosition: 'center',
                     }}
                   />
-                  <div>
+                  <div style={{ minWidth: 0 }}>
                     <p style={{ margin: 0, fontWeight: 600, color: 'var(--color-text)', fontFamily: 'var(--font-heading), Georgia, serif', fontSize: 'var(--text-heading-sm)' }}>
                       {item.title}
                     </p>

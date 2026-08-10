@@ -67,7 +67,7 @@ export async function FeaturedEvents({ config: blockConfig, tenantId }: { config
                   <div style={{ marginBottom: '2rem' }}>
                     {docs.map((event) => (
                       <div key={event.id} className="event-row">
-                        <div>
+                        <div style={{ minWidth: 0 }}>
                           <p style={{ margin: 0, fontWeight: 600, color: '#fff', fontFamily: 'var(--font-heading), Georgia, serif', fontSize: 'var(--text-heading-sm)' }}>
                             {event.title}
                           </p>

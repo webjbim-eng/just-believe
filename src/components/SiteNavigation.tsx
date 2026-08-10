@@ -56,6 +56,7 @@ export async function SiteNavigation({ tenantId }: { tenantId: string }) {
               priority
             />
             <span
+              className="nav-wordmark"
               style={{
                 fontFamily: 'var(--font-heading), Georgia, serif',
                 fontWeight: 700,
@@ -90,7 +91,7 @@ export async function SiteNavigation({ tenantId }: { tenantId: string }) {
                 ))}
               </ul>
             )}
-            <a className="btn-accent" href="/contact" style={{ padding: '0.625rem 1.5rem' }}>
+            <a className="btn-accent nav-cta" href="/contact" style={{ padding: '0.625rem 1.5rem' }}>
               Partner With Us
             </a>
             <MobileNavToggle items={items.map((item) => ({ label: item.label, link: item.link }))} />

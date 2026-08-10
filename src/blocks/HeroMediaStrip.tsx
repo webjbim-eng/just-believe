@@ -54,7 +54,7 @@ export function HeroMediaStrip({ config }: { config: HeroMediaStripConfig }) {
                       }}
                     />
                   )}
-                  <div>
+                  <div style={{ minWidth: 0 }}>
                     <p style={{ color: '#fff', fontWeight: 600, fontFamily: 'var(--font-heading), Georgia, serif', fontSize: 'var(--text-heading-sm)', margin: 0 }}>
                       {config.badgeHeading}
                     </p>

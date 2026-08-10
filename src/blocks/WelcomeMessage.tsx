@@ -25,19 +25,18 @@ export function WelcomeMessage({ config }: { config: WelcomeMessageConfig }) {
     <section className="section">
       <div className="container">
         {config.image ? (
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '3.5rem', alignItems: 'center' }}>
-            <div style={{ minWidth: 0 }}>
-              <div
-                style={{
-                  backgroundImage: `url(${config.image})`,
-                  backgroundSize: 'cover',
-                  backgroundPosition: 'center',
-                  borderRadius: 'var(--radius-card)',
-                  aspectRatio: '4 / 5',
-                  boxShadow: 'var(--shadow-card-lg)',
-                }}
-              />
-            </div>
+          <div className="split-layout">
+            <div
+              className="split-layout-media"
+              style={{
+                backgroundImage: `url(${config.image})`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                borderRadius: 'var(--radius-card)',
+                aspectRatio: '4 / 5',
+                boxShadow: 'var(--shadow-card-lg)',
+              }}
+            />
             <div>
               {config.eyebrow && <p className="section-eyebrow">{config.eyebrow}</p>}
               <h2 style={{ fontSize: 'var(--text-heading-lg)' }}>{config.heading}</h2>
