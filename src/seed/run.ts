@@ -149,8 +149,10 @@ async function seed() {
       order: 1,
       visible: true,
       config: {
+        eyebrow: 'Who We Are',
         heading: 'Our Mission',
         body: "To glorify God by making disciples of Jesus Christ, equipping believers for Kingdom service, strengthening families, developing ethical leaders, and extending Christ's compassion to communities through evangelism, discipleship, education, leadership development, and practical outreach.",
+        image: '/images/open-bible.jpg',
         actions: [
           {
             heading: 'New Here?',
@@ -176,22 +178,40 @@ async function seed() {
     { blockType: 'MinistriesOverview', order: 2, visible: true, config: {} },
     { blockType: 'FeaturedSermons', order: 3, visible: true, config: {} },
     { blockType: 'FeaturedEvents', order: 4, visible: true, config: {} },
-    { blockType: 'Testimonials', order: 5, visible: true, config: {} },
+    {
+      blockType: 'Prayer',
+      order: 5,
+      visible: true,
+      config: {
+        eyebrow: 'Prayer',
+        heading: 'Prayer is central to everything we do.',
+        body: 'Before any ministry, any outreach, any decision — we pray. Join us in bringing your requests before God, or partner with us in praying for the nations.',
+        ctaLabel: 'Share a Prayer Request',
+        ctaHref: '/contact',
+        backgroundImage: '/images/prayer-silhouette.jpg',
+      },
+    },
+    { blockType: 'Testimonials', order: 6, visible: true, config: {} },
     {
       blockType: 'PartnershipInvitation',
-      order: 6,
+      order: 7,
       visible: true,
       config: {
         heading: 'Partner With Us',
-        body: 'Join us in transforming lives, strengthening families, and serving communities around the world.',
+        body: 'Every gift is stewarded with integrity and used to advance real ministry — transforming lives, strengthening families, and serving communities around the world.',
         ctaLabel: 'Contact Us',
         ctaHref: 'mailto:justbelieveinthot@gmail.com',
         backgroundImage: '/images/worship-service.jpg',
+        ways: [
+          { label: 'General Fund', description: 'Support the ongoing work of JBIM across every ministry area.' },
+          { label: 'Mission Projects', description: 'Fund a specific outreach or mission initiative in the field.' },
+          { label: 'Child Sponsorship', description: "Invest directly in a child's education, care, and future." },
+        ],
       },
     },
     {
       blockType: 'NewsletterSignup',
-      order: 7,
+      order: 8,
       visible: true,
       config: { heading: 'Stay Connected', subheading: 'Get updates on new sermons, events, and ways to get involved.' },
     },
@@ -240,6 +260,16 @@ async function seed() {
       const missingKeys = Object.keys(latestConfig).filter((key) => !(key in currentConfig))
       if (missingKeys.length > 0) {
         sections[i] = { ...sections[i], config: { ...currentConfig, ...Object.fromEntries(missingKeys.map((k) => [k, latestConfig[k]])) } }
+        changed = true
+      }
+    }
+    // Whole new blockTypes added to homepageSections since this tenant was
+    // first seeded (e.g. Prayer) are missing entirely, not just missing
+    // config keys — append those too, same "own seed output" reasoning.
+    const existingTypes = new Set(sections.map((s) => s.blockType))
+    for (const latest of homepageSections) {
+      if (!existingTypes.has(latest.blockType)) {
+        sections.push(latest)
         changed = true
       }
     }

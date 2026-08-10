@@ -100,8 +100,14 @@ p {
   color: var(--color-text-muted);
 }
 
+/* Gold as "an accent of significance, not a dominant decorative color"
+   (2026-08-08 creative directive) — plain body links get a subtle gold
+   underline rather than solid gold text everywhere. */
 a {
-  color: var(--color-accent);
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: var(--color-accent);
+  text-underline-offset: 3px;
 }
 
 .container {
@@ -285,4 +291,132 @@ a {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   gap: 1.75rem;
+}
+
+/*
+ * Icon + label quick-scan row (References 2 & 3: "Morning Meditation /
+ * Holy Communion / ...", "Sunday worship / Outreach programs / ..."). An
+ * outlined ring, not a filled circle — visually distinct from
+ * .avatar-circle so the two don't compete when they appear near each
+ * other (avatar-circle = a person/entry; icon-feature = a value prop).
+ */
+.icon-feature {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.75rem;
+}
+
+.icon-feature-ring {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: 1.5px solid var(--color-accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-accent);
+  flex-shrink: 0;
+}
+
+/* Numbered list device (Reference 1: 01 / 02 / 03 / 04 service list) */
+.numbered-item {
+  display: flex;
+  gap: 1.5rem;
+  align-items: baseline;
+}
+
+.numbered-item-index {
+  font-family: var(--font-heading), Georgia, serif;
+  font-size: var(--text-heading-sm);
+  color: var(--color-accent);
+  opacity: 0.6;
+  flex-shrink: 0;
+  min-width: 3rem;
+}
+
+/*
+ * Subtle decorative ray/glow motif — a restrained nod to the logo's fire
+ * identity as atmosphere (see Hero.tsx), reused behind section headings
+ * where a moment of significance is warranted. Not applied everywhere —
+ * "large type should be used strategically to create moments of
+ * emphasis," same rule applies to decoration.
+ */
+.decorative-glow {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, var(--color-accent) 0%, transparent 70%);
+  opacity: 0.12;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/*
+ * Editorial split layout (image + text, or text + image) — used by the
+ * Ministry Introduction and Mission/Vision sections. Genuinely responsive
+ * (not "desktop then squeeze"): a real breakpoint collapse to a single
+ * column, image first, on tablet/mobile.
+ */
+.split-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3.5rem;
+  align-items: center;
+}
+
+.split-layout--reverse .split-layout-media {
+  order: 2;
+}
+
+@media (max-width: 860px) {
+  .split-layout {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .split-layout--reverse .split-layout-media {
+    order: 0;
+  }
+}
+
+/* Oversized display/heading type needs to actually scale down on small
+   screens, not just wrap awkwardly — applies site-wide since --text-display
+   and --text-heading-lg are used across Hero and every page's H1. */
+@media (max-width: 640px) {
+  :root {
+    --text-display: 2.75rem;
+    --text-heading-lg: 2.25rem;
+    --text-heading: 2rem;
+  }
+}
+
+/* Real mobile navigation, not an overflowing link row — see
+   SiteNavigation.tsx + MobileNavToggle.tsx. */
+.mobile-nav-toggle {
+  display: none;
+}
+
+@media (max-width: 760px) {
+  .desktop-nav-links {
+    display: none !important;
+  }
+
+  .mobile-nav-toggle {
+    display: block;
+  }
+}
+
+/* Footer's fixed 4-column grid (logo + Explore + Connect + Stay Connected,
+   plus any admin-added columns) needs a real collapse too. */
+@media (max-width: 860px) {
+  .footer-grid {
+    grid-template-columns: 1fr 1fr !important;
+  }
+}
+
+@media (max-width: 540px) {
+  .footer-grid {
+    grid-template-columns: 1fr !important;
+  }
 }

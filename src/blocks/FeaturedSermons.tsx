@@ -20,7 +20,13 @@ export async function FeaturedSermons({ config: blockConfig, tenantId }: { confi
   return (
     <CardGridSection
       heading={blockConfig.heading || 'Recent Sermons'}
-      emptyMessage="Sermons are coming soon."
+      emptyMessage="Sermons are coming soon — in the meantime, watch past messages on our YouTube channel."
+      emptyIcon={
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+          <path d="M8 6.5v11l9-5.5-9-5.5z" fill="currentColor" stroke="none" />
+        </svg>
+      }
+      emptyCta={{ label: 'Watch on YouTube', href: 'https://youtube.com/@jbiminc?si=Q26o6jq34zseGPaF' }}
       items={docs}
       renderItem={(sermon) => (
         <div key={sermon.id} className="card">

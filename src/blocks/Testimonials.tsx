@@ -27,7 +27,13 @@ export async function Testimonials({ config: blockConfig, tenantId }: { config: 
   return (
     <CardGridSection
       heading={blockConfig.heading || 'What People Are Saying'}
-      emptyMessage="Testimonials are coming soon."
+      emptyMessage="Testimonials are coming soon. Has JBIM impacted your life? We'd love to hear your story."
+      emptyIcon={
+        <span aria-hidden="true" style={{ fontFamily: 'var(--font-heading), Georgia, serif', fontSize: '1.5rem', lineHeight: 1 }}>
+          &ldquo;
+        </span>
+      }
+      emptyCta={{ label: 'Share Your Story', href: 'mailto:justbelieveinthot@gmail.com' }}
       items={docs}
       renderItem={(testimonial) => (
         <div key={testimonial.id} className="card">

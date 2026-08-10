@@ -48,16 +48,27 @@ export default async function MinistriesPage() {
           {ministries.length === 0 ? (
             <p style={{ textAlign: 'center' }}>Ministry pages are coming soon.</p>
           ) : (
-            <div className="grid">
-              {ministries.map((ministry) => (
-                <div key={ministry.id} className="card">
-                  <span className="avatar-circle">{ministry.name.charAt(0).toUpperCase()}</span>
-                  <p className="card-eyebrow">Ministry</p>
-                  <h3 className="card-title">{ministry.name}</h3>
-                  {ministry.description && <p>{lexicalToPlainText(ministry.description)}</p>}
+            <>
+              <div className="card" style={{ marginBottom: '1.75rem', padding: '3rem' }}>
+                <p className="card-eyebrow">Featured Ministry</p>
+                <h2 style={{ fontSize: 'var(--text-heading)', marginBottom: '1rem' }}>{ministries[0].name}</h2>
+                {ministries[0].description && (
+                  <p style={{ fontSize: 'var(--text-body)', maxWidth: '48rem' }}>{lexicalToPlainText(ministries[0].description)}</p>
+                )}
+              </div>
+              {ministries.length > 1 && (
+                <div className="grid">
+                  {ministries.slice(1).map((ministry) => (
+                    <div key={ministry.id} className="card">
+                      <span className="avatar-circle">{ministry.name.charAt(0).toUpperCase()}</span>
+                      <p className="card-eyebrow">Ministry</p>
+                      <h3 className="card-title">{ministry.name}</h3>
+                      {ministry.description && <p>{lexicalToPlainText(ministry.description)}</p>}
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
+              )}
+            </>
           )}
         </div>
       </section>

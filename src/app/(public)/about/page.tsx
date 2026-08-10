@@ -39,21 +39,35 @@ export default function AboutPage() {
 
       <section className="section">
         <div className="container">
-          <div className="grid">
-            <div className="card">
-              <p className="card-eyebrow">Our Mission</p>
-              <p style={{ color: 'var(--color-text)' }}>
-                To glorify God by making disciples of Jesus Christ, equipping believers for Kingdom service, strengthening
-                families, developing ethical leaders, and extending Christ&rsquo;s compassion to communities through
-                evangelism, discipleship, education, leadership development, and practical outreach.
+          <div className="split-layout">
+            <div
+              className="split-layout-media"
+              style={{
+                backgroundImage: 'url(/images/worship-service.jpg)',
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                borderRadius: 'var(--radius-card)',
+                aspectRatio: '4 / 5',
+                boxShadow: 'var(--shadow-card-lg)',
+              }}
+            />
+            <div>
+              <p className="section-eyebrow">Our Mission</p>
+              <h2 style={{ fontSize: 'var(--text-heading)' }}>
+                To glorify God by making disciples of Jesus Christ, <span className="text-accent">equipping believers</span>{' '}
+                for Kingdom service.
+              </h2>
+              <p style={{ fontSize: 'var(--text-body)', marginBottom: '2rem' }}>
+                Strengthening families, developing ethical leaders, and extending Christ&rsquo;s compassion to
+                communities through evangelism, discipleship, education, leadership development, and practical
+                outreach.
               </p>
-            </div>
-            <div className="card">
-              <p className="card-eyebrow">Our Vision</p>
-              <p style={{ color: 'var(--color-text)' }}>
-                To see individuals, families, churches, and communities transformed by the Gospel of Jesus Christ, raising
-                generations of spiritually mature believers and servant leaders who influence every sphere of society for
-                the glory of God until Christ returns.
+              <hr className="heading-underline" />
+              <p className="section-eyebrow">Our Vision</p>
+              <p style={{ fontSize: 'var(--text-body)', color: 'var(--color-text)' }}>
+                To see individuals, families, churches, and communities transformed by the Gospel of Jesus Christ,
+                raising generations of spiritually mature believers and servant leaders who influence every sphere of
+                society for the glory of God until Christ returns.
               </p>
             </div>
           </div>
@@ -83,19 +97,13 @@ export default function AboutPage() {
           <p style={{ color: 'rgba(255,255,255,0.85)', textAlign: 'center', marginBottom: '2.5rem' }}>
             Our ministry is built upon four foundational commitments.
           </p>
-          <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'grid', gap: '1rem' }}>
-            {commitments.map((commitment) => (
-              <li
-                key={commitment}
-                style={{
-                  color: '#fff',
-                  background: 'rgba(255,255,255,0.08)',
-                  border: '1px solid rgba(255,255,255,0.15)',
-                  borderRadius: 'var(--radius-card)',
-                  padding: '1.25rem 1.5rem',
-                }}
-              >
-                {commitment}
+          <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'grid', gap: '1.75rem' }}>
+            {commitments.map((commitment, index) => (
+              <li key={commitment} className="numbered-item" style={{ borderBottom: index < commitments.length - 1 ? '1px solid rgba(255,255,255,0.15)' : 'none', paddingBottom: '1.75rem' }}>
+                <span className="numbered-item-index" style={{ opacity: 0.85 }}>
+                  {String(index + 1).padStart(2, '0')}
+                </span>
+                <span style={{ color: '#fff', fontSize: 'var(--text-body)' }}>{commitment}</span>
               </li>
             ))}
           </ul>

@@ -43,6 +43,7 @@ export const HomepageLayout: CollectionConfig = {
             'FeaturedEvents',
             'FeaturedBooks',
             'MinistriesOverview',
+            'Prayer',
             'Testimonials',
             'PartnershipInvitation',
             'NewsletterSignup',

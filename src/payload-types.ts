@@ -830,6 +830,7 @@ export interface HomepageLayout {
           | 'FeaturedEvents'
           | 'FeaturedBooks'
           | 'MinistriesOverview'
+          | 'Prayer'
           | 'Testimonials'
           | 'PartnershipInvitation'
           | 'NewsletterSignup'

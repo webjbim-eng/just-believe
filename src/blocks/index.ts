@@ -6,6 +6,7 @@ import { PartnershipInvitation } from './PartnershipInvitation'
 import { RichText } from './RichText'
 import { NewsletterSignup } from './NewsletterSignup'
 import { MinistriesOverview } from './MinistriesOverview'
+import { Prayer } from './Prayer'
 import { FeaturedSermons } from './FeaturedSermons'
 import { FeaturedEvents } from './FeaturedEvents'
 import { FeaturedBooks } from './FeaturedBooks'
@@ -26,6 +27,7 @@ export const blockRegistry: Record<string, ComponentType<{ config: any; tenantId
   FeaturedEvents,
   FeaturedBooks,
   MinistriesOverview,
+  Prayer,
   Testimonials,
   PartnershipInvitation,
   NewsletterSignup,

@@ -80,11 +80,22 @@ export function Hero({ config }: { config: HeroConfig }) {
       )}
       <div className="container" style={{ textAlign: 'center', position: 'relative', zIndex: 2 }}>
         {config.eyebrow && (
-          <p className="section-eyebrow" style={hasImage ? { color: 'var(--color-accent)' } : undefined}>
+          <p
+            className="section-eyebrow"
+            style={{
+              ...(hasImage ? { color: 'var(--color-accent)' } : {}),
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '0.75rem',
+            }}
+          >
+            <span aria-hidden="true" style={{ width: '1.5rem', height: '1px', background: 'currentColor', opacity: 0.6 }} />
             {config.eyebrow}
+            <span aria-hidden="true" style={{ width: '1.5rem', height: '1px', background: 'currentColor', opacity: 0.6 }} />
           </p>
         )}
-        <h1 style={{ fontSize: 'var(--text-display)', maxWidth: '56rem', margin: '0 auto 1.5rem', color: textColor }}>
+        <h1 style={{ fontSize: 'var(--text-display)', maxWidth: '56rem', margin: '0 auto 1.5rem', color: textColor, letterSpacing: '-0.03em' }}>
           {renderHeadingWithAccent(config.heading, config.accentWord)}
         </h1>
         {config.subheading && (
@@ -116,6 +127,21 @@ export function Hero({ config }: { config: HeroConfig }) {
           )}
         </div>
       </div>
+      {hasImage && (
+        <div
+          aria-hidden="true"
+          style={{
+            position: 'absolute',
+            bottom: '2rem',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            width: '1px',
+            height: '2.5rem',
+            background: 'linear-gradient(180deg, rgba(255,255,255,0.7), transparent)',
+            zIndex: 2,
+          }}
+        />
+      )}
     </section>
   )
 }
