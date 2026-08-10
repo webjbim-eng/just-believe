@@ -1,4 +1,5 @@
 import { ScrollReveal } from '../components/ScrollReveal'
+import { Stagger, StaggerItem } from '../components/Stagger'
 
 export type HeroMediaStripQuickLink = {
   image: string
@@ -19,14 +20,15 @@ export type HeroMediaStripConfig = {
 }
 
 /**
- * 2026-08-11: rebuilt after feedback that the strip below the hero was
- * "just images arranged" with no function. Every tile now does something:
- * the badge and video link out, and the reference's 4-photo texture row —
- * pure decoration — became 4 real quick-access links (Ministries, Events,
- * Prayer, Give) with a photo + label, the same "every element earns its
- * place" standard the rest of the site holds to. Also restores real
- * padding-top (was 0, which read as a cramped, un-designed seam against
- * the hero above it).
+ * 2026-08-11: rebuilt twice. First pass made every tile functional (real
+ * links, not decoration). Second pass (this one) fixed a composition
+ * problem the first pass didn't address: the quick-links were 4
+ * full-size square photo cards — visually identical in scale to the
+ * badge/video row above them and to the sections below, creating a stack
+ * of same-weight image cards. They're now a single compact row (small
+ * circular thumbnail + label), so the hierarchy reads hero photo (huge) ->
+ * video preview (medium) -> quick links (small, text-forward) instead of
+ * three consecutive "big card" moments.
  */
 export function HeroMediaStrip({ config }: { config: HeroMediaStripConfig }) {
   return (
@@ -112,22 +114,19 @@ export function HeroMediaStrip({ config }: { config: HeroMediaStripConfig }) {
         </ScrollReveal>
 
         {config.quickLinks.length > 0 && (
-          <ScrollReveal delay={120}>
-            <div className="media-strip-grid">
-              {config.quickLinks.map((link, index) => (
-                <a key={index} href={link.href} className="photo-caption hover-zoom" style={{ aspectRatio: '1 / 1', display: 'block' }}>
-                  <div
+          <Stagger className="quick-link-row" staggerDelay={0.06}>
+            {config.quickLinks.map((link) => (
+              <StaggerItem key={link.label}>
+                <a href={link.href} className="quick-link-pill">
+                  <span
                     aria-hidden="true"
-                    className="hover-zoom-bg"
                     style={{ backgroundImage: `url(${link.image})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
                   />
-                  <div className="photo-caption-label" style={{ bottom: '0.875rem', left: '0.875rem', right: '0.875rem' }}>
-                    <p style={{ fontSize: 'var(--text-body-sm)' }}>{link.label}</p>
-                  </div>
+                  {link.label}
                 </a>
-              ))}
-            </div>
-          </ScrollReveal>
+              </StaggerItem>
+            ))}
+          </Stagger>
         )}
       </div>
     </section>

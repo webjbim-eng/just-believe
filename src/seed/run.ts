@@ -186,28 +186,24 @@ async function seed() {
       },
     },
     {
-      blockType: 'PhotoCaptionGrid',
-      order: 3,
-      visible: true,
-      config: {
-        columns: 2,
-        items: [
-          { image: '/images/congregation-seated.jpg', eyebrow: 'Gather', title: 'Sunday Worship' },
-          { image: '/images/hands-on-bible.jpg', eyebrow: 'Reflect', title: 'Scripture & Study' },
-          { image: '/images/worship-hands-raised.jpg', eyebrow: 'Praise', title: 'Times of Worship' },
-          { image: '/images/community-hands.jpg', eyebrow: 'Belong', title: 'Community Life' },
-        ],
-      },
-    },
-    {
+      // 2026-08-11: compact list layout, not the large photo-card grid —
+      // this teaser follows MinistryPathways (already a large photo
+      // section) and precedes /ministries itself (which has the real
+      // featured+supporting hierarchy for browsing). It doesn't need to
+      // repeat that visual weight, just index the ministries and point
+      // there. The two PhotoCaptionGrid decorative mood-photo sections
+      // that used to sandwich this were cut entirely — they didn't link
+      // anywhere real and added no understanding beyond "we do things,"
+      // which MinistryPathways' icon row already conveys.
       blockType: 'MinistryFeatureGrid',
-      order: 4,
+      order: 3,
       visible: true,
       config: {
         eyebrow: 'Connecting in Spirit',
         heading: 'Our Ministries',
         ctaLabel: 'View All',
         ctaHref: '/ministries',
+        layout: 'list',
         items: [
           { image: '/images/worship-service.jpg', title: ministryDefinitions[0].name, subtitle: 'Outreach & discipleship' },
           { image: '/images/prayer-silhouette.jpg', title: ministryDefinitions[1].name, subtitle: 'Intercession & fasting' },
@@ -218,7 +214,7 @@ async function seed() {
     },
     {
       blockType: 'FeaturedEvents',
-      order: 5,
+      order: 4,
       visible: true,
       config: {
         eyebrow: 'Seeking the Divine Connection',
@@ -229,7 +225,7 @@ async function seed() {
     },
     {
       blockType: 'Testimonials',
-      order: 6,
+      order: 5,
       visible: true,
       config: {
         eyebrow: 'Changed Lives',
@@ -245,7 +241,7 @@ async function seed() {
       // FeaturedEvents, also a dark panel) to keep dark/light sections
       // alternating rather than stacking two dark panels back to back.
       blockType: 'PartnershipInvitation',
-      order: 7,
+      order: 6,
       visible: true,
       config: {
         heading: 'Partner With Us',
@@ -261,23 +257,8 @@ async function seed() {
       },
     },
     {
-      blockType: 'PhotoCaptionGrid',
-      order: 8,
-      visible: true,
-      config: {
-        columns: 4,
-        variant: 'featured',
-        items: [
-          { image: '/images/prayer-sanctuary.jpg', eyebrow: 'Prayer', title: 'Prayer Gatherings' },
-          { image: '/images/pastoral-moment.jpg', eyebrow: 'Care', title: 'Comfort & Support' },
-          { image: '/images/community-hands.jpg', eyebrow: 'Youth', title: 'Youth Empowerment' },
-          { image: '/images/candlelight.jpg', eyebrow: 'Reflect', title: 'Sacred Moments' },
-        ],
-      },
-    },
-    {
       blockType: 'BlogSpotlight',
-      order: 9,
+      order: 7,
       visible: true,
       config: {
         eyebrow: 'Reflections',
@@ -286,7 +267,7 @@ async function seed() {
     },
     {
       blockType: 'CTA',
-      order: 10,
+      order: 8,
       visible: true,
       config: {
         heading: 'Discover the Power of Faith & Spiritual Growth',
