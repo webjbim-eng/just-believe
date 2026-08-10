@@ -314,13 +314,13 @@ async function seed() {
   // Real ministry copy (src/seed/ministries.ts), not placeholder content —
   // only backfilled when the collection is genuinely empty for this
   // tenant, so an admin's edits/additions are never touched.
-  const { totalDocs: existingMinistryCount } = await payload.find({
+  const { docs: existingMinistries } = await payload.find({
     collection: 'ministries',
     where: { tenant: { equals: tenant.id } },
-    limit: 0,
+    limit: 100,
     overrideAccess: true,
   })
-  if (existingMinistryCount === 0) {
+  if (existingMinistries.length === 0) {
     for (const [index, ministry] of ministryDefinitions.entries()) {
       await payload.create({
         collection: 'ministries',
@@ -332,6 +332,7 @@ async function seed() {
             .replace(/&/g, 'and')
             .replace(/[^a-z0-9]+/g, '-')
             .replace(/(^-|-$)/g, ''),
+          shortDescription: ministry.shortDescription,
           description: toLexicalParagraph(ministry.description),
           order: index,
           _status: 'published',
@@ -341,7 +342,25 @@ async function seed() {
     }
     payload.logger.info(`Created ${ministryDefinitions.length} starter Ministries.`)
   } else {
-    payload.logger.info('Ministries already exist — leaving as-is.')
+    // 2026-08-11: shortDescription is a newer field than this collection's
+    // first seed run — surgical backfill (only that one field, only when
+    // genuinely still empty) rather than a full overwrite, since an admin
+    // could plausibly have set real `image`/`leader` values by now that a
+    // blanket re-create would clobber.
+    let backfilled = 0
+    for (const ministry of existingMinistries) {
+      if (ministry.shortDescription) continue
+      const seedMatch = ministryDefinitions.find((m) => m.name === ministry.name)
+      if (!seedMatch) continue
+      await payload.update({
+        collection: 'ministries',
+        id: ministry.id,
+        data: { shortDescription: seedMatch.shortDescription },
+        overrideAccess: true,
+      })
+      backfilled++
+    }
+    payload.logger.info(backfilled > 0 ? `Backfilled shortDescription on ${backfilled} Ministries.` : 'Ministries already exist — leaving as-is.')
   }
 
   // Same reasoning as branding.colors/HomepageLayout above — only ever

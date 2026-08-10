@@ -12,9 +12,9 @@ export type PhotoCaptionGridConfig = {
   columns?: 2 | 4
   /**
    * 'featured' gives item[0] real visual weight (large tile + smaller
-   * supporting list) instead of a uniform grid — reuses the same
-   * featured/supporting pattern MinistriesOverview already established,
-   * rather than every photo section on the page looking identical.
+   * supporting list) instead of a uniform grid — the same
+   * featured/supporting pattern used on /ministries, rather than every
+   * photo section on the page looking identical.
    */
   variant?: 'grid' | 'featured'
   items: PhotoCaptionGridItem[]

@@ -9,7 +9,6 @@ import { CTA } from './CTA'
 import { PartnershipInvitation } from './PartnershipInvitation'
 import { RichText } from './RichText'
 import { NewsletterSignup } from './NewsletterSignup'
-import { MinistriesOverview } from './MinistriesOverview'
 import { BlogSpotlight } from './BlogSpotlight'
 import { Prayer } from './Prayer'
 import { FeaturedSermons } from './FeaturedSermons'
@@ -35,7 +34,6 @@ export const blockRegistry: Record<string, ComponentType<{ config: any; tenantId
   FeaturedSermons,
   FeaturedEvents,
   FeaturedBooks,
-  MinistriesOverview,
   BlogSpotlight,
   Prayer,
   Testimonials,

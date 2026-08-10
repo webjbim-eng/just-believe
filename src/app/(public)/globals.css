@@ -766,6 +766,67 @@ body {
   flex-shrink: 0;
 }
 
+/* ---- "Explore ->" link micro-interaction (2026-08-11) ---- */
+.link-arrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  color: var(--color-accent);
+  font-weight: 600;
+  text-decoration: none;
+  font-size: var(--text-body-sm);
+}
+
+.link-arrow-glyph {
+  display: inline-block;
+  transition: transform 0.2s ease;
+}
+
+.link-arrow:hover .link-arrow-glyph {
+  transform: translateX(4px);
+}
+
+/* ---- Secondary-ministry mini editorial blocks (photo over text) ---- */
+.ministry-secondary-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2.5rem;
+}
+
+@media (max-width: 640px) {
+  .ministry-secondary-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---- Compact ministry directory rows (image-led, not letter avatars) ---- */
+.ministry-directory-row {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 1.25rem 0;
+  border-bottom: 1px solid var(--color-border);
+  text-decoration: none;
+}
+
+.ministry-directory-row:last-child {
+  border-bottom: none;
+}
+
+.ministry-directory-thumb {
+  width: 4rem;
+  height: 4rem;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background-size: cover;
+  background-position: center;
+  transition: transform 0.3s ease;
+}
+
+.ministry-directory-row:hover .ministry-directory-thumb {
+  transform: scale(1.08);
+}
+
 /* ---- Hero media strip's badge/video split ratio (overrides
    .split-layout's default 1fr/1fr, still collapses at the same 860px
    breakpoint since .split-layout's own media query still applies). ---- */

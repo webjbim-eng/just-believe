@@ -2,11 +2,13 @@ import type { ReactNode } from 'react'
 import { ScrollReveal } from '../../components/ScrollReveal'
 
 /**
- * Shared layout for the data-driven "Featured X" / overview blocks
- * (MinistriesOverview, FeaturedSermons, FeaturedEvents, FeaturedBooks,
- * Testimonials) — all five are "query a collection, show a card grid,
- * show an honest empty state" with nothing else distinct about their
- * layout, so the grid/empty-state chrome lives here once.
+ * Shared layout for the data-driven "Featured X" blocks (FeaturedSermons,
+ * FeaturedBooks) — "query a collection, show a card grid, show an honest
+ * empty state" with nothing else distinct about their layout, so the
+ * grid/empty-state chrome lives here once. FeaturedEvents/Testimonials
+ * outgrew this into their own bespoke layouts; MinistriesOverview (the
+ * original user of this) was removed 2026-08-11 once MinistryFeatureGrid's
+ * `list` layout fully superseded it.
  *
  * The empty state (2026-08-10 directive) is a real design moment — the
  * icon-feature-ring motif already used elsewhere, not just gray text — but

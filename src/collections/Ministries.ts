@@ -25,7 +25,16 @@ export const Ministries: CollectionConfig = {
     tenantField,
     { name: 'name', type: 'text', required: true, localized: true },
     slugField('ministries'),
-    { name: 'description', type: 'richText', editor: lexicalEditor(), localized: true },
+    {
+      name: 'shortDescription',
+      type: 'text',
+      localized: true,
+      maxLength: 160,
+      admin: {
+        description: 'One sentence for the Ministries overview page and homepage teasers. The full description below is for the individual ministry page only — never render it in a card grid.',
+      },
+    },
+    { name: 'description', type: 'richText', editor: lexicalEditor(), localized: true, admin: { description: 'Full description — individual ministry page only.' } },
     { name: 'leader', type: 'relationship', relationTo: 'leadership' },
     { name: 'image', type: 'upload', relationTo: 'media' },
     { name: 'order', type: 'number', defaultValue: 0, admin: { position: 'sidebar' } },

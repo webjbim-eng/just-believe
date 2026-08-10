@@ -18,9 +18,9 @@ const itemVariants = {
 const itemTransition: Transition = { type: 'spring', stiffness: 100, damping: 18 }
 
 /**
- * Cascading-children counterpart to ScrollReveal — for card grids
- * (PhotoCaptionGrid, MinistryFeatureGrid, MinistriesOverview's supporting
- * grid) where every card fading in at once reads as flat/mechanical.
+ * Cascading-children counterpart to ScrollReveal — for card grids and
+ * lists (PhotoCaptionGrid, MinistryFeatureGrid, /ministries' directory)
+ * where every item fading in at once reads as flat/mechanical.
  * `Stagger` triggers once on scroll-into-view and hands the timing down;
  * each `StaggerItem` just declares hidden/visible, no viewport logic of
  * its own — same "everything is emphasized, nothing is emphasized" fix

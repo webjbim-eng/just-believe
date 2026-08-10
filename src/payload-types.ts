@@ -455,6 +455,13 @@ export interface Ministry {
   tenant: number | Tenant;
   name: string;
   slug: string;
+  /**
+   * One sentence for the Ministries overview page and homepage teasers. The full description below is for the individual ministry page only — never render it in a card grid.
+   */
+  shortDescription?: string | null;
+  /**
+   * Full description — individual ministry page only.
+   */
   description?: {
     root: {
       type: string;
@@ -1411,6 +1418,7 @@ export interface MinistriesSelect<T extends boolean = true> {
   tenant?: T;
   name?: T;
   slug?: T;
+  shortDescription?: T;
   description?: T;
   leader?: T;
   image?: T;
