@@ -26,10 +26,22 @@ const itemTransition: Transition = { type: 'spring', stiffness: 100, damping: 18
  * its own — same "everything is emphasized, nothing is emphasized" fix
  * the wider design directive calls for, applied to motion timing.
  */
-export function Stagger({ children, className, staggerDelay = 0.08 }: { children: ReactNode; className?: string; staggerDelay?: number }) {
+export function Stagger({
+  children,
+  className,
+  staggerDelay = 0.08,
+  role,
+}: {
+  children: ReactNode
+  className?: string
+  staggerDelay?: number
+  /** motion.div renders a real <div> — role/aria-* pass through like any DOM attribute, e.g. role="list" when StaggerItem children should read as listitem to assistive tech. */
+  role?: string
+}) {
   return (
     <motion.div
       className={className}
+      role={role}
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true, margin: '0px 0px -60px 0px', amount: 0.1 }}
@@ -41,9 +53,9 @@ export function Stagger({ children, className, staggerDelay = 0.08 }: { children
   )
 }
 
-export function StaggerItem({ children, className }: { children: ReactNode; className?: string }) {
+export function StaggerItem({ children, className, role }: { children: ReactNode; className?: string; role?: string }) {
   return (
-    <motion.div className={className} variants={itemVariants} transition={itemTransition}>
+    <motion.div className={className} role={role} variants={itemVariants} transition={itemTransition}>
       {children}
     </motion.div>
   )

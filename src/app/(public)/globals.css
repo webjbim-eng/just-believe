@@ -379,6 +379,11 @@ a {
   min-width: 3rem;
 }
 
+.numbered-item-list {
+  display: grid;
+  gap: 1.75rem;
+}
+
 /*
  * Subtle decorative ray/glow motif — a restrained nod to the logo's fire
  * identity as atmosphere (see Hero.tsx), reused behind section headings

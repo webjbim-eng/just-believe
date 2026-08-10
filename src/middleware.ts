@@ -74,8 +74,43 @@ function devTenantOverrideHostname(request: NextRequest): string | null {
   return `${slug}.${platformRootDomain}`
 }
 
+/**
+ * admin.<root-domain> (e.g. admin.justbelieveintmissions.org) should BE
+ * the Payload admin panel at its root, not another way to reach the
+ * public site — this rewrites the path internally to /admin/* so the URL
+ * bar stays clean (no visible /admin suffix) while the actual route
+ * hasn't moved. Guards against double-prefixing a bookmarked deep link
+ * (e.g. admin.example.com/admin/collections/users) and leaves /api/* and
+ * Next internals alone since Payload's admin UI calls those as relative
+ * same-origin paths regardless of which host served the page.
+ *
+ * This is DNS/Vercel-domain-configuration-dependent — the code is ready,
+ * but admin.justbelieveintmissions.org won't actually reach this deployment
+ * until that subdomain is pointed here (see project docs / chat for the
+ * exact steps, that part isn't something this middleware can do).
+ */
+function isAdminHost(hostname: string): boolean {
+  return hostname.split(':')[0].startsWith('admin.')
+}
+
+function rewriteAdminHostPath(request: NextRequest): NextRequest['nextUrl'] | null {
+  const { pathname } = request.nextUrl
+  if (pathname.startsWith('/admin') || pathname.startsWith('/api') || pathname.startsWith('/_next')) {
+    return null
+  }
+  const url = request.nextUrl.clone()
+  url.pathname = `/admin${pathname === '/' ? '' : pathname}`
+  return url
+}
+
 export async function middleware(request: NextRequest) {
   const hostname = devTenantOverrideHostname(request) || request.headers.get('host') || ''
+
+  if (isAdminHost(hostname)) {
+    const rewrittenUrl = rewriteAdminHostPath(request)
+    return rewrittenUrl ? NextResponse.rewrite(rewrittenUrl) : NextResponse.next()
+  }
+
   const tenantId = await resolveTenantIdForHost(hostname, request.url)
 
   const requestHeaders = new Headers(request.headers)

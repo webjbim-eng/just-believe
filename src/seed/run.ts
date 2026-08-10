@@ -466,13 +466,24 @@ async function seed() {
           tenantMemberships: superAdminRoleId ? [{ tenant: tenant.id, role: superAdminRoleId }] : [],
         },
         overrideAccess: true,
+        // _verified: true above marks the record verified, but Payload's
+        // `verify: true` auth config still tries to *send* a verification
+        // email as part of create() regardless — this is the documented
+        // way to skip that. Needed because .env.local's Resend key isn't
+        // valid in every environment this seed runs in (fails the whole
+        // create() with an unhandled 401 otherwise, seed script included).
+        disableVerificationEmail: true,
       })
       payload.logger.info(`Created initial admin user ${adminEmail}.`)
     } else {
       payload.logger.info(`Admin user ${adminEmail} already exists — leaving as-is.`)
     }
   } else {
-    payload.logger.info('SEED_ADMIN_EMAIL/SEED_ADMIN_PASSWORD not set — skipping initial user. Create one at /admin.')
+    // NOT "create one at /admin" — Users.ts's create access explicitly
+    // denies unauthenticated requests (2026-08-11 finding), so Payload's
+    // usual open-registration-when-empty convenience doesn't apply here.
+    // SEED_ADMIN_EMAIL/PASSWORD via this script is the only path.
+    payload.logger.info('SEED_ADMIN_EMAIL/SEED_ADMIN_PASSWORD not set — skipping initial user. Re-run with those env vars set to create one.')
   }
 
   payload.logger.info('Seed complete.')
