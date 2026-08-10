@@ -31,9 +31,9 @@ export function MobileNavToggle({ items }: { items: NavItem[] }) {
           padding: '0.5rem',
         }}
       >
-        <span style={{ width: 24, height: 2, background: 'var(--color-text)', display: 'block' }} />
-        <span style={{ width: 24, height: 2, background: 'var(--color-text)', display: 'block' }} />
-        <span style={{ width: 24, height: 2, background: 'var(--color-text)', display: 'block' }} />
+        <span style={{ width: 24, height: 2, background: 'var(--color-text-on-dark)', display: 'block' }} />
+        <span style={{ width: 24, height: 2, background: 'var(--color-text-on-dark)', display: 'block' }} />
+        <span style={{ width: 24, height: 2, background: 'var(--color-text-on-dark)', display: 'block' }} />
       </button>
       {open && (
         <div
@@ -42,15 +42,16 @@ export function MobileNavToggle({ items }: { items: NavItem[] }) {
             top: '100%',
             left: 0,
             right: 0,
-            background: 'var(--color-base)',
-            borderBottom: '1px solid var(--color-border)',
+            background: 'rgba(11,23,48,0.97)',
+            backdropFilter: 'blur(8px)',
+            borderBottom: '1px solid var(--color-border-on-dark)',
             padding: '1rem 1.5rem 1.5rem',
           }}
         >
           <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: '1rem' }}>
             {items.map((item, index) => (
               <li key={index}>
-                <a href={item.link} style={{ textDecoration: 'none', color: 'var(--color-text)', fontWeight: 500 }} onClick={() => setOpen(false)}>
+                <a href={item.link} style={{ textDecoration: 'none', color: 'var(--color-text-on-dark)', fontWeight: 500 }} onClick={() => setOpen(false)}>
                   {item.label}
                 </a>
               </li>

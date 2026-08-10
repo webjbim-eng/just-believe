@@ -153,9 +153,15 @@ async function seed() {
         badgeImage: '/images/hands-on-bible.jpg',
         badgeHeading: "Faith: The Soul's Heartbeat",
         badgeSubheading: "God's Word, daily",
+        badgeHref: '/about',
         videoImage: '/images/hero-worship-sunset.jpg',
         videoHref: 'https://youtube.com/@jbiminc?si=Q26o6jq34zseGPaF',
-        stripImages: ['/images/worship-service.jpg', '/images/candlelight.jpg', '/images/community-hands.jpg', '/images/congregation-seated.jpg'],
+        quickLinks: [
+          { image: '/images/worship-service.jpg', label: 'Our Ministries', href: '/ministries' },
+          { image: '/images/congregation-seated.jpg', label: 'Upcoming Events', href: '#events' },
+          { image: '/images/prayer-silhouette.jpg', label: 'Prayer Requests', href: '/contact' },
+          { image: '/images/community-hands.jpg', label: 'Give', href: 'mailto:justbelieveinthot@gmail.com' },
+        ],
       },
     },
     {

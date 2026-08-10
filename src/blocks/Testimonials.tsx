@@ -39,7 +39,7 @@ export async function Testimonials({ config: blockConfig, tenantId }: { config: 
   const spotlight = docs[0]
 
   return (
-    <section className="section">
+    <section className="section decorative-flourish">
       <div className="container">
         <ScrollReveal>
           <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>

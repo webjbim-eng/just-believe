@@ -29,7 +29,7 @@ export async function FeaturedEvents({ config: blockConfig, tenantId }: { config
   })
 
   return (
-    <section className="section" style={{ background: 'var(--color-primary)' }}>
+    <section id="events" className="section decorative-flourish" style={{ background: 'var(--color-primary)' }}>
       <div className="container">
         <div className="split-layout">
           {blockConfig.image && (

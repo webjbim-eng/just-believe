@@ -38,7 +38,7 @@ export async function SiteNavigation({ tenantId }: { tenantId: string }) {
         style={{
           background: 'rgba(11,23,48,0.92)',
           backdropFilter: 'blur(8px)',
-          borderBottom: '1px solid var(--color-border)',
+          borderBottom: '1px solid var(--color-border-on-dark)',
           position: 'relative',
         }}
       >
@@ -60,7 +60,7 @@ export async function SiteNavigation({ tenantId }: { tenantId: string }) {
                 fontFamily: 'var(--font-heading), Georgia, serif',
                 fontWeight: 700,
                 fontSize: '1.125rem',
-                color: 'var(--color-text)',
+                color: 'var(--color-text-on-dark)',
                 lineHeight: 1.15,
               }}
             >
@@ -78,7 +78,7 @@ export async function SiteNavigation({ tenantId }: { tenantId: string }) {
                       href={item.link}
                       style={{
                         textDecoration: 'none',
-                        color: 'var(--color-text-muted)',
+                        color: 'var(--color-text-muted-on-dark)',
                         fontWeight: 500,
                         fontSize: 'var(--text-body-sm)',
                         letterSpacing: '0.01em',

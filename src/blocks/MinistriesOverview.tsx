@@ -27,7 +27,7 @@ export async function MinistriesOverview({ config: blockConfig, tenantId }: { co
   const [featured, ...supporting] = docs
 
   return (
-    <section className="section">
+    <section className="section decorative-flourish">
       <div className="container">
         <ScrollReveal>
           <h2 style={{ textAlign: 'center' }}>{blockConfig.heading || 'Our Ministries'}</h2>

@@ -31,7 +31,7 @@ export async function BlogSpotlight({ config: blockConfig, tenantId }: { config:
   const [featured, ...rest] = docs
 
   return (
-    <section className="section">
+    <section className="section decorative-flourish decorative-flourish--reverse">
       <div className="container">
         <ScrollReveal>
           <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1.5rem', marginBottom: '2.5rem' }}>

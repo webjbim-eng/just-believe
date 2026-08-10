@@ -551,34 +551,71 @@ a {
    as an absolutely-positioned pseudo-element via a wrapping element with
    position:relative, not a real DOM image (purely decorative, no content,
    so aria-hidden semantics come for free by not being in the a11y tree). */
+/*
+ * "Patterns all around the page" (2026-08-11 feedback) — every section
+ * that carries this class gets flourishes in BOTH opposite corners (::before
+ * top-right, ::after bottom-left) by default, not just one, so the motif
+ * reads as a page-wide texture rather than a single decoration someone
+ * might miss. --reverse flips which corners so consecutive sections don't
+ * all echo the same layout. Gold reads fine on both the cream page and the
+ * dark Royal Blue/Purple panels, so this is applied to dark sections too.
+ */
 .decorative-flourish {
   position: relative;
 }
 
-.decorative-flourish::before {
+.decorative-flourish::before,
+.decorative-flourish::after {
   content: '';
   position: absolute;
-  top: -2rem;
-  right: -2rem;
   width: 14rem;
   height: 14rem;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200' fill='none' stroke='%23C9A227' stroke-width='1.25'%3E%3Cpath d='M100 190C100 190 40 160 40 100C40 55 70 20 100 10'/%3E%3Cpath d='M60 150C60 150 30 120 45 80'/%3E%3Cpath d='M80 170C80 170 55 145 65 110'/%3E%3Cpath d='M110 40C110 40 140 55 135 85'/%3E%3Cpath d='M95 15C95 15 120 25 118 50'/%3E%3Ccircle cx='100' cy='10' r='4'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-size: contain;
-  opacity: 0.35;
+  opacity: 0.3;
   pointer-events: none;
   z-index: 0;
 }
 
-.decorative-flourish--left::before {
+.decorative-flourish::before {
+  top: -2rem;
+  right: -2rem;
+}
+
+.decorative-flourish::after {
+  bottom: -2rem;
+  left: -2rem;
+  transform: scaleX(-1) rotate(180deg);
+  opacity: 0.18;
+}
+
+.decorative-flourish--reverse::before {
   right: auto;
   left: -2rem;
   transform: scaleX(-1);
 }
 
+.decorative-flourish--reverse::after {
+  left: auto;
+  right: -2rem;
+  transform: rotate(180deg);
+}
+
 .decorative-flourish > * {
   position: relative;
   z-index: 1;
+}
+
+/*
+ * Very low-opacity page-wide dot-grid texture — the "premium paper" feel
+ * under everything, not tied to any one section. Brand-tinted (Royal
+ * Blue), barely perceptible at normal viewing distance by design (this is
+ * texture, not a visible decoration on its own).
+ */
+body {
+  background-image: radial-gradient(circle, rgba(30, 58, 138, 0.05) 1px, transparent 1px);
+  background-size: 24px 24px;
 }
 
 /* ---- Elegant italic display type (hero heading) ---- */
