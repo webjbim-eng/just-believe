@@ -150,11 +150,11 @@ Grouped by module. ID format: `FR-<MODULE>-<N>`.
 ### 3.8 Donations (FR-DON)
 | ID | Requirement |
 |---|---|
-| FR-DON-01 | Visitor can give a one-time or recurring monthly donation via PayPal Checkout, in any currency, auto-converted to USD (per intake questionnaire). |
+| FR-DON-01 | Visitor can give a one-time or recurring monthly donation via Paystack, in NGN or USD (donor's choice) — see [D4](00-decisions-log.md), updated 2026-08-11 from the original PayPal "any currency, auto-converted" behavior, which Paystack doesn't support. |
 | FR-DON-02 | Donations can be earmarked to a fund/campaign (general, mission projects, child sponsorship, special campaigns). |
 | FR-DON-03 | Successful donations trigger a receipt email to the donor and a notification to the configured donations-notification address. |
 | FR-DON-04 | Finance Manager can view donation history/exports; cannot edit public content. |
-| FR-DON-05 | Donation records store PayPal transaction reference, amount, currency, fund, donor info (or "anonymous"), and timestamp — never raw payment credentials. |
+| FR-DON-05 | Donation records store the Paystack transaction reference, amount, currency, fund, donor info (or "anonymous"), and timestamp — never raw payment credentials. |
 | FR-DON-06 | Bank Transfer and Zelle are displayed as informational giving instructions (not automated) per [D4](00-decisions-log.md). |
 
 ### 3.9 Newsletter (FR-NEWS)
@@ -247,9 +247,9 @@ Representative stories per role — the full backlog is derived from §3 during 
 - **AC3**: Changes stay in draft until Publish is clicked; the live site is unaffected until then.
 
 ### 5.4 Finance Manager — reconcile donations
-**As** a Finance Manager, **I want to** view and export donation records by fund and date range, **so that** I can reconcile against PayPal statements.
+**As** a Finance Manager, **I want to** view and export donation records by fund and date range, **so that** I can reconcile against Paystack statements.
 - **AC1**: Finance Manager role has `donations.view` and `donations.export` but not `content.*` or `users.*` permissions — verified by a permission-matrix test.
-- **AC2**: Every donation record shows the PayPal transaction ID, fund, amount, currency, and converted USD amount.
+- **AC2**: Every donation record shows the Paystack transaction reference, fund, amount, currency, and (for USD donations) the USD amount.
 - **AC3**: Export never includes payment credentials/tokens, only the transaction reference.
 
 ### 5.5 Super Admin — create a custom role

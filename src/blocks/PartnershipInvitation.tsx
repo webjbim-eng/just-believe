@@ -29,12 +29,12 @@ export type PartnershipInvitationConfig = {
  * pattern in the GoFundMe homepage reference researched for this build.
  *
  * 2026-08-10 directive asked for a "Give Once / Give Monthly / Support a
- * Mission"-style presentation, restrained rather than a hard sell. There is
- * no PayPal checkout built yet (src/collections/Donations.ts is a
- * system-writer record only — see its comment), so `ways` is presented as
- * three quiet, informational fund designations rather than three
- * functional payment buttons — real content (matches Donations.ts's `fund`
- * enum), not a fabricated checkout flow.
+ * Mission"-style presentation, restrained rather than a hard sell. `ways`
+ * stays informational (three quiet fund designations, matching
+ * Donations.ts's `fund` enum) rather than three separate payment buttons —
+ * the single real CTA below routes to /give (2026-08-11, Paystack
+ * checkout — see docs/02-architecture.md §6), where the donor picks the
+ * fund themselves.
  */
 export function PartnershipInvitation({ config }: { config: PartnershipInvitationConfig }) {
   const hasImage = Boolean(config.backgroundImage)

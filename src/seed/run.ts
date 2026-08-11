@@ -160,7 +160,7 @@ async function seed() {
           { image: '/images/worship-service.jpg', label: 'Our Ministries', href: '/ministries' },
           { image: '/images/congregation-seated.jpg', label: 'Upcoming Events', href: '#events' },
           { image: '/images/prayer-silhouette.jpg', label: 'Prayer Requests', href: '/contact' },
-          { image: '/images/community-hands.jpg', label: 'Give', href: 'mailto:justbelieveinthot@gmail.com' },
+          { image: '/images/community-hands.jpg', label: 'Give', href: '/give' },
         ],
       },
     },
@@ -246,8 +246,8 @@ async function seed() {
       config: {
         heading: 'Partner With Us',
         body: 'Every gift is stewarded with integrity and used to advance real ministry — transforming lives, strengthening families, and serving communities around the world.',
-        ctaLabel: 'Contact Us',
-        ctaHref: 'mailto:justbelieveinthot@gmail.com',
+        ctaLabel: 'Give Now',
+        ctaHref: '/give',
         backgroundImage: '/images/worship-service.jpg',
         ways: [
           { label: 'General Fund', description: 'Support the ongoing work of JBIM across every ministry area.' },
@@ -388,7 +388,8 @@ async function seed() {
     { label: 'Ministries', link: '/ministries', order: 2 },
     { label: 'Blog', link: '/blog', order: 3 },
     { label: 'Books', link: '/books', order: 4 },
-    { label: 'Contact', link: '/contact', order: 5 },
+    { label: 'Give', link: '/give', order: 5 },
+    { label: 'Contact', link: '/contact', order: 6 },
   ]
 
   if (!existingNavigation) {

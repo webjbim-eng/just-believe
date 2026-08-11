@@ -64,7 +64,7 @@ export const permissionCatalog: PermissionSeed[] = [
 
   { key: 'donations.view', module: 'Donations', description: 'View donation records' },
   { key: 'donations.export', module: 'Donations', description: 'Export donation records' },
-  { key: 'donations.settings', module: 'Donations', description: 'Configure PayPal/fund settings' },
+  { key: 'donations.settings', module: 'Donations', description: 'Configure Paystack/fund settings' },
 
   { key: 'analytics.view', module: 'Analytics', description: 'View the analytics dashboard' },
   { key: 'seo.manage', module: 'SEO', description: 'Edit SEO metadata across content' },

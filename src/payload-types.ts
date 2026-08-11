@@ -219,14 +219,17 @@ export interface Tenant {
     supportedLocales?: ('en' | 'fr' | 'it' | 'es')[] | null;
   };
   /**
-   * Per-tenant PayPal Checkout config — never a shared platform-wide account
+   * Per-tenant Paystack config — never a shared platform-wide account. Use test-mode keys (pk_test_/sk_test_) until this tenant is ready to accept live donations.
    */
-  paypal?: {
+  paystack?: {
     /**
-     * Encrypted at rest
+     * Safe to expose client-side — used to open the Paystack checkout popup (pk_test_... or pk_live_...)
      */
-    clientId?: string | null;
-    merchantEmail?: string | null;
+    publicKey?: string | null;
+    /**
+     * Server-side only — verifies transactions and creates recurring Plans. Never sent to the browser (sk_test_... or sk_live_...)
+     */
+    secretKey?: string | null;
   };
   /**
    * Suspending/deleting a tenant is Platform Super Admin-only and audit-logged (FR-TENANT-05)
@@ -1108,15 +1111,21 @@ export interface Donation {
    */
   donorName?: string | null;
   donorEmail?: string | null;
-  amount: number;
-  currency: string;
-  usdAmount: number;
-  fund: 'general' | 'mission-projects' | 'child-sponsorship' | 'special-campaign';
-  paypalTransactionId: string;
   /**
-   * Set only for recurring donations
+   * Major currency unit (e.g. 5000 NGN, not kobo) — converted from Paystack's subunit amount on verify
    */
-  paypalSubscriptionId?: string | null;
+  amount: number;
+  currency: 'NGN' | 'USD';
+  /**
+   * Only populated when currency is already USD (amount === usdAmount). No live FX rate is integrated, so NGN donations leave this blank rather than show a fabricated conversion — see docs/00-decisions-log.md.
+   */
+  usdAmount?: number | null;
+  fund: 'general' | 'mission-projects' | 'child-sponsorship' | 'special-campaign';
+  paystackReference: string;
+  /**
+   * Set only when this charge belongs to a recurring Plan (monthly giving)
+   */
+  paystackSubscriptionCode?: string | null;
   status: 'completed' | 'refunded' | 'failed';
   updatedAt: string;
   createdAt: string;
@@ -1343,11 +1352,11 @@ export interface TenantsSelect<T extends boolean = true> {
         defaultLocale?: T;
         supportedLocales?: T;
       };
-  paypal?:
+  paystack?:
     | T
     | {
-        clientId?: T;
-        merchantEmail?: T;
+        publicKey?: T;
+        secretKey?: T;
       };
   status?: T;
   updatedAt?: T;
@@ -1964,8 +1973,8 @@ export interface DonationsSelect<T extends boolean = true> {
   currency?: T;
   usdAmount?: T;
   fund?: T;
-  paypalTransactionId?: T;
-  paypalSubscriptionId?: T;
+  paystackReference?: T;
+  paystackSubscriptionCode?: T;
   status?: T;
   updatedAt?: T;
   createdAt?: T;

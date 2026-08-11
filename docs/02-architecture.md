@@ -184,12 +184,13 @@ jbim-platform/
 
 ---
 
-## 6. Payments Architecture (PayPal)
+## 6. Payments Architecture (Paystack)
 
-1. Client-side PayPal Checkout / Subscriptions button renders on `/donate`, scoped to the tenant's configured PayPal merchant/client ID (per-tenant, stored encrypted in Tenant settings — never a platform-wide shared PayPal account).
-2. On approval, the client calls our `api/donations/capture` route, which **re-verifies the transaction server-side against PayPal's API** before writing a `Donations` record — the client is never trusted to report success.
-3. PayPal webhooks (`api/webhooks/paypal`) handle subscription renewals/cancellations and payment disputes asynchronously, with signature verification on every event.
-4. Receipt email (Resend) fires from a Payload `afterChange` hook on `Donations`, not from the client — guarantees a receipt is sent exactly once per confirmed donation regardless of client network conditions.
+1. `/give` renders the donation form server-side, reading only the resolved tenant's `paystack.publicKey` (never `secretKey`) via the Local API and passing it to the client `GiveForm` component. Paystack Inline JS (loaded via `next/script`, not an npm dependency) opens the checkout popup using that public key — per-tenant, stored in `Tenants.paystack` (never a platform-wide shared Paystack account).
+2. Recurring (monthly) donations need a Paystack Plan before Inline JS can attach a subscription to a charge, and Plan amounts are donor-chosen rather than fixed tiers — so before opening the popup, the client calls `api/donations/prepare`, which creates a one-off Plan for that exact amount/currency via the tenant's `secretKey` and returns the `planCode`.
+3. On popup success, the client calls `api/donations/verify` with the returned reference, which **re-verifies the transaction server-side against Paystack's Verify Transaction API** before writing a `Donations` record — the client is never trusted to report success. Writes are idempotent on `paystackReference` (unique), since the webhook below can race this same write.
+4. Paystack webhooks post to a **per-tenant** path, `api/webhooks/paystack/[tenantSlug]`, not one shared endpoint — the tenant has to be known from the URL before the `x-paystack-signature` header can be verified (HMAC-SHA512 of the raw body using that tenant's `secretKey`), since which tenant's secret key to check the signature against can't itself come from the unverified payload. Handles `charge.success` as the backstop path for any donation the client-side verify call missed (browser closed mid-flow, etc.) — same idempotent-on-`paystackReference` write as above.
+5. Receipt email (Resend) fires from a Payload `afterChange` hook on `Donations`, not from the client — guarantees a receipt is sent exactly once per confirmed donation regardless of client network conditions. *(Not yet implemented — see docs/00-decisions-log.md open items; this build covers the checkout → verified-record path only.)*
 
 ---
 
@@ -208,7 +209,8 @@ Per [D3](00-decisions-log.md), multi-tenancy itself (isolation, per-tenant brand
 - Public self-serve tenant signup + tenant-level billing.
 - Native mobile apps.
 - In-house live-streaming (V1 embeds YouTube/external streams only).
-- Multi-currency donation *display* beyond PayPal's own auto-conversion (already covered per the intake questionnaire).
+- Multi-currency donation support beyond the confirmed NGN/USD toggle (Paystack doesn't auto-convert "any currency" the way the original PayPal plan assumed — see [D4](00-decisions-log.md)) — no live FX rate integration exists, so a real currency-conversion display is deferred.
+- Donation receipt emails (§6 item 5) — the verify/webhook routes write the `Donations` record; the Resend `afterChange` hook to actually send the receipt is not yet built.
 
 ---
 

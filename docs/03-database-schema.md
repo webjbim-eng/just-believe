@@ -77,7 +77,7 @@ erDiagram
 | branding.logoLight / logoDark | upload → Media | |
 | branding.colors | group (primary/secondary/accent hex) | |
 | defaultLocale / supportedLocales | select / array | seeds Payload's `localization` config per tenant at render time |
-| paypal.clientId / merchantEmail | text (clientId encrypted at rest) | FR-DON-01 |
+| paystack.publicKey / secretKey | text (secretKey read-restricted to `website.settings` permission / Platform Super Admin at the field level — not encrypted at rest, see docs/04-auth-rbac.md) | FR-DON-01 |
 | status | select: active / suspended | FR-TENANT-05 |
 
 ### User
@@ -160,7 +160,7 @@ submitterName, content (localized), photo, status (submitted/approved/published 
 email, confirmed (checkbox), confirmedAt, unsubscribedAt (nullable — presence = inactive).
 
 ### Donation
-donorName (nullable if anonymous), donorEmail, amount, currency, usdAmount, fund (select: general/mission-projects/child-sponsorship/special-campaign), paypalTransactionId (unique), paypalSubscriptionId (nullable, recurring only), status (completed/refunded/failed), createdAt. **Never stores card/PayPal credentials** — only the transaction reference (FR-DON-05).
+donorName (nullable if anonymous), donorEmail, amount (major unit, e.g. 5000 not 500000 kobo), currency (select: NGN/USD), usdAmount (nullable — only set when currency is already USD; no live FX conversion for NGN, see docs/00-decisions-log.md), fund (select: general/mission-projects/child-sponsorship/special-campaign), paystackReference (unique), paystackSubscriptionCode (nullable, set only when the charge belongs to a recurring Plan), status (completed/refunded/failed), createdAt. **Never stores card/Paystack credentials** — only the transaction reference (FR-DON-05).
 
 ### AuditLog
 user (relationship → User), action (create/update/delete), collectionSlug, documentId, previousValue (jsonb), newValue (jsonb), timestamp, tenant. No update/delete route exposed anywhere in the API (FR-AUDIT-03).
@@ -176,7 +176,7 @@ user (relationship → User), action (create/update/delete), collectionSlug, doc
 ## 3. Indexing & Integrity Notes
 - Every tenant-owned table: composite index on `(tenant_id, status)` or `(tenant_id, slug)` as appropriate — access-control filters always include tenant, so it must never be a full scan.
 - `Tenant.domains` and `Tenant.slug`: unique constraints at the DB level, not just app-level validation — a duplicate domain must be impossible to insert even via a race condition.
-- `Donation.paypalTransactionId`: unique constraint — idempotency guard against a webhook being delivered twice (PayPal does not guarantee exactly-once delivery).
+- `Donation.paystackReference`: unique constraint — idempotency guard against the client-side verify call and the webhook both trying to record the same charge (see docs/02-architecture.md §6).
 - `AuditLog`: append-only at the database level — the Payload access-control `update`/`delete` functions return `false` unconditionally, and this is additionally enforced with a Postgres `REVOKE UPDATE, DELETE` on the underlying role Payload connects as, so it's not solely an application-layer promise.
 
 ---

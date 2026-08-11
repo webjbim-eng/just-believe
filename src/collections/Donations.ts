@@ -7,18 +7,23 @@ import { createAuditAfterChangeHook, createAuditAfterDeleteHook } from '../hooks
 
 /**
  * Records of truth for donations are written exclusively by the server-side
- * PayPal capture route and webhook handler (docs/02-architecture.md §6),
- * both of which call the Local API with `overrideAccess: true` after
- * independently re-verifying the transaction against PayPal — never by a
- * client-supplied create/update through this collection's normal access
- * path. Same "system-writer, admin-reads-only" shape as AuditLogs.ts.
+ * Paystack verify route (src/app/api/donations/verify/route.ts) and webhook
+ * handler (src/app/api/webhooks/paystack/[tenantSlug]/route.ts), both of
+ * which call the Local API with `overrideAccess: true` after independently
+ * re-verifying the transaction against Paystack — never by a client-supplied
+ * create/update through this collection's normal access path. Same
+ * "system-writer, admin-reads-only" shape as AuditLogs.ts. A recurring
+ * donation produces one row per successful charge (the initial payment and
+ * every subsequent monthly charge each fire their own `charge.success`
+ * event) rather than a separate subscription entity — matches how a real
+ * donation ledger reads.
  */
 export const Donations: CollectionConfig = {
   slug: 'donations',
   admin: {
-    useAsTitle: 'paypalTransactionId',
+    useAsTitle: 'paystackReference',
     group: 'Giving',
-    defaultColumns: ['donorName', 'amount', 'fund', 'status', 'createdAt'],
+    defaultColumns: ['donorName', 'amount', 'currency', 'fund', 'status', 'createdAt'],
   },
   access: {
     read: composeAccess(hasPermission('donations.view'), withTenantScope()),
@@ -34,17 +39,27 @@ export const Donations: CollectionConfig = {
     tenantField,
     { name: 'donorName', type: 'text', admin: { description: 'Empty if the donor chose to give anonymously' } },
     { name: 'donorEmail', type: 'email' },
-    { name: 'amount', type: 'number', required: true },
-    { name: 'currency', type: 'text', required: true },
-    { name: 'usdAmount', type: 'number', required: true },
+    { name: 'amount', type: 'number', required: true, admin: { description: 'Major currency unit (e.g. 5000 NGN, not kobo) — converted from Paystack\'s subunit amount on verify' } },
+    { name: 'currency', type: 'select', required: true, options: ['NGN', 'USD'] },
+    {
+      name: 'usdAmount',
+      type: 'number',
+      admin: {
+        description: 'Only populated when currency is already USD (amount === usdAmount). No live FX rate is integrated, so NGN donations leave this blank rather than show a fabricated conversion — see docs/00-decisions-log.md.',
+      },
+    },
     {
       name: 'fund',
       type: 'select',
       required: true,
       options: ['general', 'mission-projects', 'child-sponsorship', 'special-campaign'],
     },
-    { name: 'paypalTransactionId', type: 'text', required: true, unique: true },
-    { name: 'paypalSubscriptionId', type: 'text', admin: { description: 'Set only for recurring donations' } },
+    { name: 'paystackReference', type: 'text', required: true, unique: true },
+    {
+      name: 'paystackSubscriptionCode',
+      type: 'text',
+      admin: { description: 'Set only when this charge belongs to a recurring Plan (monthly giving)' },
+    },
     {
       name: 'status',
       type: 'select',
