@@ -14,7 +14,7 @@ export const Leadership: CollectionConfig = {
   slug: 'leadership',
   admin: {
     useAsTitle: 'name',
-    group: 'Content',
+    group: 'Ministry',
     defaultColumns: ['name', 'title', 'isFounder'],
   },
   access: publicContentAccess('leadership.manage'),

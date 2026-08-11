@@ -8,7 +8,7 @@ export const VolunteerApplications: CollectionConfig = {
   slug: 'volunteer-applications',
   admin: {
     useAsTitle: 'name',
-    group: 'Care',
+    group: 'Engagement',
     defaultColumns: ['name', 'areaOfInterest', 'status', 'createdAt'],
   },
   access: submissionAccess('volunteers.manage', 'volunteers.manage'),

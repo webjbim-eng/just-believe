@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { ScrollReveal } from '../../../components/ScrollReveal'
 import { Stagger, StaggerItem } from '../../../components/Stagger'
+import { ContactForm } from '../../../components/ContactForm'
 
 export const metadata: Metadata = {
   title: 'Contact — Just Believe International Missions',
@@ -65,6 +66,16 @@ export default function ContactPage() {
                 </Stagger>
               </div>
             </div>
+          </ScrollReveal>
+        </div>
+      </section>
+
+      <section className="section section--surface">
+        <div className="container container--narrow">
+          <ScrollReveal>
+            <h2 style={{ textAlign: 'center' }}>Send Us a Message</h2>
+            <hr className="heading-underline heading-underline--center" />
+            <ContactForm />
           </ScrollReveal>
         </div>
       </section>

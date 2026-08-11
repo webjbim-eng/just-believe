@@ -17,6 +17,7 @@ import { createAuditAfterChangeHook, createAuditAfterDeleteHook } from '../hooks
  */
 export const SiteSettings: CollectionConfig = {
   slug: 'site-settings',
+  labels: { singular: 'Website Settings', plural: 'Website Settings' },
   admin: {
     useAsTitle: 'siteName',
     group: 'Website',

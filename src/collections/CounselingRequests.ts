@@ -15,7 +15,7 @@ export const CounselingRequests: CollectionConfig = {
   slug: 'counseling-requests',
   admin: {
     useAsTitle: 'name',
-    group: 'Care',
+    group: 'Engagement',
     defaultColumns: ['name', 'type', 'status', 'assignedTo', 'createdAt'],
   },
   access: submissionAccess('counseling.view', 'counseling.manage'),

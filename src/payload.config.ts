@@ -20,7 +20,9 @@ import { Footer } from './collections/Footer'
 import { HomepageLayout } from './collections/HomepageLayout'
 import { Leadership } from './collections/Leadership'
 import { Media } from './collections/Media'
+import { Messages } from './collections/Messages'
 import { Ministries } from './collections/Ministries'
+import { Missions } from './collections/Missions'
 import { Navigation } from './collections/Navigation'
 import { NewsletterSubscribers } from './collections/NewsletterSubscribers'
 import { Pages } from './collections/Pages'
@@ -43,6 +45,21 @@ const dirname = path.dirname(filename)
 export default buildConfig({
   admin: {
     user: Users.slug,
+    components: {
+      views: {
+        // Payload's default post-login route is already /admin — replacing
+        // just this view makes the Ministry Dashboard the default
+        // authenticated experience with no separate redirect logic needed.
+        dashboard: {
+          Component: '/src/components/admin/MinistryDashboard.tsx#MinistryDashboard',
+        },
+      },
+      beforeNavLinks: ['/src/components/admin/ViewWebsiteLink.tsx#ViewWebsiteLink'],
+      graphics: {
+        Logo: '/src/components/admin/AdminLogo.tsx#AdminLogo',
+        Icon: '/src/components/admin/AdminLogo.tsx#AdminIcon',
+      },
+    },
   },
   collections: [
     // Platform / access control
@@ -58,6 +75,7 @@ export default buildConfig({
     // Content
     Pages,
     Ministries,
+    Missions,
     Leadership,
     Events,
     EventRegistrations,
@@ -72,6 +90,7 @@ export default buildConfig({
     Footer,
     HomepageLayout,
     // Care / submissions
+    Messages,
     PrayerRequests,
     CounselingRequests,
     VolunteerApplications,

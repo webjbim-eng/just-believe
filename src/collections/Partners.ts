@@ -14,7 +14,7 @@ export const Partners: CollectionConfig = {
   slug: 'partners',
   admin: {
     useAsTitle: 'orgName',
-    group: 'Care',
+    group: 'Ministry',
     defaultColumns: ['orgName', 'engagementType', 'status'],
   },
   access: submissionAccess('partners.manage', 'partners.manage'),

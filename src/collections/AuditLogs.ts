@@ -13,9 +13,10 @@ import { withTenantScope } from '../access/withTenantScope'
  */
 export const AuditLogs: CollectionConfig = {
   slug: 'audit-logs',
+  labels: { singular: 'Activity Log', plural: 'Activity Log' },
   admin: {
     useAsTitle: 'documentId',
-    group: 'Access Control',
+    group: 'Administration',
     defaultColumns: ['collectionSlug', 'action', 'user', 'documentId', 'createdAt'],
   },
   access: {

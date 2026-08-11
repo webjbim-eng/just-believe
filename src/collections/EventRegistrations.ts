@@ -8,7 +8,7 @@ export const EventRegistrations: CollectionConfig = {
   slug: 'event-registrations',
   admin: {
     useAsTitle: 'name',
-    group: 'Content',
+    group: 'Engagement',
     defaultColumns: ['name', 'event', 'registeredAt', 'waitlisted'],
   },
   access: submissionAccess('events.registrations.view', 'events.manage'),

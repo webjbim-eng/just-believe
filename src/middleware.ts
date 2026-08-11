@@ -107,8 +107,27 @@ export async function middleware(request: NextRequest) {
   const hostname = devTenantOverrideHostname(request) || request.headers.get('host') || ''
 
   if (isAdminHost(hostname)) {
+    // 2026-08-11 fix: this used to skip tenant resolution entirely for
+    // admin.* hosts, which would have silently broken every permission
+    // check on the new Ministry Dashboard (hasPermission() requires a
+    // resolved tenant) the moment this subdomain actually went live —
+    // admin.justbelieveintmissions.org is JBIM's own admin, the SAME
+    // tenant as the main domain, not a tenant-less request. Resolve
+    // against the bare root domain (strip the "admin." prefix) since a
+    // Tenant's configured domain is the root, not the admin subdomain.
+    const bareHost = hostname.split(':')[0]
+    const rootHost = bareHost.replace(/^admin\./, '')
+    const tenantId = await resolveTenantIdForHost(rootHost, request.url)
+
+    const requestHeaders = new Headers(request.headers)
+    if (tenantId) {
+      requestHeaders.set(TENANT_HEADER, tenantId)
+    }
+
     const rewrittenUrl = rewriteAdminHostPath(request)
-    return rewrittenUrl ? NextResponse.rewrite(rewrittenUrl) : NextResponse.next()
+    return rewrittenUrl
+      ? NextResponse.rewrite(rewrittenUrl, { request: { headers: requestHeaders } })
+      : NextResponse.next({ request: { headers: requestHeaders } })
   }
 
   const tenantId = await resolveTenantIdForHost(hostname, request.url)

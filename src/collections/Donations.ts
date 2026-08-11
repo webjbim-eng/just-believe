@@ -17,7 +17,7 @@ export const Donations: CollectionConfig = {
   slug: 'donations',
   admin: {
     useAsTitle: 'paypalTransactionId',
-    group: 'Care',
+    group: 'Giving',
     defaultColumns: ['donorName', 'amount', 'fund', 'status', 'createdAt'],
   },
   access: {

@@ -12,6 +12,7 @@ export const Resources: CollectionConfig = {
     group: 'Content',
     defaultColumns: ['title', 'type', 'gated'],
   },
+  versions: { drafts: true },
   access: publicContentAccess('resources.manage'),
   hooks: {
     beforeChange: [setTenantFromRequest],

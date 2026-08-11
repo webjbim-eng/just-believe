@@ -9,7 +9,7 @@ export const Events: CollectionConfig = {
   slug: 'events',
   admin: {
     useAsTitle: 'title',
-    group: 'Content',
+    group: 'Engagement',
     defaultColumns: ['title', 'type', 'startDate', '_status'],
   },
   versions: { drafts: true },

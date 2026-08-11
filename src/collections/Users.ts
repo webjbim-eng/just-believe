@@ -57,7 +57,7 @@ export const Users: CollectionConfig = {
   },
   admin: {
     useAsTitle: 'email',
-    group: 'Access Control',
+    group: 'Administration',
     defaultColumns: ['name', 'email', 'status'],
   },
   access: {

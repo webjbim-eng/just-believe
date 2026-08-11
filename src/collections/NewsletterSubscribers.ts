@@ -8,7 +8,7 @@ export const NewsletterSubscribers: CollectionConfig = {
   slug: 'newsletter-subscribers',
   admin: {
     useAsTitle: 'email',
-    group: 'Care',
+    group: 'Engagement',
     defaultColumns: ['email', 'confirmed', 'unsubscribedAt'],
   },
   access: submissionAccess('newsletter.manage', 'newsletter.manage'),

@@ -11,7 +11,7 @@ export const Ministries: CollectionConfig = {
   slug: 'ministries',
   admin: {
     useAsTitle: 'name',
-    group: 'Content',
+    group: 'Ministry',
     defaultColumns: ['name', 'leader', 'order'],
   },
   versions: { drafts: true },

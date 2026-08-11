@@ -38,7 +38,7 @@ export const Testimonials: CollectionConfig = {
   slug: 'testimonials',
   admin: {
     useAsTitle: 'submitterName',
-    group: 'Content',
+    group: 'Ministry',
     defaultColumns: ['submitterName', 'status'],
   },
   access: {

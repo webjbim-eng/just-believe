@@ -9,7 +9,7 @@ export const PrayerRequests: CollectionConfig = {
   slug: 'prayer-requests',
   admin: {
     useAsTitle: 'name',
-    group: 'Care',
+    group: 'Engagement',
     defaultColumns: ['name', 'status', 'assignedTo', 'createdAt'],
   },
   access: submissionAccess('prayer.view', 'prayer.manage'),

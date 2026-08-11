@@ -435,16 +435,40 @@ async function seed() {
       overrideAccess: true,
     })
 
-    if (existing.docs[0]) {
-      roleIdByName.set(roleDef.name, existing.docs[0].id)
-      continue
-    }
-
     const permissionIds = roleDef.permissions.map((key) => {
       const id = permissionIdByKey.get(key)
       if (id === undefined) throw new Error(`Seed role "${roleDef.name}" references unknown permission "${key}"`)
       return id
     })
+
+    if (existing.docs[0]) {
+      roleIdByName.set(roleDef.name, existing.docs[0].id)
+      // 2026-08-11 fix: this branch used to just `continue`, meaning a
+      // permission key added to systemRoleDefinitions after a role's first
+      // seed run never reached the DB — discovered when 'messages.view'
+      // was added to Super Administrator's permission list here, but the
+      // already-existing role in the DB still only had the older set,
+      // silently 404ing the Messages admin screen (submissionAccess's read
+      // access requires that permission; Payload's admin treats denied
+      // read access as not-found). Surgical/additive only, same as the
+      // Ministries.shortDescription backfill above — only adds permission
+      // IDs present in code but missing in the DB, never removes ones an
+      // admin may have intentionally trimmed from a system role since.
+      const existingPermissionIds = new Set(
+        (existing.docs[0].permissions ?? []).map((p) => (typeof p === 'object' ? p.id : p)),
+      )
+      const missingIds = permissionIds.filter((id) => !existingPermissionIds.has(id))
+      if (missingIds.length > 0) {
+        await payload.update({
+          collection: 'roles',
+          id: existing.docs[0].id,
+          data: { permissions: [...existingPermissionIds, ...missingIds] },
+          overrideAccess: true,
+        })
+        payload.logger.info(`Backfilled ${missingIds.length} permission(s) onto role "${roleDef.name}".`)
+      }
+      continue
+    }
 
     const created = await payload.create({
       collection: 'roles',

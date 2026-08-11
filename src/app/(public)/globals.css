@@ -913,3 +913,16 @@ body {
     grid-template-columns: 1fr;
   }
 }
+
+/* ---- Contact form's name/email row ---- */
+.contact-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+@media (max-width: 540px) {
+  .contact-form-row {
+    grid-template-columns: 1fr;
+  }
+}

@@ -26,6 +26,7 @@ export const permissionCatalog: PermissionSeed[] = [
 
   { key: 'pages.publish', module: 'Content', description: 'Create/edit/publish arbitrary Pages' },
   { key: 'ministries.manage', module: 'Content', description: 'Manage Ministries program pages' },
+  { key: 'missions.manage', module: 'Content', description: 'Manage Missions (specific mission trips/projects)' },
   { key: 'leadership.manage', module: 'Content', description: 'Manage Leadership profiles and the Founder page' },
 
   { key: 'events.manage', module: 'Events', description: 'Create/edit/publish Events' },
@@ -51,6 +52,9 @@ export const permissionCatalog: PermissionSeed[] = [
 
   { key: 'counseling.view', module: 'Counseling', description: 'View counseling requests' },
   { key: 'counseling.manage', module: 'Counseling', description: 'Update status/assignment/notes on counseling requests' },
+
+  { key: 'messages.view', module: 'Messages', description: 'View website contact enquiries' },
+  { key: 'messages.manage', module: 'Messages', description: 'Update status/assignment on website contact enquiries' },
 
   { key: 'volunteers.manage', module: 'Volunteers', description: 'Review and manage volunteer applications' },
   { key: 'partners.manage', module: 'Partners', description: 'Manage partner records and logos' },

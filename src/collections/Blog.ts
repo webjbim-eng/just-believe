@@ -9,6 +9,7 @@ import { createAuditAfterChangeHook, createAuditAfterDeleteHook } from '../hooks
 
 export const BlogPosts: CollectionConfig = {
   slug: 'blog-posts',
+  labels: { singular: 'Blog Post', plural: 'Blog' },
   admin: {
     useAsTitle: 'title',
     group: 'Content',

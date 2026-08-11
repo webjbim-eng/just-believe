@@ -15,6 +15,7 @@ import { createAuditAfterChangeHook, createAuditAfterDeleteHook } from '../hooks
  */
 export const HomepageLayout: CollectionConfig = {
   slug: 'homepage-layout',
+  labels: { singular: 'Home', plural: 'Home' },
   admin: {
     useAsTitle: 'tenant',
     group: 'Website',

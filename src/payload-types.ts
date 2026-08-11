@@ -77,6 +77,7 @@ export interface Config {
     tags: Tag;
     pages: Page;
     ministries: Ministry;
+    missions: Mission;
     leadership: Leadership;
     events: Event;
     'event-registrations': EventRegistration;
@@ -89,6 +90,7 @@ export interface Config {
     navigation: Navigation;
     footer: Footer;
     'homepage-layout': HomepageLayout;
+    messages: Message;
     'prayer-requests': PrayerRequest;
     'counseling-requests': CounselingRequest;
     'volunteer-applications': VolunteerApplication;
@@ -113,6 +115,7 @@ export interface Config {
     tags: TagsSelect<false> | TagsSelect<true>;
     pages: PagesSelect<false> | PagesSelect<true>;
     ministries: MinistriesSelect<false> | MinistriesSelect<true>;
+    missions: MissionsSelect<false> | MissionsSelect<true>;
     leadership: LeadershipSelect<false> | LeadershipSelect<true>;
     events: EventsSelect<false> | EventsSelect<true>;
     'event-registrations': EventRegistrationsSelect<false> | EventRegistrationsSelect<true>;
@@ -125,6 +128,7 @@ export interface Config {
     navigation: NavigationSelect<false> | NavigationSelect<true>;
     footer: FooterSelect<false> | FooterSelect<true>;
     'homepage-layout': HomepageLayoutSelect<false> | HomepageLayoutSelect<true>;
+    messages: MessagesSelect<false> | MessagesSelect<true>;
     'prayer-requests': PrayerRequestsSelect<false> | PrayerRequestsSelect<true>;
     'counseling-requests': CounselingRequestsSelect<false> | CounselingRequestsSelect<true>;
     'volunteer-applications': VolunteerApplicationsSelect<false> | VolunteerApplicationsSelect<true>;
@@ -525,6 +529,53 @@ export interface Leadership {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "missions".
+ */
+export interface Mission {
+  id: number;
+  tenant: number | Tenant;
+  name: string;
+  slug: string;
+  /**
+   * One sentence for overview/listing contexts. The full description below is for the individual mission page only.
+   */
+  shortDescription?: string | null;
+  /**
+   * Full description — individual mission page only.
+   */
+  description?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  location?: string | null;
+  phase?: ('planning' | 'active' | 'completed') | null;
+  startDate?: string | null;
+  endDate?: string | null;
+  image?: (number | null) | Media;
+  order?: number | null;
+  seo?: {
+    metaTitle?: string | null;
+    metaDescription?: string | null;
+    ogImage?: (number | null) | Media;
+    noIndex?: boolean | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "events".
  */
 export interface Event {
@@ -676,6 +727,7 @@ export interface Resource {
   gated?: boolean | null;
   updatedAt: string;
   createdAt: string;
+  _status?: ('draft' | 'published') | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -868,6 +920,22 @@ export interface HomepageLayout {
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "messages".
+ */
+export interface Message {
+  id: number;
+  tenant: number | Tenant;
+  name: string;
+  email: string;
+  subject: string;
+  message: string;
+  status?: ('new' | 'read' | 'in-progress' | 'resolved' | 'archived') | null;
+  assignedTo?: (number | null) | User;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1099,6 +1167,10 @@ export interface PayloadLockedDocument {
         value: number | Ministry;
       } | null)
     | ({
+        relationTo: 'missions';
+        value: number | Mission;
+      } | null)
+    | ({
         relationTo: 'leadership';
         value: number | Leadership;
       } | null)
@@ -1145,6 +1217,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'homepage-layout';
         value: number | HomepageLayout;
+      } | null)
+    | ({
+        relationTo: 'messages';
+        value: number | Message;
       } | null)
     | ({
         relationTo: 'prayer-requests';
@@ -1437,6 +1513,34 @@ export interface MinistriesSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "missions_select".
+ */
+export interface MissionsSelect<T extends boolean = true> {
+  tenant?: T;
+  name?: T;
+  slug?: T;
+  shortDescription?: T;
+  description?: T;
+  location?: T;
+  phase?: T;
+  startDate?: T;
+  endDate?: T;
+  image?: T;
+  order?: T;
+  seo?:
+    | T
+    | {
+        metaTitle?: T;
+        metaDescription?: T;
+        ogImage?: T;
+        noIndex?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "leadership_select".
  */
 export interface LeadershipSelect<T extends boolean = true> {
@@ -1558,6 +1662,7 @@ export interface ResourcesSelect<T extends boolean = true> {
   gated?: T;
   updatedAt?: T;
   createdAt?: T;
+  _status?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1692,6 +1797,21 @@ export interface HomepageLayoutSelect<T extends boolean = true> {
   updatedAt?: T;
   createdAt?: T;
   _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "messages_select".
+ */
+export interface MessagesSelect<T extends boolean = true> {
+  tenant?: T;
+  name?: T;
+  email?: T;
+  subject?: T;
+  message?: T;
+  status?: T;
+  assignedTo?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
