@@ -1,6 +1,7 @@
 import type { ComponentType } from 'react'
 import { Hero } from './Hero'
-import { HeroMediaStrip } from './HeroMediaStrip'
+import { QuickLinksBar } from './QuickLinksBar'
+import { FoundationStatement } from './FoundationStatement'
 import { WelcomeMessage } from './WelcomeMessage'
 import { MinistryPathways } from './MinistryPathways'
 import { PhotoCaptionGrid } from './PhotoCaptionGrid'
@@ -26,7 +27,8 @@ import { Testimonials } from './Testimonials'
  */
 export const blockRegistry: Record<string, ComponentType<{ config: any; tenantId: string }>> = {
   Hero,
-  HeroMediaStrip,
+  QuickLinksBar,
+  FoundationStatement,
   WelcomeMessage,
   MinistryPathways,
   PhotoCaptionGrid,

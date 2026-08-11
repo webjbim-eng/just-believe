@@ -39,7 +39,8 @@ export const HomepageLayout: CollectionConfig = {
           required: true,
           options: [
             'Hero',
-            'HeroMediaStrip',
+            'QuickLinksBar',
+            'FoundationStatement',
             'WelcomeMessage',
             'MinistryPathways',
             'PhotoCaptionGrid',
@@ -47,17 +48,19 @@ export const HomepageLayout: CollectionConfig = {
             'FeaturedSermons',
             'FeaturedEvents',
             'FeaturedBooks',
-            // Not a real block anymore (removed 2026-08-11, fully
-            // superseded by MinistryFeatureGrid's `list` layout) — kept as
-            // a select option only because old rows in
-            // _homepage_layout_v_version_sections still contain this
-            // string. Narrowing the enum to drop it fails the dev schema
-            // push with a Postgres cast error (existing version-history
-            // data can't cast to a type that no longer has the value).
-            // blockRegistry no longer maps it, so the homepage renderer's
-            // existing "unknown blockType -> skip" behavior makes this
-            // fully inert, not a live option anyone would pick.
+            // Not real blocks anymore — kept as select options only because
+            // old rows in _homepage_layout_v_version_sections still contain
+            // these strings. Narrowing the enum to drop them fails the dev
+            // schema push with a Postgres cast error (existing version-
+            // history data can't cast to a type that no longer has the
+            // value). blockRegistry no longer maps either, so the homepage
+            // renderer's existing "unknown blockType -> skip" behavior
+            // makes them fully inert, not live options anyone would pick.
+            // MinistriesOverview: removed 2026-08-11, superseded by
+            // MinistryFeatureGrid's `list` layout. HeroMediaStrip: removed
+            // 2026-08-11 (homepage redesign), superseded by QuickLinksBar.
             'MinistriesOverview',
+            'HeroMediaStrip',
             'BlogSpotlight',
             'Prayer',
             'Testimonials',

@@ -144,31 +144,49 @@ async function seed() {
         subheading: 'A Hub of Transformation, proclaiming the Gospel and equipping believers around the world.',
         ctaLabel: 'Learn More',
         ctaHref: '/about',
+        // Real destination (the actual YouTube channel), not a fake play
+        // button — same "no video player, only real links" rule
+        // HeroMediaStrip's own comment already established for this exact
+        // channel URL, carried over now that this block replaces it.
+        secondaryCtaLabel: 'Watch Our Story',
+        secondaryCtaHref: 'https://youtube.com/@jbiminc?si=Q26o6jq34zseGPaF',
         backgroundImage: '/images/prayer-sanctuary.jpg',
       },
     },
     {
-      blockType: 'HeroMediaStrip',
+      // 2026-08-11 homepage redesign: replaces HeroMediaStrip (the
+      // badge+YouTube-preview row it also rendered isn't in the reference
+      // mockup — dropped entirely per Jimmy's confirmation, not kept
+      // alongside this). Plain icon quick-links bar, same real
+      // destinations the old block's quickLinks pointed at.
+      blockType: 'QuickLinksBar',
       order: 1,
       visible: true,
       config: {
-        badgeImage: '/images/hands-on-bible.jpg',
-        badgeHeading: "Faith: The Soul's Heartbeat",
-        badgeSubheading: "God's Word, daily",
-        badgeHref: '/about',
-        videoImage: '/images/hero-worship-sunset.jpg',
-        videoHref: 'https://youtube.com/@jbiminc?si=Q26o6jq34zseGPaF',
-        quickLinks: [
-          { image: '/images/worship-service.jpg', label: 'Our Ministries', href: '/ministries' },
-          { image: '/images/congregation-seated.jpg', label: 'Upcoming Events', href: '#events' },
-          { image: '/images/prayer-silhouette.jpg', label: 'Prayer Requests', href: '/contact' },
-          { image: '/images/community-hands.jpg', label: 'Give', href: '/give' },
+        links: [
+          { icon: 'book', label: 'Our Ministries', href: '/ministries' },
+          { icon: 'calendar', label: 'Upcoming Events', href: '#events' },
+          { icon: 'message', label: 'Prayer Requests', href: '/contact' },
+          { icon: 'heart', label: 'Give', href: '/give' },
         ],
       },
     },
     {
-      blockType: 'MinistryPathways',
+      // New block (2026-08-11) — the mockup's "Our Foundation" section.
+      blockType: 'FoundationStatement',
       order: 2,
+      visible: true,
+      config: {
+        eyebrow: 'Our Foundation',
+        heading: "Faith is the soul's heartbeat — steady, quiet, and never still.",
+        body: "Every ministry we carry begins in prayer and ends in changed lives. It's the rhythm beneath everything Just Believe does, at home and around the world.",
+        image: '/images/hands-on-bible.jpg',
+        imageTag: 'Prayer & Worship',
+      },
+    },
+    {
+      blockType: 'MinistryPathways',
+      order: 3,
       visible: true,
       config: {
         eyebrow: 'A Ministry for Every Season',
@@ -197,29 +215,31 @@ async function seed() {
       // that used to sandwich this were cut entirely — they didn't link
       // anywhere real and added no understanding beyond "we do things,"
       // which MinistryPathways' icon row already conveys.
+      // 2026-08-11: 'dark-numbered' layout (mockup's "Our Ministries" dark
+      // panel) — was 'list' (light panel) before this redesign.
       blockType: 'MinistryFeatureGrid',
-      order: 3,
+      order: 4,
       visible: true,
       config: {
-        eyebrow: 'Connecting in Spirit',
+        eyebrow: 'Committed to Impact',
         heading: 'Our Ministries',
         ctaLabel: 'View All',
         ctaHref: '/ministries',
-        layout: 'list',
+        layout: 'dark-numbered',
         items: [
-          { image: '/images/worship-service.jpg', title: ministryDefinitions[0].name, subtitle: 'Outreach & discipleship' },
-          { image: '/images/prayer-silhouette.jpg', title: ministryDefinitions[1].name, subtitle: 'Intercession & fasting' },
-          { image: '/images/pastoral-moment.jpg', title: ministryDefinitions[2].name, subtitle: 'Servant leadership' },
-          { image: '/images/community-hands.jpg', title: ministryDefinitions[7].name, subtitle: 'Compassion in action' },
+          { image: '/images/worship-service.jpg', title: ministryDefinitions[0].name, subtitle: 'Outreach and discipleship that turns encounters into lifelong faith.' },
+          { image: '/images/prayer-silhouette.jpg', title: ministryDefinitions[1].name, subtitle: 'A global network standing watch in prayer, day and night.' },
+          { image: '/images/pastoral-moment.jpg', title: ministryDefinitions[2].name, subtitle: 'Raising up servant leaders equipped to shepherd their communities.' },
+          { image: '/images/community-hands.jpg', title: ministryDefinitions[7].name, subtitle: 'Meeting practical needs as an expression of the Gospel.' },
         ],
       },
     },
     {
       blockType: 'FeaturedEvents',
-      order: 4,
+      order: 5,
       visible: true,
       config: {
-        eyebrow: 'Seeking the Divine Connection',
+        eyebrow: 'Bringing the Church Together',
         heading: 'Upcoming Events',
         body: 'Join us as we gather to worship, learn, and grow together.',
         image: '/images/congregation-seated.jpg',
@@ -227,7 +247,7 @@ async function seed() {
     },
     {
       blockType: 'Testimonials',
-      order: 5,
+      order: 6,
       visible: true,
       config: {
         eyebrow: 'Changed Lives',
@@ -239,22 +259,23 @@ async function seed() {
       // Restored 2026-08-11: the exact-reference replication had dropped
       // this entirely, but the design directive explicitly names Giving
       // as a section that deserves dignity, not an afterthought reachable
-      // only via the header/footer. Placed here (not next to
-      // FeaturedEvents, also a dark panel) to keep dark/light sections
-      // alternating rather than stacking two dark panels back to back.
+      // only via the header/footer. Flat Indigo panel (no backgroundImage)
+      // as of the homepage-mockup redesign — Testimonials right above
+      // already carries a photo, a second consecutive photo panel would
+      // repeat rather than vary the rhythm.
       blockType: 'PartnershipInvitation',
-      order: 6,
+      order: 7,
       visible: true,
       config: {
         heading: 'Partner With Us',
         body: 'Every gift is stewarded with integrity and used to advance real ministry — transforming lives, strengthening families, and serving communities around the world.',
         ctaLabel: 'Give Now',
         ctaHref: '/give',
-        backgroundImage: '/images/worship-service.jpg',
         ways: [
           { label: 'General Fund', description: 'Support the ongoing work of JBIM across every ministry area.' },
           { label: 'Mission Projects', description: 'Fund a specific outreach or mission initiative in the field.' },
           { label: 'Child Sponsorship', description: "Invest directly in a child's education, care, and future." },
+          { label: 'Special Campaign', description: 'Give toward a designated season of focused, time-limited ministry.' },
         ],
       },
     },
@@ -265,7 +286,7 @@ async function seed() {
       // fields, real /books + /books/[slug] pages) so Books has real
       // homepage presence, not just an orphaned standalone page.
       blockType: 'FeaturedBooks',
-      order: 7,
+      order: 8,
       visible: true,
       config: {
         eyebrow: 'Resources',
@@ -274,7 +295,7 @@ async function seed() {
     },
     {
       blockType: 'BlogSpotlight',
-      order: 8,
+      order: 9,
       visible: true,
       config: {
         eyebrow: 'Reflections',
@@ -283,7 +304,7 @@ async function seed() {
     },
     {
       blockType: 'CTA',
-      order: 9,
+      order: 10,
       visible: true,
       config: {
         heading: 'Discover the Power of Faith & Spiritual Growth',

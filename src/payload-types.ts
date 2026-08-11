@@ -923,7 +923,8 @@ export interface HomepageLayout {
     | {
         blockType:
           | 'Hero'
-          | 'HeroMediaStrip'
+          | 'QuickLinksBar'
+          | 'FoundationStatement'
           | 'WelcomeMessage'
           | 'MinistryPathways'
           | 'PhotoCaptionGrid'
@@ -932,6 +933,7 @@ export interface HomepageLayout {
           | 'FeaturedEvents'
           | 'FeaturedBooks'
           | 'MinistriesOverview'
+          | 'HeroMediaStrip'
           | 'BlogSpotlight'
           | 'Prayer'
           | 'Testimonials'
