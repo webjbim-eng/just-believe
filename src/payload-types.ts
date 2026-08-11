@@ -751,11 +751,6 @@ export interface BlogPost {
   id: number;
   tenant: number | Tenant;
   title: string;
-  slug: string;
-  /**
-   * One or two sentences for cards/listing contexts — the full post body below is for the post page only.
-   */
-  excerpt?: string | null;
   body?: {
     root: {
       type: string;
@@ -771,6 +766,11 @@ export interface BlogPost {
     };
     [k: string]: unknown;
   } | null;
+  slug: string;
+  /**
+   * One or two sentences for cards/listing contexts — the full post body is for the post page only.
+   */
+  excerpt?: string | null;
   categories?: (number | Category)[] | null;
   tags?: (number | Tag)[] | null;
   author?:
@@ -1706,9 +1706,9 @@ export interface ResourcesSelect<T extends boolean = true> {
 export interface BlogPostsSelect<T extends boolean = true> {
   tenant?: T;
   title?: T;
+  body?: T;
   slug?: T;
   excerpt?: T;
-  body?: T;
   categories?: T;
   tags?: T;
   author?: T;
