@@ -33,8 +33,12 @@ export function Hero({ config }: { config: HeroConfig }) {
       style={{
         position: 'relative',
         overflow: 'hidden',
-        paddingTop: hasImage ? '10rem' : '7rem',
-        paddingBottom: hasImage ? '10rem' : undefined,
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        minHeight: '100svh',
+        paddingTop: '6rem',
+        paddingBottom: '6rem',
         color: textColor,
       }}
     >
