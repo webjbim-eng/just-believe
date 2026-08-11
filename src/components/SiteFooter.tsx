@@ -111,7 +111,7 @@ export async function SiteFooter({ tenantId }: { tenantId: string }) {
               </li>
             ))}
           </ul>
-          <a className="btn-outline" href="mailto:justbelieveinthot@gmail.com" style={{ marginTop: '0.75rem', padding: '0.625rem 1.5rem', fontSize: '0.875rem' }}>
+          <a className="btn-outline" href="/give" style={{ marginTop: '0.75rem', padding: '0.625rem 1.5rem', fontSize: '0.875rem' }}>
             Give
           </a>
         </div>

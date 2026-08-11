@@ -8,8 +8,8 @@ import { recordDonationFromVerifiedCharge, verifyWebhookSignature } from '../../
  * resolving the tenant from the Host header like the rest of the app does
  * — Paystack's signature check needs the RIGHT tenant's secretKey before
  * the payload can be trusted at all, and which tenant that is can't itself
- * come from the unverified body. The slug is the same value already used
- * for Give this tenant's webhook URL in the Paystack dashboard: register
+ * come from the unverified body. The slug is the tenant's own Tenants.slug
+ * — register this URL as this tenant's webhook in the Paystack dashboard:
  * https://<domain>/api/webhooks/paystack/<tenant-slug>.
  */
 export async function POST(request: Request, { params }: { params: Promise<{ tenantSlug: string }> }) {
