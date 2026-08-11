@@ -53,5 +53,6 @@ export const Resources: CollectionConfig = {
       defaultValue: false,
       admin: { description: 'Requires visitor contact info to download' },
     },
+    { name: 'featured', type: 'checkbox', defaultValue: false, admin: { position: 'sidebar' } },
   ],
 }

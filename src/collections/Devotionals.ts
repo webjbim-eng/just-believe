@@ -31,5 +31,6 @@ export const Devotionals: CollectionConfig = {
       admin: { description: 'Groups this devotional under a parent series entry' },
     },
     { name: 'date', type: 'date', required: true },
+    { name: 'featured', type: 'checkbox', defaultValue: false, admin: { position: 'sidebar' } },
   ],
 }

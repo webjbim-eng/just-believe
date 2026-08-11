@@ -63,8 +63,12 @@ export async function BlogSpotlight({ config: blockConfig, tenantId }: { config:
               <a href={`/blog/${featured.slug}`} className="card" style={{ display: 'block', textDecoration: 'none', padding: '2.5rem', minHeight: '18rem' }}>
                 <p className="card-eyebrow">{featured.publishedAt ? new Date(featured.publishedAt).toLocaleDateString() : 'Recent'}</p>
                 <h3 style={{ fontSize: 'var(--text-heading)', marginBottom: '1rem' }}>{featured.title}</h3>
-                {featured.body && <p style={{ fontSize: 'var(--text-body)' }}>{lexicalToPlainText(featured.body).slice(0, 180)}</p>}
-                <span style={{ color: 'var(--color-accent)', fontWeight: 600 }}>Read More →</span>
+                {(featured.excerpt || featured.body) && (
+                  <p style={{ fontSize: 'var(--text-body)' }}>{featured.excerpt || lexicalToPlainText(featured.body).slice(0, 180)}</p>
+                )}
+                <span className="link-arrow">
+                  Read More <span className="link-arrow-glyph">→</span>
+                </span>
               </a>
             </ScrollReveal>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>

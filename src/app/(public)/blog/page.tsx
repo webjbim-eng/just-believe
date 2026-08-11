@@ -54,7 +54,7 @@ export default async function BlogListPage() {
                   <a href={`/blog/${post.slug}`} className="card" style={{ textDecoration: 'none', display: 'block' }}>
                     <p className="card-eyebrow">{post.publishedAt ? new Date(post.publishedAt).toLocaleDateString() : 'Recent'}</p>
                     <h3 className="card-title">{post.title}</h3>
-                    {post.body && <p>{lexicalToPlainText(post.body).slice(0, 140)}</p>}
+                    {(post.excerpt || post.body) && <p>{post.excerpt || lexicalToPlainText(post.body).slice(0, 140)}</p>}
                   </a>
                 </StaggerItem>
               ))}

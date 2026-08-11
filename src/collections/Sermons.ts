@@ -29,6 +29,7 @@ export const Sermons: CollectionConfig = {
     { name: 'mediaFile', type: 'upload', relationTo: 'media', admin: { description: 'For self-hosted audio/video, mutually exclusive with embedUrl' } },
     { name: 'embedUrl', type: 'text', admin: { description: 'For an external embed (e.g. YouTube), mutually exclusive with mediaFile' } },
     { name: 'date', type: 'date', required: true },
+    { name: 'featured', type: 'checkbox', defaultValue: false, admin: { position: 'sidebar' } },
     seoFields,
   ],
 }

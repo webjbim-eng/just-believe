@@ -1,6 +1,8 @@
 import type { CollectionConfig } from 'payload'
 import { publicContentAccess } from '../access/publicContentAccess'
 import { tenantField } from '../fields/tenantField'
+import { slugField } from '../fields/slug'
+import { seoFields } from '../fields/seo'
 import { getResolvedTenantId } from '../access/getResolvedTenantId'
 import { setTenantFromRequest } from '../hooks/setTenantFromRequest'
 import { createAuditAfterChangeHook, createAuditAfterDeleteHook } from '../hooks/auditLog'
@@ -22,6 +24,9 @@ export const Books: CollectionConfig = {
   fields: [
     tenantField,
     { name: 'title', type: 'text', required: true },
+    slugField('books'),
+    { name: 'category', type: 'relationship', relationTo: 'categories' },
+    { name: 'featured', type: 'checkbox', defaultValue: false, admin: { position: 'sidebar' } },
     {
       name: 'author',
       type: 'relationship',
@@ -43,5 +48,6 @@ export const Books: CollectionConfig = {
     { name: 'coverImage', type: 'upload', relationTo: 'media' },
     { name: 'externalLink', type: 'text', admin: { description: 'Mutually exclusive with coverImage+file, for an external retailer/listing link' } },
     { name: 'description', type: 'textarea' },
+    seoFields,
   ],
 }

@@ -257,8 +257,22 @@ async function seed() {
       },
     },
     {
-      blockType: 'BlogSpotlight',
+      // Registered in blockRegistry/HomepageLayout's options since early
+      // in the design pass but never actually seeded — added 2026-08-11
+      // alongside real Books schema completion (category/featured/SEO
+      // fields, real /books + /books/[slug] pages) so Books has real
+      // homepage presence, not just an orphaned standalone page.
+      blockType: 'FeaturedBooks',
       order: 7,
+      visible: true,
+      config: {
+        eyebrow: 'Resources',
+        heading: 'Books',
+      },
+    },
+    {
+      blockType: 'BlogSpotlight',
+      order: 8,
       visible: true,
       config: {
         eyebrow: 'Reflections',
@@ -267,7 +281,7 @@ async function seed() {
     },
     {
       blockType: 'CTA',
-      order: 8,
+      order: 9,
       visible: true,
       config: {
         heading: 'Discover the Power of Faith & Spiritual Growth',
@@ -368,40 +382,47 @@ async function seed() {
   const existingNavigation = (
     await payload.find({ collection: 'navigation', where: { tenant: { equals: tenant.id } }, limit: 1, overrideAccess: true })
   ).docs[0]
+  const starterNavItems = [
+    { label: 'Home', link: '/', order: 0 },
+    { label: 'About', link: '/about', order: 1 },
+    { label: 'Ministries', link: '/ministries', order: 2 },
+    { label: 'Blog', link: '/blog', order: 3 },
+    { label: 'Books', link: '/books', order: 4 },
+    { label: 'Contact', link: '/contact', order: 5 },
+  ]
+
   if (!existingNavigation) {
     await payload.create({
       collection: 'navigation',
-      data: {
-        tenant: tenant.id,
-        items: [
-          { label: 'Home', link: '/', order: 0 },
-          { label: 'About', link: '/about', order: 1 },
-          { label: 'Ministries', link: '/ministries', order: 2 },
-          { label: 'Contact', link: '/contact', order: 3 },
-        ],
-      },
+      data: { tenant: tenant.id, items: starterNavItems },
       overrideAccess: true,
     })
     payload.logger.info('Created starter Navigation.')
-  } else if (existingNavigation.items?.length === 1) {
-    // Still just the single "Home" link from the earlier seed run, not
-    // anything an admin has customized yet (no admin login exists) — safe
-    // to fill out with the fuller starter set, same reasoning as
-    // HomepageLayout's section backfill above.
-    await payload.update({
-      collection: 'navigation',
-      id: existingNavigation.id,
-      data: {
-        items: [
-          { label: 'Home', link: '/', order: 0 },
-          { label: 'About', link: '/about', order: 1 },
-          { label: 'Ministries', link: '/ministries', order: 2 },
-          { label: 'Contact', link: '/contact', order: 3 },
-        ],
-      },
-      overrideAccess: true,
-    })
-    payload.logger.info('Expanded Navigation to 4 items.')
+  } else {
+    // 2026-08-11 fix: this used to only backfill when items.length === 1
+    // (the very first bootstrap state) — once the nav had its original 4
+    // items, adding /blog and /books here did nothing to the DB, the same
+    // class of gap already hit twice this session (Ministries
+    // shortDescription, role permissions). Surgical/additive: only append
+    // links whose `link` value is genuinely missing, never touch existing
+    // items' order/labels (an admin may have already customized those).
+    const existingLinks = new Set((existingNavigation.items ?? []).map((item) => item.link))
+    const missingItems = starterNavItems.filter((item) => !existingLinks.has(item.link))
+    if (missingItems.length > 0) {
+      const nextOrder = Math.max(0, ...(existingNavigation.items ?? []).map((item) => item.order ?? 0)) + 1
+      await payload.update({
+        collection: 'navigation',
+        id: existingNavigation.id,
+        data: {
+          items: [
+            ...(existingNavigation.items ?? []),
+            ...missingItems.map((item, index) => ({ ...item, order: nextOrder + index })),
+          ],
+        },
+        overrideAccess: true,
+      })
+      payload.logger.info(`Backfilled ${missingItems.length} Navigation item(s).`)
+    }
   }
 
   const existingFooter = (

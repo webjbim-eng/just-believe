@@ -590,6 +590,7 @@ export interface Event {
    * For in-person/hybrid events
    */
   location?: string | null;
+  speaker?: string | null;
   /**
    * For online/hybrid events — external embed only, see docs/02-architecture.md §8
    */
@@ -601,6 +602,7 @@ export interface Event {
   registrationOpen?: string | null;
   registrationClose?: string | null;
   materials?: (number | Media)[] | null;
+  featured?: boolean | null;
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
@@ -646,6 +648,7 @@ export interface Sermon {
    */
   embedUrl?: string | null;
   date: string;
+  featured?: boolean | null;
   seo?: {
     metaTitle?: string | null;
     metaDescription?: string | null;
@@ -685,6 +688,7 @@ export interface Devotional {
    */
   series?: (number | null) | Devotional;
   date: string;
+  featured?: boolean | null;
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
@@ -697,6 +701,9 @@ export interface Book {
   id: number;
   tenant: number | Tenant;
   title: string;
+  slug: string;
+  category?: (number | null) | Category;
+  featured?: boolean | null;
   author?: (number | null) | Leadership;
   coverImage?: (number | null) | Media;
   /**
@@ -704,6 +711,12 @@ export interface Book {
    */
   externalLink?: string | null;
   description?: string | null;
+  seo?: {
+    metaTitle?: string | null;
+    metaDescription?: string | null;
+    ogImage?: (number | null) | Media;
+    noIndex?: boolean | null;
+  };
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
@@ -725,6 +738,7 @@ export interface Resource {
    * Requires visitor contact info to download
    */
   gated?: boolean | null;
+  featured?: boolean | null;
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
@@ -738,6 +752,10 @@ export interface BlogPost {
   tenant: number | Tenant;
   title: string;
   slug: string;
+  /**
+   * One or two sentences for cards/listing contexts — the full post body below is for the post page only.
+   */
+  excerpt?: string | null;
   body?: {
     root: {
       type: string;
@@ -765,6 +783,7 @@ export interface BlogPost {
         value: number | Leadership;
       } | null);
   publishedAt?: string | null;
+  featured?: boolean | null;
   seo?: {
     metaTitle?: string | null;
     metaDescription?: string | null;
@@ -1566,11 +1585,13 @@ export interface EventsSelect<T extends boolean = true> {
   startDate?: T;
   endDate?: T;
   location?: T;
+  speaker?: T;
   livestreamUrl?: T;
   capacity?: T;
   registrationOpen?: T;
   registrationClose?: T;
   materials?: T;
+  featured?: T;
   updatedAt?: T;
   createdAt?: T;
   _status?: T;
@@ -1605,6 +1626,7 @@ export interface SermonsSelect<T extends boolean = true> {
   mediaFile?: T;
   embedUrl?: T;
   date?: T;
+  featured?: T;
   seo?:
     | T
     | {
@@ -1628,6 +1650,7 @@ export interface DevotionalsSelect<T extends boolean = true> {
   cadence?: T;
   series?: T;
   date?: T;
+  featured?: T;
   updatedAt?: T;
   createdAt?: T;
   _status?: T;
@@ -1639,10 +1662,21 @@ export interface DevotionalsSelect<T extends boolean = true> {
 export interface BooksSelect<T extends boolean = true> {
   tenant?: T;
   title?: T;
+  slug?: T;
+  category?: T;
+  featured?: T;
   author?: T;
   coverImage?: T;
   externalLink?: T;
   description?: T;
+  seo?:
+    | T
+    | {
+        metaTitle?: T;
+        metaDescription?: T;
+        ogImage?: T;
+        noIndex?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
   _status?: T;
@@ -1660,6 +1694,7 @@ export interface ResourcesSelect<T extends boolean = true> {
   description?: T;
   type?: T;
   gated?: T;
+  featured?: T;
   updatedAt?: T;
   createdAt?: T;
   _status?: T;
@@ -1672,11 +1707,13 @@ export interface BlogPostsSelect<T extends boolean = true> {
   tenant?: T;
   title?: T;
   slug?: T;
+  excerpt?: T;
   body?: T;
   categories?: T;
   tags?: T;
   author?: T;
   publishedAt?: T;
+  featured?: T;
   seo?:
     | T
     | {
