@@ -201,15 +201,15 @@ export interface Tenant {
     logoDark?: (number | null) | Media;
     colors?: {
       /**
-       * Hex, e.g. #1E3A8A (Royal Blue)
+       * Hex, e.g. #10182E (Ink)
        */
       primary?: string | null;
       /**
-       * Hex, e.g. #4C1D95 (Deep Purple)
+       * Hex, e.g. #232C55 (Indigo)
        */
       secondary?: string | null;
       /**
-       * Hex, e.g. #C9A227 (Gold)
+       * Hex, e.g. #C9973C (Gold)
        */
       accent?: string | null;
     };

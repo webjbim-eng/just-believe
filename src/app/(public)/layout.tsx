@@ -1,6 +1,5 @@
 import type { Metadata } from 'next'
 import type React from 'react'
-import { Inter, Playfair_Display } from 'next/font/google'
 import { headers } from 'next/headers'
 import { getPayload } from 'payload'
 import config from '@payload-config'
@@ -10,8 +9,14 @@ import { SiteNavigation } from '../../components/SiteNavigation'
 import { SiteFooter } from '../../components/SiteFooter'
 import './globals.css'
 
-const heading = Playfair_Display({ subsets: ['latin'], variable: '--font-heading', display: 'swap' })
-const body = Inter({ subsets: ['latin'], variable: '--font-body', display: 'swap' })
+// 2026-08-11 redesign: --font-heading/--font-body are now plain system font
+// stacks defined once in globals.css's :root, matching the public/brand/*
+// mockups exactly (they don't load Google Fonts at all). Previously these
+// were injected here via next/font/google's `variable` option (Playfair
+// Display/Inter) — removed entirely rather than left alongside a competing
+// :root definition, since a next/font `variable` class and :root have equal
+// CSS specificity and whichever wins would depend on injection order, not
+// anything explicit.
 
 export const metadata: Metadata = {
   title: 'Just Believe International Missions',
@@ -26,9 +31,9 @@ type BrandColors = { primary: string; secondary: string; accent: string }
 // branding.colors below; this is what renders if that lookup can't run
 // (no tenant resolved, e.g. an unrecognized host) or fails.
 const DEFAULT_COLORS: BrandColors = {
-  primary: '#1E3A8A',
-  secondary: '#4C1D95',
-  accent: '#C9A227',
+  primary: '#10182E',
+  secondary: '#232C55',
+  accent: '#C9973C',
 }
 
 async function getTenantBrandColors(tenantId: string | null): Promise<BrandColors> {
@@ -58,7 +63,7 @@ export default async function PublicLayout({ children }: { children: React.React
   } as React.CSSProperties
 
   return (
-    <html lang="en" className={`${heading.variable} ${body.variable}`} style={cssVars}>
+    <html lang="en" style={cssVars}>
       <body>
         {/* reducedMotion="user" makes every motion.* component site-wide
             automatically honor prefers-reduced-motion — one place to get

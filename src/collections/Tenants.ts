@@ -86,9 +86,9 @@ export const Tenants: CollectionConfig = {
           name: 'colors',
           type: 'group',
           fields: [
-            { name: 'primary', type: 'text', admin: { description: 'Hex, e.g. #1E3A8A (Royal Blue)' } },
-            { name: 'secondary', type: 'text', admin: { description: 'Hex, e.g. #4C1D95 (Deep Purple)' } },
-            { name: 'accent', type: 'text', admin: { description: 'Hex, e.g. #C9A227 (Gold)' } },
+            { name: 'primary', type: 'text', admin: { description: 'Hex, e.g. #10182E (Ink)' } },
+            { name: 'secondary', type: 'text', admin: { description: 'Hex, e.g. #232C55 (Indigo)' } },
+            { name: 'accent', type: 'text', admin: { description: 'Hex, e.g. #C9973C (Gold)' } },
           ],
         },
       ],

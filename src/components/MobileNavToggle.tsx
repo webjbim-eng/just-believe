@@ -31,9 +31,9 @@ export function MobileNavToggle({ items }: { items: NavItem[] }) {
           padding: '0.5rem',
         }}
       >
-        <span style={{ width: 24, height: 2, background: 'var(--color-text-on-dark)', display: 'block' }} />
-        <span style={{ width: 24, height: 2, background: 'var(--color-text-on-dark)', display: 'block' }} />
-        <span style={{ width: 24, height: 2, background: 'var(--color-text-on-dark)', display: 'block' }} />
+        <span style={{ width: 24, height: 2, background: 'var(--color-text)', display: 'block' }} />
+        <span style={{ width: 24, height: 2, background: 'var(--color-text)', display: 'block' }} />
+        <span style={{ width: 24, height: 2, background: 'var(--color-text)', display: 'block' }} />
       </button>
       {open && (
         <div
@@ -42,7 +42,7 @@ export function MobileNavToggle({ items }: { items: NavItem[] }) {
             top: '100%',
             left: 0,
             right: 0,
-            background: 'rgba(11,23,48,0.97)',
+            background: 'var(--color-primary)',
             backdropFilter: 'blur(8px)',
             borderBottom: '1px solid var(--color-border-on-dark)',
             padding: '1rem 1.5rem 1.5rem',

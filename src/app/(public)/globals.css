@@ -1,57 +1,74 @@
 /*
- * Design-token layer, v6 (2026-08-10). Colors: docs/source/JBIM WEBSITE
- * PROJECT BRIEF.docx palette — Royal Blue / Deep Purple / Gold / White.
- *
- * v6 is a full structural + visual replication of a "Chapel"-style church
- * template Jimmy provided (warm cream page canvas, dark maroon accent
- * panels, elegant italic serif display type, floral flourish motifs),
- * explicitly authorized to recolor to our brand palette rather than
- * theirs. This REVERSES v4/v5's dark-Royal-Blue-dominant page background:
- * the page canvas is now light (White is one of the four confirmed brand
- * colors — docs/source brief: "Holiness"), and Royal Blue/Deep Purple do
- * the reference's dark-maroon-panel job instead (.section--primary/
- * --secondary already existed for this and needed no structural change,
- * only the token flip below). Gold remains the sole accent — still "an
- * accent of significance, not a dominant decorative color."
+ * Design-token layer, v7 (2026-08-11). Full visual redesign from six real
+ * page mockups Jimmy provided (public/brand/*.html — published via Claude
+ * Artifacts against our actual real copy, not a third-party reference).
+ * Ink/Indigo/Gold/Sage/Dawn/Paper palette with full dark-mode support,
+ * replacing v6's Royal Blue/Deep Purple/Gold. Same "remap existing
+ * semantic tokens rather than rename" approach as v6 — every block/
+ * component already reads --color-primary/--color-accent/etc., so this is
+ * a value change, not a structural one. New role: --color-sage (no v6
+ * equivalent — the mockups use it for a few accent icons/checks).
  *
  * Every existing dark-panel component (PartnershipInvitation, Prayer,
- * About's "Our Approach", SiteNavigation, SiteFooter) already sets its own
- * white text explicitly via inline styles rather than relying on the
- * global h1-h6 default, which is what makes this flip safe — body text
- * outside those panels now correctly follows --color-text (dark-on-cream)
- * while the explicit overrides keep dark panels white-on-blue/purple.
+ * SiteNavigation's announcement strip, SiteFooter) sets its own white text
+ * explicitly via inline styles rather than relying on the global h1-h6
+ * default — same safety property v6 relied on, still holds here.
  *
  * :root values are fallback defaults only — the real per-tenant color
  * values are injected as inline CSS custom properties on <html> by
  * layout.tsx, read from the resolved tenant's branding.colors. Never
  * hardcode a specific tenant's colors here, this file is shared across
- * every tenant.
+ * every tenant. (The live JBIM tenant's stored branding.colors also needs
+ * updating to match — see src/seed/run.ts's brandColors constant and the
+ * one-time admin-API patch applied at ship time, docs left in that file's
+ * comment.)
  */
 :root {
-  --color-primary: #1e3a8a;
-  --color-secondary: #4c1d95;
-  --color-accent: #c9a227;
+  --color-primary: #10182e;
+  --color-secondary: #232c55;
+  --color-accent: #c9973c;
+  --color-accent-hover: #e3b94e;
+  --color-sage: #6b7a5e;
+  --color-sage-2: #8b9c7c;
   /* Dark text for anything filled with --color-accent (gold-on-white text
      reads poorly) — gold buttons/badges use this, not --color-text. */
-  --color-on-accent: #0b1730;
+  --color-on-accent: #10182e;
 
-  /* Page background: warm cream/ivory, not literal white — same "paper"
-     feel the reference's canvas has. */
-  --color-base: #f8f4ec;
-  /* Card/panel surface: crisp white, one step lighter than --color-base,
-     so .section--surface and .card read as a distinct plane against the
-     cream page. */
+  /* Page background: cool light gray-blue "dawn", not literal white. */
+  --color-base: #eef0f4;
+  /* Card/panel surface: crisp white ("paper"), one step lighter than
+     --color-base, so .section--surface and .card read as a distinct plane
+     against the page. */
   --color-surface: #ffffff;
-  --color-text: #1a2138;
-  --color-text-muted: #6b6a63;
-  --color-border: rgba(30, 58, 138, 0.12);
+  --color-text: #161c33;
+  --color-text-muted: #4d5570;
+  --color-border: #dcdfe6;
 
   /* Dark-panel-only counterparts — used by components that render on
      --color-primary/--color-secondary and need to know they're on a dark
      fill without hardcoding raw white/rgba values everywhere. */
-  --color-text-on-dark: #ffffff;
-  --color-text-muted-on-dark: rgba(255, 255, 255, 0.78);
-  --color-border-on-dark: rgba(255, 255, 255, 0.18);
+  --color-text-on-dark: #f2efe6;
+  --color-text-muted-on-dark: #b9c0d8;
+  --color-border-on-dark: rgba(242, 239, 230, 0.14);
+
+  /* Translucent header fill, separate from --color-surface — matches the
+     mockups' --header-bg. Not tenant-injected (unlike primary/secondary/
+     accent), so it dark-mode-swaps normally below. Its own token rather
+     than a hardcoded rgba() in SiteNavigation.tsx, which is exactly the
+     bug that made nav text nearly invisible in dark mode before this was
+     added — light-gray text over a background that never went dark. */
+  --color-header-bg: rgba(238, 240, 244, 0.85);
+
+  /* Serif for headings, system sans for body — matches the mockups
+     exactly (they don't load Google Fonts at all) rather than
+     approximating with Playfair Display/Inter. Redefining the SAME
+     --font-heading/--font-body names every existing var(--font-heading)
+     call site already uses (8+ places in this file, plus components) means
+     none of them need to change — layout.tsx no longer sets these via
+     next/font/google's `variable` option, so this :root definition is now
+     the only source. */
+  --font-heading: "Iowan Old Style", "Palatino Linotype", Palatino, "URW Palladio L", Georgia, serif;
+  --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 
   --text-body-sm: 1rem;
   --text-body: 1.125rem;
@@ -87,6 +104,83 @@
 
   --motion-reveal-duration: 0.7s;
   --motion-reveal-distance: 28px;
+}
+
+/* Header logo theme swap — see the comment in SiteNavigation.tsx. Default
+   (light mode) shows the dark logo mark; dark-mode blocks below flip it. */
+.logo-mark-dark {
+  display: none;
+}
+
+/*
+ * Dark mode. Deliberately does NOT override --color-primary/--color-secondary
+ * /--color-accent here — those three are injected as *inline* custom
+ * properties on <html> by layout.tsx (per-tenant branding.colors), and an
+ * inline style always wins over any stylesheet rule regardless of media
+ * query, so a dark-mode override for them here would silently never apply.
+ * Real per-tenant dark-mode brand colors would need Tenants.ts to store a
+ * light/dark pair and layout.tsx to inject both, aliased via a stylesheet
+ * rule — out of scope for this pass. In practice this is a small gap:
+ * --color-primary is already a near-black ink (#10182e) in light mode, and
+ * the mockups' own dark-mode ink (#0a0f22) is barely different from it, so
+ * every dark-panel component (header, footer, PartnershipInvitation, ...)
+ * still reads correctly in dark mode without a dedicated override.
+ *
+ * :root[data-theme="dark"]/[data-theme="light"] are included alongside the
+ * prefers-color-scheme media query so a future manual toggle has something
+ * to attach to — matches the structure already fully specified in every
+ * mockup, even though no toggle UI exists yet.
+ */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --color-sage: #8b9c7c;
+    --color-sage-2: #a3b393;
+    --color-accent-hover: #f0cd72;
+    --color-on-accent: #0a0f22;
+
+    --color-base: #0d1226;
+    --color-surface: #141b36;
+    --color-text: #f2efe6;
+    --color-text-muted: #b9c0d8;
+    --color-border: rgba(242, 239, 230, 0.14);
+
+    --color-text-on-dark: #f2efe6;
+    --color-text-muted-on-dark: #b9c0d8;
+    --color-border-on-dark: rgba(242, 239, 230, 0.14);
+    --color-header-bg: rgba(13, 18, 38, 0.85);
+  }
+
+  :root:not([data-theme="light"]) .logo-mark-light {
+    display: none;
+  }
+  :root:not([data-theme="light"]) .logo-mark-dark {
+    display: block;
+  }
+}
+
+:root[data-theme="dark"] {
+  --color-sage: #8b9c7c;
+  --color-sage-2: #a3b393;
+  --color-accent-hover: #f0cd72;
+  --color-on-accent: #0a0f22;
+
+  --color-base: #0d1226;
+  --color-surface: #141b36;
+  --color-text: #f2efe6;
+  --color-text-muted: #b9c0d8;
+  --color-border: rgba(242, 239, 230, 0.14);
+
+  --color-text-on-dark: #f2efe6;
+  --color-text-muted-on-dark: #b9c0d8;
+  --color-border-on-dark: rgba(242, 239, 230, 0.14);
+  --color-header-bg: rgba(13, 18, 38, 0.85);
+}
+
+:root[data-theme="dark"] .logo-mark-light {
+  display: none;
+}
+:root[data-theme="dark"] .logo-mark-dark {
+  display: block;
 }
 
 * {
@@ -245,7 +339,7 @@ a {
 .btn-primary-pill:hover,
 .btn-outline:hover,
 .btn-pill-light:hover {
-  transform: translateY(-1px);
+  transform: translateY(-2px);
   box-shadow: var(--shadow-card);
 }
 
@@ -657,7 +751,7 @@ a {
   position: absolute;
   width: 14rem;
   height: 14rem;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200' fill='none' stroke='%23C9A227' stroke-width='1.25'%3E%3Cpath d='M100 190C100 190 40 160 40 100C40 55 70 20 100 10'/%3E%3Cpath d='M60 150C60 150 30 120 45 80'/%3E%3Cpath d='M80 170C80 170 55 145 65 110'/%3E%3Cpath d='M110 40C110 40 140 55 135 85'/%3E%3Cpath d='M95 15C95 15 120 25 118 50'/%3E%3Ccircle cx='100' cy='10' r='4'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200' fill='none' stroke='%23C9973C' stroke-width='1.25'%3E%3Cpath d='M100 190C100 190 40 160 40 100C40 55 70 20 100 10'/%3E%3Cpath d='M60 150C60 150 30 120 45 80'/%3E%3Cpath d='M80 170C80 170 55 145 65 110'/%3E%3Cpath d='M110 40C110 40 140 55 135 85'/%3E%3Cpath d='M95 15C95 15 120 25 118 50'/%3E%3Ccircle cx='100' cy='10' r='4'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-size: contain;
   opacity: 0.3;
@@ -696,12 +790,12 @@ a {
 
 /*
  * Very low-opacity page-wide dot-grid texture — the "premium paper" feel
- * under everything, not tied to any one section. Brand-tinted (Royal
- * Blue), barely perceptible at normal viewing distance by design (this is
+ * under everything, not tied to any one section. Brand-tinted (ink),
+ * barely perceptible at normal viewing distance by design (this is
  * texture, not a visible decoration on its own).
  */
 body {
-  background-image: radial-gradient(circle, rgba(30, 58, 138, 0.05) 1px, transparent 1px);
+  background-image: radial-gradient(circle, rgba(16, 24, 46, 0.05) 1px, transparent 1px);
   background-size: 24px 24px;
 }
 

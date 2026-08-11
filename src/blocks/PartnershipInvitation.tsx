@@ -66,7 +66,7 @@ export function PartnershipInvitation({ config }: { config: PartnershipInvitatio
             style={{
               position: 'absolute',
               inset: 0,
-              background: 'linear-gradient(180deg, rgba(30,58,138,0.88) 0%, rgba(76,29,149,0.9) 100%)',
+              background: 'linear-gradient(180deg, rgba(16,24,46,0.88) 0%, rgba(35,44,85,0.9) 100%)',
               zIndex: 1,
             }}
           />

@@ -79,15 +79,17 @@ async function seed() {
     })
   ).docs[0]
 
-  // Confirmed with Jimmy 2026-08-06: follow docs/source/JBIM WEBSITE
-  // PROJECT BRIEF.docx's "Suggested colors" section literally (Royal Blue/
-  // Deep Purple/Gold), not the fire-gradient logo asset. Only ever set on
-  // first create below — re-running seed must never clobber colors an
-  // admin has since customized via the UI.
+  // 2026-08-11: superseded by the public/brand/*.html mockup redesign —
+  // Ink/Indigo/Gold, not the original brief's Royal Blue/Deep Purple/Gold
+  // (docs/00-decisions-log.md). Only ever set on first create below —
+  // re-running seed must never clobber colors an admin has since
+  // customized via the UI. The already-seeded live tenant was updated
+  // directly via the admin API at ship time (this branch alone wouldn't
+  // reach it — see the recurring seed-backfill gotcha in memory/docs).
   const brandColors = {
-    primary: '#1E3A8A', // Royal Blue — Truth & Faithfulness
-    secondary: '#4C1D95', // Deep Purple — Royal Priesthood
-    accent: '#C9A227', // Gold — Glory of God
+    primary: '#10182E', // Ink
+    secondary: '#232C55', // Indigo
+    accent: '#C9973C', // Gold
   }
 
   if (!tenant) {
