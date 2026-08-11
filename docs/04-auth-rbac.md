@@ -134,7 +134,7 @@ Payload access control can be defined per-field, not just per-collection. The Tr
 | SQL injection | Not directly possible — all queries go through Payload's query builder / Postgres adapter, no raw string interpolation into SQL anywhere in the codebase (enforced by code review + a lint rule banning raw `sql\`...\`` outside a short allow-listed migrations folder) |
 | Rate limiting | Edge middleware, token-bucket per IP+route, tightest on `/login` and public form POSTs |
 | Secure file uploads | MIME/type allow-list, max size enforced both client- and server-side, files land in R2 (not an executable path), filenames sanitized/UUID'd before storage — original filename kept only as metadata |
-| Secrets | Resend API key, R2 credentials, DB URL: Vercel encrypted environment variables, never committed. Per-tenant Paystack `secretKey` (Tenants.paystack) is stored in Postgres and protected only by a field-level access restriction (`website.settings` permission / Platform Super Admin) — **not encrypted at rest**; that would need a field hook + KMS integration that doesn't exist in this stack yet. Flagged here rather than overclaimed. |
+| Secrets | Resend API key, R2 credentials, DB URL: Vercel encrypted environment variables, never committed. Per-tenant `Tenants.paystack.secretKey` and `Tenants.stripe.secretKey`/`webhookSecret` are stored in Postgres and protected only by a field-level access restriction (`website.settings` permission / Platform Super Admin) — **not encrypted at rest**; that would need a field hook + KMS integration that doesn't exist in this stack yet. Flagged here rather than overclaimed. |
 
 ---
 

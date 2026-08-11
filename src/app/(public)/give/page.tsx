@@ -12,22 +12,25 @@ export const metadata: Metadata = {
 }
 
 /**
- * Reads only paystack.publicKey (never secretKey — see Tenants.ts's
- * field-level access comment) and hands it to the client GiveForm. Renders
- * fine with publicKey === null; GiveForm shows an honest "coming soon"
+ * Reads only paystack.publicKey and whether stripe.secretKey is set (never
+ * either secretKey itself — see Tenants.ts's field-level access comment)
+ * and hands them to the client GiveForm. Stripe's checkout is entirely
+ * server-side (Checkout Session redirect), so the client never needs
+ * stripe.publishableKey at all — just a boolean for whether to offer it.
+ * Renders fine with both unset; GiveForm shows an honest "coming soon"
  * state rather than a broken checkout when a tenant hasn't configured
- * Paystack in the admin yet.
+ * either processor in the admin yet.
  */
 export default async function GivePage() {
   const tenantId = (await headers()).get(TENANT_HEADER)
 
-  const publicKey = tenantId
-    ? (
-        await getPayload({ config }).then((payload) =>
-          payload.findByID({ collection: 'tenants', id: tenantId, overrideAccess: true }),
-        )
-      ).paystack?.publicKey ?? null
+  const tenant = tenantId
+    ? await getPayload({ config }).then((payload) =>
+        payload.findByID({ collection: 'tenants', id: tenantId, overrideAccess: true }),
+      )
     : null
+  const paystackPublicKey = tenant?.paystack?.publicKey ?? null
+  const stripeEnabled = Boolean(tenant?.stripe?.secretKey)
 
   return (
     <main>
@@ -49,7 +52,7 @@ export default async function GivePage() {
       <section className="section decorative-flourish">
         <div className="container container--narrow">
           <ScrollReveal>
-            <GiveForm publicKey={publicKey ?? null} />
+            <GiveForm paystackPublicKey={paystackPublicKey} stripeEnabled={stripeEnabled} />
           </ScrollReveal>
         </div>
       </section>

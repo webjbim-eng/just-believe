@@ -34,20 +34,26 @@ const PRESET_AMOUNTS: Record<'NGN' | 'USD', number[]> = {
 }
 
 /**
- * Paystack Inline JS (loaded via next/script, not an npm dependency — same
- * "no SDK for a simple REST/script integration" choice as src/lib/paystack.ts)
- * opens a hosted checkout popup using only the tenant's PUBLIC key, which
- * the server component passed down. amount/currency/fund/donor info never
- * touch our server as "the truth" until api/donations/verify independently
- * re-checks the completed transaction against Paystack afterward — this
- * component only decides what to *ask* Paystack to charge, it can't create
- * a Donation record on its own.
+ * Two independent checkout paths, donor's choice (2026-08-11 — Paystack
+ * was the only option until Jimmy asked to add Stripe alongside it):
  *
- * Recurring donations need a Plan created server-side first (donor amounts
- * aren't fixed tiers), so the monthly path makes one extra round trip to
- * api/donations/prepare before opening the popup; one-time skips it.
+ * - Paystack: Inline JS (loaded via next/script, no npm dependency) opens a
+ *   popup using the tenant's public key. Recurring needs a Plan created
+ *   server-side first (donor amounts aren't fixed tiers), so that path
+ *   makes an extra round trip to api/donations/prepare before opening the
+ *   popup. On popup success, api/donations/verify independently re-checks
+ *   the transaction against Paystack before any Donation record exists —
+ *   this component can't create one on its own either way.
+ * - Stripe: api/donations/stripe/checkout creates a Checkout Session
+ *   server-side and returns a hosted URL; this component just redirects
+ *   the whole page there (no Stripe.js needed). Verification happens after
+ *   Stripe redirects the donor back to /give/success.
+ *
+ * If a tenant has only configured one processor, that one is used silently
+ * — the method toggle only appears when there's a real choice to make.
  */
-export function GiveForm({ publicKey }: { publicKey: string | null }) {
+export function GiveForm({ paystackPublicKey, stripeEnabled }: { paystackPublicKey: string | null; stripeEnabled: boolean }) {
+  const paystackEnabled = Boolean(paystackPublicKey)
   const [amount, setAmount] = useState('')
   const [currency, setCurrency] = useState<'NGN' | 'USD'>('NGN')
   const [fund, setFund] = useState(FUNDS[0].value)
@@ -55,6 +61,7 @@ export function GiveForm({ publicKey }: { publicKey: string | null }) {
   const [donorName, setDonorName] = useState('')
   const [donorEmail, setDonorEmail] = useState('')
   const [anonymous, setAnonymous] = useState(false)
+  const [method, setMethod] = useState<'paystack' | 'stripe'>(paystackEnabled ? 'paystack' : 'stripe')
   const [status, setStatus] = useState<'idle' | 'preparing' | 'submitting' | 'success' | 'error'>('idle')
   const [errorMessage, setErrorMessage] = useState('')
 
@@ -83,7 +90,7 @@ export function GiveForm({ publicKey }: { publicKey: string | null }) {
     }
   }
 
-  if (!publicKey) {
+  if (!paystackEnabled && !stripeEnabled) {
     return (
       <div style={{ padding: '2rem', textAlign: 'center', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-card)' }}>
         <p style={{ fontSize: 'var(--text-subheading)', marginBottom: '0.5rem' }}>Online giving is coming soon.</p>
@@ -104,14 +111,33 @@ export function GiveForm({ publicKey }: { publicKey: string | null }) {
     )
   }
 
+  async function handleStripeSubmit(numericAmount: number) {
+    setStatus('submitting')
+    try {
+      const res = await fetch('/api/donations/stripe/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ amount: numericAmount, currency, recurring, fund, donorName, donorEmail, anonymous }),
+      })
+      const data = await res.json()
+      if (!res.ok || !data.url) {
+        setStatus('error')
+        setErrorMessage(data.error || 'Could not start checkout — please try again.')
+        return
+      }
+      // Full-page navigation to Stripe's hosted Checkout — this component
+      // (and its "submitting" state) is left behind entirely; the donor
+      // lands back on /give/success afterward, which does the verify step.
+      window.location.href = data.url
+    } catch {
+      setStatus('error')
+      setErrorMessage('Could not start checkout — please try again.')
+    }
+  }
+
   async function handleSubmit(event: FormEvent) {
     event.preventDefault()
     setErrorMessage('')
-
-    // Unreachable in practice — the component returns the "coming soon"
-    // state above before this form ever renders when publicKey is null —
-    // but narrows the type for window.PaystackPop.setup below.
-    if (!publicKey) return
 
     const numericAmount = Number(amount)
     if (!Number.isFinite(numericAmount) || numericAmount <= 0) {
@@ -122,6 +148,17 @@ export function GiveForm({ publicKey }: { publicKey: string | null }) {
       setErrorMessage('An email address is required to process your gift.')
       return
     }
+
+    if (method === 'stripe') {
+      await handleStripeSubmit(numericAmount)
+      return
+    }
+
+    // Unreachable in practice — method only becomes 'paystack' when
+    // paystackEnabled is true — but narrows the type for
+    // window.PaystackPop.setup below.
+    if (!paystackPublicKey) return
+
     if (!window.PaystackPop) {
       setErrorMessage('Payment could not load — please refresh and try again.')
       return
@@ -154,7 +191,7 @@ export function GiveForm({ publicKey }: { publicKey: string | null }) {
     setStatus('submitting')
 
     const popup = window.PaystackPop.setup({
-      key: publicKey,
+      key: paystackPublicKey,
       email: donorEmail,
       amount: Math.round(numericAmount * 100),
       currency,
@@ -183,8 +220,18 @@ export function GiveForm({ publicKey }: { publicKey: string | null }) {
 
   return (
     <>
-      <Script src="https://js.paystack.co/v1/inline.js" strategy="afterInteractive" />
+      {paystackEnabled && <Script src="https://js.paystack.co/v1/inline.js" strategy="afterInteractive" />}
       <form onSubmit={handleSubmit} style={{ display: 'grid', gap: '1.25rem' }}>
+        {paystackEnabled && stripeEnabled && (
+          <div>
+            <p className="card-eyebrow" style={{ marginBottom: '0.5rem' }}>Payment Method</p>
+            <div style={{ display: 'flex', gap: '0.5rem' }}>
+              <button type="button" style={toggleButtonStyle(method === 'paystack')} onClick={() => setMethod('paystack')}>Paystack</button>
+              <button type="button" style={toggleButtonStyle(method === 'stripe')} onClick={() => setMethod('stripe')}>Stripe</button>
+            </div>
+          </div>
+        )}
+
         <div>
           <p className="card-eyebrow" style={{ marginBottom: '0.5rem' }}>Currency</p>
           <div style={{ display: 'flex', gap: '0.5rem' }}>

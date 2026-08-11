@@ -184,13 +184,25 @@ jbim-platform/
 
 ---
 
-## 6. Payments Architecture (Paystack)
+## 6. Payments Architecture (Paystack + Stripe)
 
-1. `/give` renders the donation form server-side, reading only the resolved tenant's `paystack.publicKey` (never `secretKey`) via the Local API and passing it to the client `GiveForm` component. Paystack Inline JS (loaded via `next/script`, not an npm dependency) opens the checkout popup using that public key — per-tenant, stored in `Tenants.paystack` (never a platform-wide shared Paystack account).
+Two independent, donor-selectable processors (2026-08-11 — Stripe added alongside the existing Paystack integration, see [D4](00-decisions-log.md)). `/give` renders server-side, reading only the resolved tenant's `paystack.publicKey` and *whether* `stripe.secretKey` is set (never any secret) via the Local API, and passes those to the client `GiveForm`. The payment-method toggle only appears when a tenant has configured both; with only one configured, that one is used silently. `Donations.processor` records which gateway handled a given row.
+
+**Paystack** (popup, stays on `/give`):
+1. Paystack Inline JS (loaded via `next/script`, not an npm dependency) opens a checkout popup using the tenant's `paystack.publicKey` — per-tenant, stored in `Tenants.paystack` (never a platform-wide shared account).
 2. Recurring (monthly) donations need a Paystack Plan before Inline JS can attach a subscription to a charge, and Plan amounts are donor-chosen rather than fixed tiers — so before opening the popup, the client calls `api/donations/prepare`, which creates a one-off Plan for that exact amount/currency via the tenant's `secretKey` and returns the `planCode`.
 3. On popup success, the client calls `api/donations/verify` with the returned reference, which **re-verifies the transaction server-side against Paystack's Verify Transaction API** before writing a `Donations` record — the client is never trusted to report success. Writes are idempotent on `paystackReference` (unique), since the webhook below can race this same write.
 4. Paystack webhooks post to a **per-tenant** path, `api/webhooks/paystack/[tenantSlug]`, not one shared endpoint — the tenant has to be known from the URL before the `x-paystack-signature` header can be verified (HMAC-SHA512 of the raw body using that tenant's `secretKey`), since which tenant's secret key to check the signature against can't itself come from the unverified payload. Handles `charge.success` as the backstop path for any donation the client-side verify call missed (browser closed mid-flow, etc.) — same idempotent-on-`paystackReference` write as above.
-5. Receipt email (Resend) fires from a Payload `afterChange` hook on `Donations`, not from the client — guarantees a receipt is sent exactly once per confirmed donation regardless of client network conditions. *(Not yet implemented — see docs/00-decisions-log.md open items; this build covers the checkout → verified-record path only.)*
+
+**Stripe** (hosted redirect, leaves `/give` entirely):
+1. `api/donations/stripe/checkout` creates a Checkout Session server-side via the tenant's `stripe.secretKey` and returns its hosted URL — the client does a full-page redirect there. No Stripe.js and no `publishableKey` are ever needed client-side for this flow, unlike Paystack's embedded popup.
+2. Donor-chosen amounts mean recurring donations use inline `price_data`/`recurring` on the Session itself (Stripe supports this directly), not a separate pre-created Plan step like Paystack needs — one API call handles both one-time and recurring.
+3. Stripe redirects the donor back to `/give/success?session_id=...` on success — that page **is** the verify step (retrieves the Session server-side, checks `payment_status === 'paid'`, writes the `Donations` record), playing the same role `api/donations/verify` plays for Paystack.
+4. Stripe webhooks post to a **per-tenant** path, `api/webhooks/stripe/[tenantSlug]`, same reasoning as Paystack's — verified via the `Stripe-Signature` header (HMAC-SHA256 of `${timestamp}.${rawBody}` using the tenant's own per-endpoint `stripe.webhookSecret`, not the account secret key — a real difference from Paystack's scheme, where the secret key itself signs). Handles `checkout.session.completed` (first charge, one-time or recurring) and `invoice.payment_succeeded` (subsequent monthly renewal charges, which arrive as a different event referencing the subscription rather than the original Session) — **the renewal path is unverified against a real Stripe account/webhook payload**, built to the documented event shape but not yet exercised live.
+
+Both processors funnel through the same idempotent-on-unique-reference pattern (`paystackReference` / `stripeSessionId`), since each processor's client-redirect-or-popup path and its webhook can race to record the same charge.
+
+Receipt email (Resend) firing from a Payload `afterChange` hook on `Donations` is **not yet implemented** for either processor — see docs/00-decisions-log.md open items; this build covers the checkout → verified-record path only.
 
 ---
 

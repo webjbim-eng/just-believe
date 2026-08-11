@@ -6,24 +6,31 @@ import { tenantField } from '../fields/tenantField'
 import { createAuditAfterChangeHook, createAuditAfterDeleteHook } from '../hooks/auditLog'
 
 /**
- * Records of truth for donations are written exclusively by the server-side
- * Paystack verify route (src/app/api/donations/verify/route.ts) and webhook
- * handler (src/app/api/webhooks/paystack/[tenantSlug]/route.ts), both of
- * which call the Local API with `overrideAccess: true` after independently
- * re-verifying the transaction against Paystack — never by a client-supplied
+ * Records of truth for donations are written exclusively by server-side
+ * verify/webhook routes for whichever processor handled the charge
+ * (src/app/api/donations/verify + api/webhooks/paystack/[tenantSlug] for
+ * Paystack; src/app/(public)/give/success + api/webhooks/stripe/[tenantSlug]
+ * for Stripe — see docs/02-architecture.md §6), all calling the Local API
+ * with `overrideAccess: true` after independently re-verifying the
+ * transaction against that processor — never by a client-supplied
  * create/update through this collection's normal access path. Same
  * "system-writer, admin-reads-only" shape as AuditLogs.ts. A recurring
  * donation produces one row per successful charge (the initial payment and
- * every subsequent monthly charge each fire their own `charge.success`
- * event) rather than a separate subscription entity — matches how a real
- * donation ledger reads.
+ * every subsequent monthly charge each fire their own event) rather than a
+ * separate subscription entity — matches how a real donation ledger reads.
+ *
+ * `useAsTitle: paystackReference` is blank for Stripe-originated rows (they
+ * populate `stripeSessionId` instead) — Payload falls back to showing the
+ * row's id in the admin list title for those, which is a plain reflection
+ * of "this field doesn't apply" rather than a bug worth a synthetic title
+ * field for.
  */
 export const Donations: CollectionConfig = {
   slug: 'donations',
   admin: {
     useAsTitle: 'paystackReference',
     group: 'Giving',
-    defaultColumns: ['donorName', 'amount', 'currency', 'fund', 'status', 'createdAt'],
+    defaultColumns: ['donorName', 'amount', 'currency', 'processor', 'fund', 'status', 'createdAt'],
   },
   access: {
     read: composeAccess(hasPermission('donations.view'), withTenantScope()),
@@ -54,11 +61,34 @@ export const Donations: CollectionConfig = {
       required: true,
       options: ['general', 'mission-projects', 'child-sponsorship', 'special-campaign'],
     },
-    { name: 'paystackReference', type: 'text', required: true, unique: true },
+    {
+      name: 'processor',
+      type: 'select',
+      required: true,
+      options: ['paystack', 'stripe'],
+      admin: { description: 'Which gateway processed this charge — determines which reference field below is populated' },
+    },
+    {
+      name: 'paystackReference',
+      type: 'text',
+      unique: true,
+      admin: { description: 'Set only when processor is Paystack. NULLs don\'t collide under a unique constraint, so Stripe rows leaving this blank is fine.' },
+    },
     {
       name: 'paystackSubscriptionCode',
       type: 'text',
-      admin: { description: 'Set only when this charge belongs to a recurring Plan (monthly giving)' },
+      admin: { description: 'Set only when this Paystack charge belongs to a recurring Plan (monthly giving)' },
+    },
+    {
+      name: 'stripeSessionId',
+      type: 'text',
+      unique: true,
+      admin: { description: 'Set only when processor is Stripe — the Checkout Session id, this processor\'s idempotency key' },
+    },
+    {
+      name: 'stripeSubscriptionId',
+      type: 'text',
+      admin: { description: 'Set only when this Stripe charge belongs to a subscription (monthly giving)' },
     },
     {
       name: 'status',

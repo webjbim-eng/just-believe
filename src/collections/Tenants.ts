@@ -27,19 +27,19 @@ const ownTenantWithSettingsPermission: Access = async (args) => {
 }
 
 /**
- * secretKey is a live Paystack API credential (server-side charge
- * verification, Plan creation) — never returned to a browser. Collection
- * read access (ownTenantOnly) already limits who can reach this document at
- * all; this field-level check narrows it further to the same
- * website.settings permission that gates editing the rest of the tenant's
- * config, so a lower-permission tenant member with read access to their own
- * tenant still can't see it. There is no encryption-at-rest here — this is
- * app-layer access control only, same as every other access check in this
- * codebase (see docs/04-auth-rbac.md). Real encryption-at-rest would need a
- * field hook + KMS integration, which doesn't exist anywhere in this stack
- * yet and is out of scope for this build.
+ * Shared by every live payment-gateway credential on this collection
+ * (Paystack secretKey, Stripe secretKey/webhookSecret) — never returned to
+ * a browser. Collection read access (ownTenantOnly) already limits who can
+ * reach this document at all; this field-level check narrows it further to
+ * the same website.settings permission that gates editing the rest of the
+ * tenant's config, so a lower-permission tenant member with read access to
+ * their own tenant still can't see it. There is no encryption-at-rest here
+ * — this is app-layer access control only, same as every other access
+ * check in this codebase (see docs/04-auth-rbac.md). Real encryption-at-
+ * rest would need a field hook + KMS integration, which doesn't exist
+ * anywhere in this stack yet and is out of scope for this build.
  */
-const paystackSecretFieldAccess: FieldAccess = async ({ req }) => {
+const tenantSecretFieldAccess: FieldAccess = async ({ req }) => {
   if (isPlatformSuperAdmin(req.user)) return true
   return Boolean(await hasPermission('website.settings')({ req } as Parameters<Access>[0]))
 }
@@ -125,8 +125,32 @@ export const Tenants: CollectionConfig = {
         {
           name: 'secretKey',
           type: 'text',
-          access: { read: paystackSecretFieldAccess },
+          access: { read: tenantSecretFieldAccess },
           admin: { description: 'Server-side only — verifies transactions and creates recurring Plans. Never sent to the browser (sk_test_... or sk_live_...)' },
+        },
+      ],
+    },
+    {
+      name: 'stripe',
+      type: 'group',
+      admin: { description: 'Per-tenant Stripe config — a second donation option alongside Paystack, donor picks at checkout (2026-08-11). Use test-mode keys until this tenant is ready to accept live donations.' },
+      fields: [
+        {
+          name: 'publishableKey',
+          type: 'text',
+          admin: { description: 'Not currently used server-side — Checkout Sessions are created and redirected to entirely server-side, no Stripe.js on the client. Stored for parity/future use only (pk_test_... or pk_live_...)' },
+        },
+        {
+          name: 'secretKey',
+          type: 'text',
+          access: { read: tenantSecretFieldAccess },
+          admin: { description: 'Server-side only — creates and retrieves Checkout Sessions. Never sent to the browser (sk_test_... or sk_live_...)' },
+        },
+        {
+          name: 'webhookSecret',
+          type: 'text',
+          access: { read: tenantSecretFieldAccess },
+          admin: { description: 'From the Stripe Dashboard when registering https://<domain>/api/webhooks/stripe/<tenant-slug> as an endpoint — verifies the Stripe-Signature header (whsec_...). Different from secretKey; Stripe signs webhooks with a per-endpoint secret, not the account key.' },
         },
       ],
     },

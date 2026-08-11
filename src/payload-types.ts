@@ -232,6 +232,23 @@ export interface Tenant {
     secretKey?: string | null;
   };
   /**
+   * Per-tenant Stripe config — a second donation option alongside Paystack, donor picks at checkout (2026-08-11). Use test-mode keys until this tenant is ready to accept live donations.
+   */
+  stripe?: {
+    /**
+     * Not currently used server-side — Checkout Sessions are created and redirected to entirely server-side, no Stripe.js on the client. Stored for parity/future use only (pk_test_... or pk_live_...)
+     */
+    publishableKey?: string | null;
+    /**
+     * Server-side only — creates and retrieves Checkout Sessions. Never sent to the browser (sk_test_... or sk_live_...)
+     */
+    secretKey?: string | null;
+    /**
+     * From the Stripe Dashboard when registering https://<domain>/api/webhooks/stripe/<tenant-slug> as an endpoint — verifies the Stripe-Signature header (whsec_...). Different from secretKey; Stripe signs webhooks with a per-endpoint secret, not the account key.
+     */
+    webhookSecret?: string | null;
+  };
+  /**
    * Suspending/deleting a tenant is Platform Super Admin-only and audit-logged (FR-TENANT-05)
    */
   status?: ('active' | 'suspended') | null;
@@ -1121,11 +1138,26 @@ export interface Donation {
    */
   usdAmount?: number | null;
   fund: 'general' | 'mission-projects' | 'child-sponsorship' | 'special-campaign';
-  paystackReference: string;
   /**
-   * Set only when this charge belongs to a recurring Plan (monthly giving)
+   * Which gateway processed this charge — determines which reference field below is populated
+   */
+  processor: 'paystack' | 'stripe';
+  /**
+   * Set only when processor is Paystack. NULLs don't collide under a unique constraint, so Stripe rows leaving this blank is fine.
+   */
+  paystackReference?: string | null;
+  /**
+   * Set only when this Paystack charge belongs to a recurring Plan (monthly giving)
    */
   paystackSubscriptionCode?: string | null;
+  /**
+   * Set only when processor is Stripe — the Checkout Session id, this processor's idempotency key
+   */
+  stripeSessionId?: string | null;
+  /**
+   * Set only when this Stripe charge belongs to a subscription (monthly giving)
+   */
+  stripeSubscriptionId?: string | null;
   status: 'completed' | 'refunded' | 'failed';
   updatedAt: string;
   createdAt: string;
@@ -1357,6 +1389,13 @@ export interface TenantsSelect<T extends boolean = true> {
     | {
         publicKey?: T;
         secretKey?: T;
+      };
+  stripe?:
+    | T
+    | {
+        publishableKey?: T;
+        secretKey?: T;
+        webhookSecret?: T;
       };
   status?: T;
   updatedAt?: T;
@@ -1973,8 +2012,11 @@ export interface DonationsSelect<T extends boolean = true> {
   currency?: T;
   usdAmount?: T;
   fund?: T;
+  processor?: T;
   paystackReference?: T;
   paystackSubscriptionCode?: T;
+  stripeSessionId?: T;
+  stripeSubscriptionId?: T;
   status?: T;
   updatedAt?: T;
   createdAt?: T;
