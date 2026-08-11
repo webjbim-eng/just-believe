@@ -93,9 +93,24 @@ function isAdminHost(hostname: string): boolean {
   return hostname.split(':')[0].startsWith('admin.')
 }
 
+/**
+ * 2026-08-11 bugfix: this used to only exclude /admin, /api, /_next —
+ * static assets under public/ (e.g. /brand/jbim-logo-white.png,
+ * /images/*.jpg) were NOT excluded, so a request for the logo on the
+ * admin subdomain got rewritten to /admin/brand/jbim-logo-white.png,
+ * which doesn't exist -> broken image. Any path with a file extension in
+ * its last segment is a static asset, never an app route (this codebase
+ * has no dotted route segments), so it's a safe general exclusion rather
+ * than an enumerated list of static folders that will inevitably miss one.
+ */
+function isStaticAssetPath(pathname: string): boolean {
+  const lastSegment = pathname.split('/').pop() ?? ''
+  return lastSegment.includes('.')
+}
+
 function rewriteAdminHostPath(request: NextRequest): NextRequest['nextUrl'] | null {
   const { pathname } = request.nextUrl
-  if (pathname.startsWith('/admin') || pathname.startsWith('/api') || pathname.startsWith('/_next')) {
+  if (pathname.startsWith('/admin') || pathname.startsWith('/api') || pathname.startsWith('/_next') || isStaticAssetPath(pathname)) {
     return null
   }
   const url = request.nextUrl.clone()
@@ -103,8 +118,34 @@ function rewriteAdminHostPath(request: NextRequest): NextRequest['nextUrl'] | nu
   return url
 }
 
+/**
+ * Once admin.<root-domain> is live, /admin on the main production domain
+ * is redundant and a little confusing (two URLs reach the same panel) —
+ * redirect it to the dedicated subdomain instead of just leaving both
+ * working forever. Scoped to the exact known production root domain only
+ * (not vercel.app preview URLs, not localhost) so local dev and preview
+ * deploys — which don't have an admin.* subdomain reachable — keep
+ * working exactly as before.
+ */
+const PRODUCTION_ROOT_DOMAIN = 'justbelieveintmissions.org'
+
+function redirectMainDomainAdminUrl(request: NextRequest, bareHost: string): URL | null {
+  if (bareHost !== PRODUCTION_ROOT_DOMAIN) return null
+  if (!request.nextUrl.pathname.startsWith('/admin')) return null
+  const url = request.nextUrl.clone()
+  url.hostname = `admin.${PRODUCTION_ROOT_DOMAIN}`
+  url.pathname = request.nextUrl.pathname.replace(/^\/admin/, '') || '/'
+  return url
+}
+
 export async function middleware(request: NextRequest) {
   const hostname = devTenantOverrideHostname(request) || request.headers.get('host') || ''
+  const bareHost = hostname.split(':')[0]
+
+  const adminRedirectUrl = redirectMainDomainAdminUrl(request, bareHost)
+  if (adminRedirectUrl) {
+    return NextResponse.redirect(adminRedirectUrl)
+  }
 
   if (isAdminHost(hostname)) {
     // 2026-08-11 fix: this used to skip tenant resolution entirely for
@@ -115,7 +156,6 @@ export async function middleware(request: NextRequest) {
     // tenant as the main domain, not a tenant-less request. Resolve
     // against the bare root domain (strip the "admin." prefix) since a
     // Tenant's configured domain is the root, not the admin subdomain.
-    const bareHost = hostname.split(':')[0]
     const rootHost = bareHost.replace(/^admin\./, '')
     const tenantId = await resolveTenantIdForHost(rootHost, request.url)
 
