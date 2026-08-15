@@ -38,8 +38,8 @@ export type PartnershipInvitationConfig = {
  * (docs/02-architecture.md §6), where the donor actually picks the fund.
  */
 const WAY_ICONS = [
-  // General Fund
-  <svg key="general" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+  // Tithe (was General Fund — 2026-08-12 rename, see Donations.ts)
+  <svg key="tithe" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
     <path d="M12 3v18M6 7.5c0-1.5 1.5-2.5 3-2.5h6c1.5 0 3 1 3 2.5S16.5 10 15 10H9c-1.5 0-3 1-3 2.5S7.5 15 9 15h6c1.5 0 3 1 3 2.5S16.5 20 15 20H6" strokeLinecap="round" />
   </svg>,
   // Mission Projects
@@ -52,8 +52,8 @@ const WAY_ICONS = [
     <circle cx="12" cy="8" r="3.5" />
     <path d="M5 20c0-3.9 3.1-7 7-7s7 3.1 7 7" strokeLinecap="round" />
   </svg>,
-  // Special Campaign
-  <svg key="special" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+  // Offering (was Special Campaign)
+  <svg key="offering" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
     <path d="M12 4.5l2.1 4.3 4.7.7-3.4 3.3.8 4.7-4.2-2.2-4.2 2.2.8-4.7-3.4-3.3 4.7-.7L12 4.5z" strokeLinejoin="round" />
   </svg>,
 ]

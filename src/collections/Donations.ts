@@ -56,10 +56,16 @@ export const Donations: CollectionConfig = {
       },
     },
     {
+      // 2026-08-12: 'general'/'special-campaign' renamed to 'tithe'/
+      // 'offering' — standard church-giving categories, per Jimmy's
+      // correction. Renamed the enum values themselves, not just admin-
+      // facing labels, since no real donation has ever been processed
+      // (Give page/checkout still show "coming soon" everywhere this was
+      // checked this session) — nothing depends on the old value strings.
       name: 'fund',
       type: 'select',
       required: true,
-      options: ['general', 'mission-projects', 'child-sponsorship', 'special-campaign'],
+      options: ['tithe', 'mission-projects', 'child-sponsorship', 'offering'],
     },
     {
       name: 'processor',

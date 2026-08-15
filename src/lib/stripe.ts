@@ -189,7 +189,7 @@ export type StripeInvoice = {
  * once, for the first charge. fund/donorName/anonymous are recovered from
  * subscription_data.metadata (set at Session creation, see
  * createCheckoutSession) via invoice.subscription_details.metadata; falls
- * back to the general fund/no name if that's ever absent, rather than
+ * back to the default fund/no name if that's ever absent, rather than
  * failing to record the renewal at all. Not yet exercised against a real
  * Stripe account/webhook payload — same honest caveat as the rest of this
  * build, see docs/00-decisions-log.md.
@@ -250,7 +250,7 @@ async function createDonationRowIdempotent(
         amount,
         currency,
         usdAmount: currency === 'USD' ? amount : undefined,
-        fund: (args.fund as 'general' | 'mission-projects' | 'child-sponsorship' | 'special-campaign') || 'general',
+        fund: (args.fund as 'tithe' | 'mission-projects' | 'child-sponsorship' | 'offering') || 'tithe',
         processor: 'stripe',
         // stripeSessionId doubles as the generic idempotency key for both
         // Checkout Session ids (first charge) and Invoice ids (renewals) —

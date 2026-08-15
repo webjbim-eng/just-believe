@@ -22,10 +22,10 @@ declare global {
 }
 
 const FUNDS: { value: string; label: string }[] = [
-  { value: 'general', label: 'General Fund' },
+  { value: 'tithe', label: 'Tithe' },
   { value: 'mission-projects', label: 'Mission Projects' },
   { value: 'child-sponsorship', label: 'Child Sponsorship' },
-  { value: 'special-campaign', label: 'Special Campaign' },
+  { value: 'offering', label: 'Offering' },
 ]
 
 const PRESET_AMOUNTS: Record<'NGN' | 'USD', number[]> = {

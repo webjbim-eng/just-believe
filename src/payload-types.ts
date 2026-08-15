@@ -1139,7 +1139,7 @@ export interface Donation {
    * Only populated when currency is already USD (amount === usdAmount). No live FX rate is integrated, so NGN donations leave this blank rather than show a fabricated conversion — see docs/00-decisions-log.md.
    */
   usdAmount?: number | null;
-  fund: 'general' | 'mission-projects' | 'child-sponsorship' | 'special-campaign';
+  fund: 'tithe' | 'mission-projects' | 'child-sponsorship' | 'offering';
   /**
    * Which gateway processed this charge — determines which reference field below is populated
    */

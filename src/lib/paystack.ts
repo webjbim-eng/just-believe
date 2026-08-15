@@ -127,7 +127,7 @@ export async function recordDonationFromVerifiedCharge(
         amount,
         currency,
         usdAmount: currency === 'USD' ? amount : undefined,
-        fund: (metadata.fund as 'general' | 'mission-projects' | 'child-sponsorship' | 'special-campaign') || 'general',
+        fund: (metadata.fund as 'tithe' | 'mission-projects' | 'child-sponsorship' | 'offering') || 'tithe',
         processor: 'paystack',
         paystackReference: charge.reference,
         paystackSubscriptionCode: planCode,

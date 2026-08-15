@@ -21,7 +21,7 @@ export async function POST(request: Request) {
   const amount = Number(body?.amount)
   const currency = body?.currency === 'USD' ? 'USD' : body?.currency === 'NGN' ? 'NGN' : null
   const recurring = Boolean(body?.recurring)
-  const fund = typeof body?.fund === 'string' ? body.fund : 'general'
+  const fund = typeof body?.fund === 'string' ? body.fund : 'tithe'
   const donorName = typeof body?.donorName === 'string' ? body.donorName : ''
   const donorEmail = typeof body?.donorEmail === 'string' ? body.donorEmail : ''
   const anonymous = Boolean(body?.anonymous)

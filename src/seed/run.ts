@@ -271,11 +271,15 @@ async function seed() {
         body: 'Every gift is stewarded with integrity and used to advance real ministry — transforming lives, strengthening families, and serving communities around the world.',
         ctaLabel: 'Give Now',
         ctaHref: '/give',
+        // 2026-08-12: 'General Fund'/'Special Campaign' renamed to
+        // 'Tithe'/'Offering' (Jimmy's correction) — matches
+        // Donations.fund's enum values (tithe/offering), not just a label
+        // swap. Order matches WAY_ICONS in PartnershipInvitation.tsx.
         ways: [
-          { label: 'General Fund', description: 'Support the ongoing work of JBIM across every ministry area.' },
+          { label: 'Tithe', description: 'Bring the first fruits of your increase in faithful, regular giving.' },
           { label: 'Mission Projects', description: 'Fund a specific outreach or mission initiative in the field.' },
           { label: 'Child Sponsorship', description: "Invest directly in a child's education, care, and future." },
-          { label: 'Special Campaign', description: 'Give toward a designated season of focused, time-limited ministry.' },
+          { label: 'Offering', description: 'Give freely, above and beyond the tithe, as the Lord leads you.' },
         ],
       },
     },
