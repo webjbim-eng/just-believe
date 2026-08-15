@@ -48,10 +48,14 @@ export type PaymentMethod = 'paystack' | 'stripe' | 'paypal'
  * options. The currency toggle below reads from this map keyed on the
  * selected `method`, and switching method resets currency if the current
  * selection isn't valid for the newly-selected processor.
+ *
+ * Order is deliberate (2026-08-12, Jimmy's request): USD first/default,
+ * then CAD, EUR, GBP, NGN last — both the toggle's left-to-right order
+ * and which currency a method resets to when switching (index 0).
  */
 const CURRENCIES_BY_METHOD: Record<PaymentMethod, Currency[]> = {
-  paystack: ['NGN', 'USD'],
-  stripe: ['NGN', 'USD', 'CAD', 'EUR', 'GBP'],
+  paystack: ['USD', 'NGN'],
+  stripe: ['USD', 'CAD', 'EUR', 'GBP', 'NGN'],
   paypal: ['USD'],
 }
 
@@ -116,7 +120,7 @@ export function GiveForm({
   const paystackEnabled = Boolean(paystackPublicKey)
   const paypalEnabled = Boolean(paypalBusinessEmail)
   const [amount, setAmount] = useState('')
-  const [currency, setCurrency] = useState<Currency>('NGN')
+  const [currency, setCurrency] = useState<Currency>('USD')
   const [fund, setFund] = useState(FUNDS[0].value)
   const [recurring, setRecurring] = useState(false)
   const [donorName, setDonorName] = useState('')

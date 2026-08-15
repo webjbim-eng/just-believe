@@ -1022,3 +1022,42 @@ body {
     grid-template-columns: 1fr;
   }
 }
+
+/* ---- Blog post body (2026-08-12) — real Lexical -> JSX rendering via
+   @payloadcms/richtext-lexical/react's <RichText>, replacing the old
+   flatten-to-plain-text renderer. No className is passed to <RichText>,
+   so these target the plain semantic tags it emits directly. ---- */
+.blog-post-body h1,
+.blog-post-body h2,
+.blog-post-body h3,
+.blog-post-body h4 {
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+}
+
+.blog-post-body p {
+  margin-bottom: 1.25rem;
+  line-height: 1.75;
+}
+
+.blog-post-body ul,
+.blog-post-body ol {
+  margin: 0 0 1.25rem;
+  padding-left: 1.5rem;
+}
+
+.blog-post-body li {
+  margin-bottom: 0.5rem;
+  line-height: 1.7;
+}
+
+.blog-post-body a {
+  color: var(--color-accent);
+  text-decoration-color: var(--color-accent);
+}
+
+.blog-post-body hr {
+  border: none;
+  border-top: 1px solid var(--color-border);
+  margin: 2.5rem 0;
+}

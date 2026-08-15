@@ -48,16 +48,30 @@ export default async function BlogListPage() {
           {posts.length === 0 ? (
             <p style={{ textAlign: 'center', color: 'var(--color-text-muted)' }}>Reflections and updates from JBIM are coming soon.</p>
           ) : (
-            <Stagger className="grid" role="list">
-              {posts.map((post) => (
-                <StaggerItem key={post.id} role="listitem">
-                  <a href={`/blog/${post.slug}`} className="card" style={{ textDecoration: 'none', display: 'block' }}>
-                    <p className="card-eyebrow">{post.publishedAt ? new Date(post.publishedAt).toLocaleDateString() : 'Recent'}</p>
-                    <h3 className="card-title">{post.title}</h3>
-                    {(post.excerpt || post.body) && <p>{post.excerpt || lexicalToPlainText(post.body).slice(0, 140)}</p>}
-                  </a>
-                </StaggerItem>
-              ))}
+            <Stagger className="photo-caption-grid-2" role="list">
+              {posts.map((post) => {
+                const image = typeof post.featuredImage === 'object' ? post.featuredImage : undefined
+                return (
+                  <StaggerItem key={post.id} role="listitem">
+                    <a href={`/blog/${post.slug}`} className="card hover-zoom" style={{ display: 'block', padding: 0, overflow: 'hidden', textDecoration: 'none' }}>
+                      {image?.url && (
+                        <div style={{ aspectRatio: '16 / 9', overflow: 'hidden' }}>
+                          <div
+                            aria-hidden="true"
+                            className="hover-zoom-bg"
+                            style={{ width: '100%', height: '100%', backgroundImage: `url(${image.url})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+                          />
+                        </div>
+                      )}
+                      <div style={{ padding: '1.5rem' }}>
+                        <p className="card-eyebrow">{post.publishedAt ? new Date(post.publishedAt).toLocaleDateString() : 'Recent'}</p>
+                        <h3 className="card-title">{post.title}</h3>
+                        {(post.excerpt || post.body) && <p>{post.excerpt || lexicalToPlainText(post.body).slice(0, 140)}</p>}
+                      </div>
+                    </a>
+                  </StaggerItem>
+                )
+              })}
             </Stagger>
           )}
         </div>

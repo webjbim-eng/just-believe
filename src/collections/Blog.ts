@@ -51,6 +51,15 @@ export const BlogPosts: CollectionConfig = {
         description: 'One or two sentences for cards/listing contexts — the full post body is for the post page only.',
       },
     },
+    {
+      // 2026-08-12: added alongside the paulinemenoru.com import — every
+      // post there has a real featured image, and until now Blog had no
+      // way to store one at all (listing/detail pages rendered text-only).
+      name: 'featuredImage',
+      type: 'upload',
+      relationTo: 'media',
+      admin: { position: 'sidebar' },
+    },
     { name: 'categories', type: 'relationship', relationTo: 'categories', hasMany: true, admin: { position: 'sidebar' } },
     { name: 'tags', type: 'relationship', relationTo: 'tags', hasMany: true, admin: { position: 'sidebar' } },
     { name: 'author', type: 'relationship', relationTo: ['users', 'leadership'], admin: { position: 'sidebar' } },

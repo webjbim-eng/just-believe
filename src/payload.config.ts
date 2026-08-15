@@ -4,6 +4,7 @@ import { fileURLToPath } from 'url'
 import { postgresAdapter } from '@payloadcms/db-postgres'
 import { resendAdapter } from '@payloadcms/email-resend'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
+import { s3Storage } from '@payloadcms/storage-s3'
 import { buildConfig } from 'payload'
 import sharp from 'sharp'
 
@@ -125,8 +126,35 @@ export default buildConfig({
     defaultFromName: 'Just Believe International Missions',
     apiKey: process.env.RESEND_API_KEY || '',
   }),
-  // TODO: once Cloudflare R2 credentials exist, add @payloadcms/storage-s3
-  // to the plugins array pointed at the R2 endpoint — Media.ts is already
-  // storage-adapter-agnostic. See docs/02-architecture.md §1.
+  // 2026-08-12: R2 credentials arrived, wired in — Media.ts was already
+  // storage-adapter-agnostic (see its own comment), no collection changes
+  // needed. Files are served directly from R2's public dev URL
+  // (R2_PUBLIC_URL, the "Public Development URL" — already enabled in the
+  // Cloudflare dashboard) via generateFileURL, not proxied through
+  // Payload's own API — direct CDN delivery, no cost to a serverless
+  // function on every image request. Verified the S3-compatible
+  // credentials against the real bucket before wiring in (HeadBucket +
+  // ListObjectsV2, both succeeded, 0 existing objects so this was a zero-
+  // risk switch from local disk, which doesn't survive on Vercel anyway).
+  // See docs/02-architecture.md §1.
+  plugins: [
+    s3Storage({
+      collections: {
+        media: {
+          generateFileURL: ({ filename }) => `${process.env.R2_PUBLIC_URL || ''}/${filename}`,
+        },
+      },
+      bucket: process.env.R2_BUCKET || '',
+      config: {
+        region: 'auto',
+        endpoint: process.env.R2_ENDPOINT || '',
+        credentials: {
+          accessKeyId: process.env.R2_ACCESS_KEY_ID || '',
+          secretAccessKey: process.env.R2_SECRET_ACCESS_KEY || '',
+        },
+        forcePathStyle: true,
+      },
+    }),
+  ],
   sharp,
 })

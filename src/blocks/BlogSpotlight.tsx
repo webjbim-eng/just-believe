@@ -12,12 +12,13 @@ export type BlogSpotlightConfig = {
 /**
  * Reference's "Soulful Reflections" section: one large featured post +
  * several smaller ones, "View All" linking to a real listing page. Blog
- * posts have no image field (Blog.ts), so cards are text-first rather than
- * inventing per-post photography. Unlike Leadership (deferred entirely —
- * no real bio content exists and never will without the client providing
- * it), Blog is fully self-serve: an admin can write a real post right now,
- * so this ships with real /blog + /blog/[slug] pages rather than staying
- * homepage-only.
+ * posts got a featuredImage field (Blog.ts, 2026-08-15, for the
+ * paulinemenoru.com import) — the featured slot uses it when present,
+ * falling back to the original text-only card for older posts without
+ * one. Unlike Leadership (deferred entirely — no real bio content exists
+ * and never will without the client providing it), Blog is fully
+ * self-serve: an admin can write a real post right now, so this ships
+ * with real /blog + /blog/[slug] pages rather than staying homepage-only.
  */
 export async function BlogSpotlight({ config: blockConfig, tenantId }: { config: BlogSpotlightConfig; tenantId: string }) {
   const payload = await getPayload({ config })
@@ -29,6 +30,7 @@ export async function BlogSpotlight({ config: blockConfig, tenantId }: { config:
     overrideAccess: true,
   })
   const [featured, ...rest] = docs
+  const featuredImage = featured && typeof featured.featuredImage === 'object' ? featured.featuredImage : undefined
 
   return (
     <section className="section decorative-flourish decorative-flourish--reverse">
@@ -60,19 +62,46 @@ export async function BlogSpotlight({ config: blockConfig, tenantId }: { config:
         ) : (
           <div className="split-layout">
             <ScrollReveal className="split-layout-media">
-              <a href={`/blog/${featured.slug}`} className="card" style={{ display: 'block', textDecoration: 'none', padding: '2.5rem', minHeight: '18rem' }}>
-                <p className="card-eyebrow">{featured.publishedAt ? new Date(featured.publishedAt).toLocaleDateString() : 'Recent'}</p>
-                <h3 style={{ fontSize: 'var(--text-heading)', marginBottom: '1rem' }}>{featured.title}</h3>
-                {(featured.excerpt || featured.body) && (
-                  <p style={{ fontSize: 'var(--text-body)' }}>{featured.excerpt || lexicalToPlainText(featured.body).slice(0, 180)}</p>
-                )}
-                <span className="link-arrow">
-                  Read More <span className="link-arrow-glyph">→</span>
-                </span>
-              </a>
+              {featuredImage?.url ? (
+                <a
+                  href={`/blog/${featured.slug}`}
+                  aria-label={featured.title}
+                  style={{
+                    display: 'block',
+                    backgroundImage: `url(${featuredImage.url})`,
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                    borderRadius: 'var(--radius-card)',
+                    aspectRatio: '4 / 5',
+                    boxShadow: 'var(--shadow-card-lg)',
+                  }}
+                />
+              ) : (
+                <a href={`/blog/${featured.slug}`} className="card" style={{ display: 'block', textDecoration: 'none', padding: '2.5rem', minHeight: '18rem' }}>
+                  <p className="card-eyebrow">{featured.publishedAt ? new Date(featured.publishedAt).toLocaleDateString() : 'Recent'}</p>
+                  <h3 style={{ fontSize: 'var(--text-heading)', marginBottom: '1rem' }}>{featured.title}</h3>
+                  {(featured.excerpt || featured.body) && (
+                    <p style={{ fontSize: 'var(--text-body)' }}>{featured.excerpt || lexicalToPlainText(featured.body).slice(0, 180)}</p>
+                  )}
+                  <span className="link-arrow">
+                    Read More <span className="link-arrow-glyph">→</span>
+                  </span>
+                </a>
+              )}
             </ScrollReveal>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-              {rest.length === 0 ? (
+              {featuredImage?.url && (
+                <a href={`/blog/${featured.slug}`} style={{ display: 'block', textDecoration: 'none', paddingBottom: '1.25rem', borderBottom: '1px solid var(--color-border)' }}>
+                  <p className="card-eyebrow">{featured.publishedAt ? new Date(featured.publishedAt).toLocaleDateString() : 'Recent'}</p>
+                  <p style={{ margin: 0, fontWeight: 600, color: 'var(--color-text)', fontFamily: 'var(--font-heading), Georgia, serif', fontSize: 'var(--text-heading-sm)' }}>
+                    {featured.title}
+                  </p>
+                  {(featured.excerpt || featured.body) && (
+                    <p style={{ marginTop: '0.5rem' }}>{featured.excerpt || lexicalToPlainText(featured.body).slice(0, 140)}</p>
+                  )}
+                </a>
+              )}
+              {rest.length === 0 && !featuredImage?.url ? (
                 <p style={{ color: 'var(--color-text-muted)' }}>More reflections are on the way.</p>
               ) : (
                 rest.map((post, index) => (

@@ -51,11 +51,12 @@ export const Donations: CollectionConfig = {
       // 2026-08-12: added CAD/EUR/GBP alongside NGN/USD. Paystack only
       // ever settles NGN or USD (real processor limit, not a UI gap — see
       // GiveForm.tsx's CURRENCIES_BY_METHOD); the three new currencies are
-      // Stripe-only, which has real multi-currency support.
+      // Stripe-only, which has real multi-currency support. Order matches
+      // GiveForm's CURRENCIES_BY_METHOD (USD default, NGN last).
       name: 'currency',
       type: 'select',
       required: true,
-      options: ['NGN', 'USD', 'CAD', 'EUR', 'GBP'],
+      options: ['USD', 'CAD', 'EUR', 'GBP', 'NGN'],
     },
     {
       name: 'usdAmount',

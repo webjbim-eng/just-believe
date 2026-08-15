@@ -800,6 +800,7 @@ export interface BlogPost {
    * One or two sentences for cards/listing contexts — the full post body is for the post page only.
    */
   excerpt?: string | null;
+  featuredImage?: (number | null) | Media;
   categories?: (number | Category)[] | null;
   tags?: (number | Tag)[] | null;
   author?:
@@ -1143,7 +1144,7 @@ export interface Donation {
    * Major currency unit (e.g. 5000 NGN, not kobo) — converted from Paystack's subunit amount on verify
    */
   amount: number;
-  currency: 'NGN' | 'USD' | 'CAD' | 'EUR' | 'GBP';
+  currency: 'USD' | 'CAD' | 'EUR' | 'GBP' | 'NGN';
   /**
    * Only populated when currency is already USD (amount === usdAmount). No live FX rate is integrated, so donations in any other currency (NGN, CAD, EUR, GBP) leave this blank rather than show a fabricated conversion — see docs/00-decisions-log.md.
    */
@@ -1773,6 +1774,7 @@ export interface BlogPostsSelect<T extends boolean = true> {
   body?: T;
   slug?: T;
   excerpt?: T;
+  featuredImage?: T;
   categories?: T;
   tags?: T;
   author?: T;
