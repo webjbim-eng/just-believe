@@ -18,7 +18,16 @@ import type { Payload } from 'payload'
 
 const STRIPE_BASE_URL = 'https://api.stripe.com/v1'
 
-/** NGN/USD to kobo/cents — Stripe, like Paystack, wants amounts in the smallest currency unit. */
+/**
+ * Stripe's real multi-currency support — wider than Paystack's NGN/USD
+ * (src/components/GiveForm.tsx's CURRENCIES_BY_METHOD is the shared source
+ * of truth for which processor accepts which currencies). None of these
+ * five are zero-decimal currencies in Stripe's model, so toSubunit's ×100
+ * is correct for all of them.
+ */
+export type StripeCurrency = 'NGN' | 'USD' | 'CAD' | 'EUR' | 'GBP'
+
+/** Major unit to minor unit (kobo/cents/pence) — Stripe, like Paystack, wants amounts in the smallest currency unit. */
 export function toSubunit(majorAmount: number): number {
   return Math.round(majorAmount * 100)
 }
@@ -81,7 +90,7 @@ export async function createCheckoutSession(
   secretKey: string,
   args: {
     amountSubunit: number
-    currency: 'NGN' | 'USD'
+    currency: StripeCurrency
     recurring: boolean
     successUrl: string
     cancelUrl: string
@@ -237,7 +246,10 @@ async function createDonationRowIdempotent(
   if (existing.docs.length > 0) return
 
   const amount = args.amountSubunit / 100
-  const currency = args.currency?.toUpperCase() === 'USD' ? 'USD' : 'NGN'
+  const upperCurrency = args.currency?.toUpperCase()
+  const currency: StripeCurrency = (['NGN', 'USD', 'CAD', 'EUR', 'GBP'] as const).includes(upperCurrency as StripeCurrency)
+    ? (upperCurrency as StripeCurrency)
+    : 'NGN'
 
   try {
     await payload.create({

@@ -1134,9 +1134,9 @@ export interface Donation {
    * Major currency unit (e.g. 5000 NGN, not kobo) — converted from Paystack's subunit amount on verify
    */
   amount: number;
-  currency: 'NGN' | 'USD';
+  currency: 'NGN' | 'USD' | 'CAD' | 'EUR' | 'GBP';
   /**
-   * Only populated when currency is already USD (amount === usdAmount). No live FX rate is integrated, so NGN donations leave this blank rather than show a fabricated conversion — see docs/00-decisions-log.md.
+   * Only populated when currency is already USD (amount === usdAmount). No live FX rate is integrated, so donations in any other currency (NGN, CAD, EUR, GBP) leave this blank rather than show a fabricated conversion — see docs/00-decisions-log.md.
    */
   usdAmount?: number | null;
   fund: 'tithe' | 'mission-projects' | 'child-sponsorship' | 'offering';

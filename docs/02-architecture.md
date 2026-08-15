@@ -221,7 +221,7 @@ Per [D3](00-decisions-log.md), multi-tenancy itself (isolation, per-tenant brand
 - Public self-serve tenant signup + tenant-level billing.
 - Native mobile apps.
 - In-house live-streaming (V1 embeds YouTube/external streams only).
-- Multi-currency donation support beyond the confirmed NGN/USD toggle (Paystack doesn't auto-convert "any currency" the way the original PayPal plan assumed — see [D4](00-decisions-log.md)) — no live FX rate integration exists, so a real currency-conversion display is deferred.
+- Multi-currency donation support beyond the confirmed NGN/USD/CAD/EUR/GBP set, processor-scoped (Paystack doesn't auto-convert "any currency" the way the original PayPal plan assumed, and only settles NGN/USD at all — see [D4](00-decisions-log.md)) — no live FX rate integration exists, so a real currency-conversion display (`Donations.usdAmount` for non-USD currencies) is deferred.
 - Donation receipt emails (§6 item 5) — the verify/webhook routes write the `Donations` record; the Resend `afterChange` hook to actually send the receipt is not yet built.
 
 ---

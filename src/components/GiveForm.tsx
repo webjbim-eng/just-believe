@@ -3,6 +3,8 @@
 import Script from 'next/script'
 import { useState, type CSSProperties, type FormEvent } from 'react'
 
+export type Currency = 'NGN' | 'USD' | 'CAD' | 'EUR' | 'GBP'
+
 declare global {
   interface Window {
     PaystackPop?: {
@@ -10,6 +12,8 @@ declare global {
         key: string
         email: string
         amount: number
+        // Paystack's own real currency support, not the wider Currency type
+        // used elsewhere in this file — see CURRENCIES_BY_METHOD.
         currency: 'NGN' | 'USD'
         plan?: string
         metadata?: Record<string, unknown>
@@ -28,9 +32,42 @@ const FUNDS: { value: string; label: string }[] = [
   { value: 'offering', label: 'Offering' },
 ]
 
-const PRESET_AMOUNTS: Record<'NGN' | 'USD', number[]> = {
+/**
+ * 2026-08-12: Paystack genuinely only settles NGN and USD (confirmed when
+ * the Paystack integration was first built) — it isn't a UI restriction,
+ * charging CAD/EUR/GBP through Paystack would just fail. Stripe has real
+ * multi-currency support, so the fuller set is Stripe-only. The currency
+ * toggle below reads from this map keyed on the selected `method`, and
+ * switching method resets currency if the current selection isn't valid
+ * for the newly-selected processor.
+ */
+const CURRENCIES_BY_METHOD: Record<'paystack' | 'stripe', Currency[]> = {
+  paystack: ['NGN', 'USD'],
+  stripe: ['NGN', 'USD', 'CAD', 'EUR', 'GBP'],
+}
+
+const CURRENCY_LABELS: Record<Currency, string> = {
+  NGN: '₦ Naira',
+  USD: '$ Dollar',
+  CAD: 'CA$ Canadian',
+  EUR: '€ Euro',
+  GBP: '£ Pound',
+}
+
+const CURRENCY_SYMBOLS: Record<Currency, string> = {
+  NGN: '₦',
+  USD: '$',
+  CAD: 'CA$',
+  EUR: '€',
+  GBP: '£',
+}
+
+const PRESET_AMOUNTS: Record<Currency, number[]> = {
   NGN: [5000, 15000, 50000],
   USD: [25, 50, 100],
+  CAD: [35, 65, 130],
+  EUR: [25, 50, 100],
+  GBP: [20, 40, 85],
 }
 
 /**
@@ -55,7 +92,7 @@ const PRESET_AMOUNTS: Record<'NGN' | 'USD', number[]> = {
 export function GiveForm({ paystackPublicKey, stripeEnabled }: { paystackPublicKey: string | null; stripeEnabled: boolean }) {
   const paystackEnabled = Boolean(paystackPublicKey)
   const [amount, setAmount] = useState('')
-  const [currency, setCurrency] = useState<'NGN' | 'USD'>('NGN')
+  const [currency, setCurrency] = useState<Currency>('NGN')
   const [fund, setFund] = useState(FUNDS[0].value)
   const [recurring, setRecurring] = useState(false)
   const [donorName, setDonorName] = useState('')
@@ -64,6 +101,15 @@ export function GiveForm({ paystackPublicKey, stripeEnabled }: { paystackPublicK
   const [method, setMethod] = useState<'paystack' | 'stripe'>(paystackEnabled ? 'paystack' : 'stripe')
   const [status, setStatus] = useState<'idle' | 'preparing' | 'submitting' | 'success' | 'error'>('idle')
   const [errorMessage, setErrorMessage] = useState('')
+
+  const availableCurrencies = CURRENCIES_BY_METHOD[method]
+
+  function handleMethodChange(nextMethod: 'paystack' | 'stripe') {
+    setMethod(nextMethod)
+    if (!CURRENCIES_BY_METHOD[nextMethod].includes(currency)) {
+      setCurrency(CURRENCIES_BY_METHOD[nextMethod][0])
+    }
+  }
 
   const inputStyle: CSSProperties = {
     width: '100%',
@@ -194,7 +240,10 @@ export function GiveForm({ paystackPublicKey, stripeEnabled }: { paystackPublicK
       key: paystackPublicKey,
       email: donorEmail,
       amount: Math.round(numericAmount * 100),
-      currency,
+      // Safe: availableCurrencies already restricts selection to NGN/USD
+      // whenever method === 'paystack' (see CURRENCIES_BY_METHOD), this
+      // branch only runs for that method.
+      currency: currency as 'NGN' | 'USD',
       plan: planCode,
       metadata: { fund, donorName: anonymous ? undefined : donorName, anonymous },
       callback: (response) => {
@@ -226,21 +275,26 @@ export function GiveForm({ paystackPublicKey, stripeEnabled }: { paystackPublicK
           <div>
             <p className="card-eyebrow" style={{ marginBottom: '0.5rem' }}>Payment Method</p>
             <div style={{ display: 'flex', gap: '0.5rem' }}>
-              <button type="button" style={toggleButtonStyle(method === 'paystack')} onClick={() => setMethod('paystack')}>Paystack</button>
-              <button type="button" style={toggleButtonStyle(method === 'stripe')} onClick={() => setMethod('stripe')}>Stripe</button>
+              <button type="button" style={toggleButtonStyle(method === 'paystack')} onClick={() => handleMethodChange('paystack')}>Paystack</button>
+              <button type="button" style={toggleButtonStyle(method === 'stripe')} onClick={() => handleMethodChange('stripe')}>Stripe</button>
             </div>
           </div>
         )}
 
         <div>
           <p className="card-eyebrow" style={{ marginBottom: '0.5rem' }}>Currency</p>
-          <div style={{ display: 'flex', gap: '0.5rem' }}>
-            {(['NGN', 'USD'] as const).map((c) => (
+          <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+            {availableCurrencies.map((c) => (
               <button key={c} type="button" style={toggleButtonStyle(currency === c)} onClick={() => setCurrency(c)}>
-                {c === 'NGN' ? '₦ Naira' : '$ Dollar'}
+                {CURRENCY_LABELS[c]}
               </button>
             ))}
           </div>
+          {method === 'paystack' && stripeEnabled && (
+            <p style={{ margin: '0.5rem 0 0', fontSize: '0.8125rem', color: 'var(--color-text-muted)' }}>
+              Need CAD, EUR, or GBP? Switch to Stripe above — Paystack settles in Naira and Dollars only.
+            </p>
+          )}
         </div>
 
         <div>
@@ -248,7 +302,7 @@ export function GiveForm({ paystackPublicKey, stripeEnabled }: { paystackPublicK
           <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '0.75rem' }}>
             {PRESET_AMOUNTS[currency].map((preset) => (
               <button key={preset} type="button" style={toggleButtonStyle(amount === String(preset))} onClick={() => setAmount(String(preset))}>
-                {currency === 'NGN' ? '₦' : '$'}
+                {CURRENCY_SYMBOLS[currency]}
                 {preset.toLocaleString()}
               </button>
             ))}

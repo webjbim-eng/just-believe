@@ -150,7 +150,7 @@ Grouped by module. ID format: `FR-<MODULE>-<N>`.
 ### 3.8 Donations (FR-DON)
 | ID | Requirement |
 |---|---|
-| FR-DON-01 | Visitor can give a one-time or recurring monthly donation via Paystack or Stripe (donor's choice, when a tenant has both configured), in NGN or USD (donor's choice) — see [D4](00-decisions-log.md), updated 2026-08-11 from the original PayPal "any currency, auto-converted" behavior, which neither processor supports. |
+| FR-DON-01 | Visitor can give a one-time or recurring monthly donation via Paystack or Stripe (donor's choice, when a tenant has both configured). Currency choice is processor-scoped: Paystack offers NGN/USD only (a real processor limit); Stripe additionally offers CAD/EUR/GBP — see [D4](00-decisions-log.md), updated 2026-08-12. Neither processor auto-converts "any currency" the way the original PayPal plan assumed. |
 | FR-DON-02 | Donations can be earmarked to a fund/campaign (general, mission projects, child sponsorship, special campaigns). |
 | FR-DON-03 | Successful donations trigger a receipt email to the donor and a notification to the configured donations-notification address. |
 | FR-DON-04 | Finance Manager can view donation history/exports; cannot edit public content. |

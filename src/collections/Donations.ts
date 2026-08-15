@@ -47,12 +47,21 @@ export const Donations: CollectionConfig = {
     { name: 'donorName', type: 'text', admin: { description: 'Empty if the donor chose to give anonymously' } },
     { name: 'donorEmail', type: 'email' },
     { name: 'amount', type: 'number', required: true, admin: { description: 'Major currency unit (e.g. 5000 NGN, not kobo) — converted from Paystack\'s subunit amount on verify' } },
-    { name: 'currency', type: 'select', required: true, options: ['NGN', 'USD'] },
+    {
+      // 2026-08-12: added CAD/EUR/GBP alongside NGN/USD. Paystack only
+      // ever settles NGN or USD (real processor limit, not a UI gap — see
+      // GiveForm.tsx's CURRENCIES_BY_METHOD); the three new currencies are
+      // Stripe-only, which has real multi-currency support.
+      name: 'currency',
+      type: 'select',
+      required: true,
+      options: ['NGN', 'USD', 'CAD', 'EUR', 'GBP'],
+    },
     {
       name: 'usdAmount',
       type: 'number',
       admin: {
-        description: 'Only populated when currency is already USD (amount === usdAmount). No live FX rate is integrated, so NGN donations leave this blank rather than show a fabricated conversion — see docs/00-decisions-log.md.',
+        description: 'Only populated when currency is already USD (amount === usdAmount). No live FX rate is integrated, so donations in any other currency (NGN, CAD, EUR, GBP) leave this blank rather than show a fabricated conversion — see docs/00-decisions-log.md.',
       },
     },
     {

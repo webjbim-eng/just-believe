@@ -2,7 +2,9 @@ import { NextResponse } from 'next/server'
 import { getPayload } from 'payload'
 import config from '@payload-config'
 import { TENANT_HEADER } from '../../../../../access/getResolvedTenantId'
-import { createCheckoutSession, toSubunit } from '../../../../../lib/stripe'
+import { createCheckoutSession, toSubunit, type StripeCurrency } from '../../../../../lib/stripe'
+
+const STRIPE_CURRENCIES: StripeCurrency[] = ['NGN', 'USD', 'CAD', 'EUR', 'GBP']
 
 /**
  * Unlike Paystack (api/donations/prepare + client-side Inline JS popup),
@@ -19,7 +21,7 @@ export async function POST(request: Request) {
 
   const body = await request.json().catch(() => null)
   const amount = Number(body?.amount)
-  const currency = body?.currency === 'USD' ? 'USD' : body?.currency === 'NGN' ? 'NGN' : null
+  const currency = STRIPE_CURRENCIES.includes(body?.currency) ? (body.currency as StripeCurrency) : null
   const recurring = Boolean(body?.recurring)
   const fund = typeof body?.fund === 'string' ? body.fund : 'tithe'
   const donorName = typeof body?.donorName === 'string' ? body.donorName : ''
