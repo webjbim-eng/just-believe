@@ -79,6 +79,7 @@ erDiagram
 | defaultLocale / supportedLocales | select / array | seeds Payload's `localization` config per tenant at render time |
 | paystack.publicKey / secretKey | text (secretKey read-restricted to `website.settings` permission / Platform Super Admin at the field level — not encrypted at rest, see docs/04-auth-rbac.md) | FR-DON-01 |
 | stripe.publishableKey / secretKey / webhookSecret | text (secretKey and webhookSecret read-restricted same as paystack.secretKey; publishableKey isn't currently read by any server route — Checkout Sessions are created and redirected to entirely server-side) | FR-DON-01 |
+| paypal.businessEmail | email (not read-restricted — this is meant to be handed to donors, same sensitivity as giving it out for a direct transfer) | FR-DON-01 |
 | status | select: active / suspended | FR-TENANT-05 |
 
 ### User

@@ -249,6 +249,15 @@ export interface Tenant {
     webhookSecret?: string | null;
   };
   /**
+   * Per-tenant PayPal donation email — a simple hosted-button redirect, not an API integration (no credentials to verify transactions, so PayPal gifts aren't recorded in Donations the way Paystack/Stripe ones are).
+   */
+  paypal?: {
+    /**
+     * The PayPal account email donors send gifts to — safe to expose client-side, this is the same email you'd hand out for a direct PayPal transfer.
+     */
+    businessEmail?: string | null;
+  };
+  /**
    * Suspending/deleting a tenant is Platform Super Admin-only and audit-logged (FR-TENANT-05)
    */
   status?: ('active' | 'suspended') | null;
@@ -1398,6 +1407,11 @@ export interface TenantsSelect<T extends boolean = true> {
         publishableKey?: T;
         secretKey?: T;
         webhookSecret?: T;
+      };
+  paypal?:
+    | T
+    | {
+        businessEmail?: T;
       };
   status?: T;
   updatedAt?: T;

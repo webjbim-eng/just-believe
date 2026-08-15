@@ -155,6 +155,27 @@ export const Tenants: CollectionConfig = {
       ],
     },
     {
+      // 2026-08-12: a third giving option, deliberately not built like
+      // Paystack/Stripe — those two have real API credentials (secret
+      // keys) letting the server verify a transaction and write a
+      // Donations record; PayPal here is just a business email, the
+      // classic no-API-key "hosted donate button" pattern. There's no
+      // secret to protect (businessEmail is meant to be handed to
+      // donors), and no way to verify a payment happened or write a
+      // Donations row — the donor completes the gift entirely on
+      // PayPal's own site. See GiveForm.tsx and src/lib/paypal.ts.
+      name: 'paypal',
+      type: 'group',
+      admin: { description: "Per-tenant PayPal donation email — a simple hosted-button redirect, not an API integration (no credentials to verify transactions, so PayPal gifts aren't recorded in Donations the way Paystack/Stripe ones are)." },
+      fields: [
+        {
+          name: 'businessEmail',
+          type: 'email',
+          admin: { description: 'The PayPal account email donors send gifts to — safe to expose client-side, this is the same email you\'d hand out for a direct PayPal transfer.' },
+        },
+      ],
+    },
+    {
       name: 'status',
       type: 'select',
       defaultValue: 'active',

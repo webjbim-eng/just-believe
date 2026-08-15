@@ -1,7 +1,8 @@
 'use client'
 
 import Script from 'next/script'
-import { useState, type CSSProperties, type FormEvent } from 'react'
+import { useState, useEffect, type CSSProperties, type FormEvent } from 'react'
+import { buildPayPalDonateUrl } from '../lib/paypal'
 
 export type Currency = 'NGN' | 'USD' | 'CAD' | 'EUR' | 'GBP'
 
@@ -32,18 +33,26 @@ const FUNDS: { value: string; label: string }[] = [
   { value: 'offering', label: 'Offering' },
 ]
 
+export type PaymentMethod = 'paystack' | 'stripe' | 'paypal'
+
 /**
  * 2026-08-12: Paystack genuinely only settles NGN and USD (confirmed when
  * the Paystack integration was first built) — it isn't a UI restriction,
  * charging CAD/EUR/GBP through Paystack would just fail. Stripe has real
- * multi-currency support, so the fuller set is Stripe-only. The currency
- * toggle below reads from this map keyed on the selected `method`, and
- * switching method resets currency if the current selection isn't valid
- * for the newly-selected processor.
+ * multi-currency support, so the fuller set is Stripe-only. PayPal here
+ * (a plain hosted-button redirect, no API credentials — see
+ * src/lib/paypal.ts) is conservatively scoped to USD only, since nothing
+ * confirms what currencies this specific PayPal business account can
+ * actually receive — a wrong guess would mean a donor's payment gets
+ * rejected by PayPal partway through, worse than just offering fewer
+ * options. The currency toggle below reads from this map keyed on the
+ * selected `method`, and switching method resets currency if the current
+ * selection isn't valid for the newly-selected processor.
  */
-const CURRENCIES_BY_METHOD: Record<'paystack' | 'stripe', Currency[]> = {
+const CURRENCIES_BY_METHOD: Record<PaymentMethod, Currency[]> = {
   paystack: ['NGN', 'USD'],
   stripe: ['NGN', 'USD', 'CAD', 'EUR', 'GBP'],
+  paypal: ['USD'],
 }
 
 const CURRENCY_LABELS: Record<Currency, string> = {
@@ -71,8 +80,8 @@ const PRESET_AMOUNTS: Record<Currency, number[]> = {
 }
 
 /**
- * Two independent checkout paths, donor's choice (2026-08-11 — Paystack
- * was the only option until Jimmy asked to add Stripe alongside it):
+ * Three independent checkout paths, donor's choice (2026-08-11 Stripe,
+ * 2026-08-12 PayPal — Paystack was the only option originally):
  *
  * - Paystack: Inline JS (loaded via next/script, no npm dependency) opens a
  *   popup using the tenant's public key. Recurring needs a Plan created
@@ -85,12 +94,27 @@ const PRESET_AMOUNTS: Record<Currency, number[]> = {
  *   server-side and returns a hosted URL; this component just redirects
  *   the whole page there (no Stripe.js needed). Verification happens after
  *   Stripe redirects the donor back to /give/success.
+ * - PayPal: a plain hosted-button redirect (src/lib/paypal.ts) built
+ *   entirely client-side — no API credentials exist for it, only a
+ *   business email, so there's no server call and no way to verify the
+ *   payment or write a Donations row. One-time gifts only (no recurring;
+ *   PayPal's classic donate button doesn't support it without the real
+ *   Subscriptions API, which needs credentials this doesn't have).
  *
  * If a tenant has only configured one processor, that one is used silently
  * — the method toggle only appears when there's a real choice to make.
  */
-export function GiveForm({ paystackPublicKey, stripeEnabled }: { paystackPublicKey: string | null; stripeEnabled: boolean }) {
+export function GiveForm({
+  paystackPublicKey,
+  stripeEnabled,
+  paypalBusinessEmail,
+}: {
+  paystackPublicKey: string | null
+  stripeEnabled: boolean
+  paypalBusinessEmail: string | null
+}) {
   const paystackEnabled = Boolean(paystackPublicKey)
+  const paypalEnabled = Boolean(paypalBusinessEmail)
   const [amount, setAmount] = useState('')
   const [currency, setCurrency] = useState<Currency>('NGN')
   const [fund, setFund] = useState(FUNDS[0].value)
@@ -98,16 +122,31 @@ export function GiveForm({ paystackPublicKey, stripeEnabled }: { paystackPublicK
   const [donorName, setDonorName] = useState('')
   const [donorEmail, setDonorEmail] = useState('')
   const [anonymous, setAnonymous] = useState(false)
-  const [method, setMethod] = useState<'paystack' | 'stripe'>(paystackEnabled ? 'paystack' : 'stripe')
+  const [paypalReturned, setPaypalReturned] = useState(false)
+  const [method, setMethod] = useState<PaymentMethod>(paystackEnabled ? 'paystack' : stripeEnabled ? 'stripe' : 'paypal')
   const [status, setStatus] = useState<'idle' | 'preparing' | 'submitting' | 'success' | 'error'>('idle')
   const [errorMessage, setErrorMessage] = useState('')
 
+  // PayPal's hosted button has no server callback we can trust — this is
+  // just "did the browser land back on /give with ?paypal=success", which
+  // only tells us the donor completed PayPal's flow and clicked back, not
+  // a verified payment. Good enough for a thank-you message, not for a
+  // Donations record (see src/lib/paypal.ts).
+  useEffect(() => {
+    if (new URLSearchParams(window.location.search).get('paypal') === 'success') {
+      setPaypalReturned(true)
+    }
+  }, [])
+
   const availableCurrencies = CURRENCIES_BY_METHOD[method]
 
-  function handleMethodChange(nextMethod: 'paystack' | 'stripe') {
+  function handleMethodChange(nextMethod: PaymentMethod) {
     setMethod(nextMethod)
     if (!CURRENCIES_BY_METHOD[nextMethod].includes(currency)) {
       setCurrency(CURRENCIES_BY_METHOD[nextMethod][0])
+    }
+    if (nextMethod === 'paypal') {
+      setRecurring(false)
     }
   }
 
@@ -136,7 +175,9 @@ export function GiveForm({ paystackPublicKey, stripeEnabled }: { paystackPublicK
     }
   }
 
-  if (!paystackEnabled && !stripeEnabled) {
+  const enabledMethodCount = [paystackEnabled, stripeEnabled, paypalEnabled].filter(Boolean).length
+
+  if (enabledMethodCount === 0) {
     return (
       <div style={{ padding: '2rem', textAlign: 'center', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-card)' }}>
         <p style={{ fontSize: 'var(--text-subheading)', marginBottom: '0.5rem' }}>Online giving is coming soon.</p>
@@ -144,6 +185,15 @@ export function GiveForm({ paystackPublicKey, stripeEnabled }: { paystackPublicK
           We&rsquo;re finishing setup on secure online giving. In the meantime, reach out via the{' '}
           <a href="/contact">Contact page</a> for bank transfer details.
         </p>
+      </div>
+    )
+  }
+
+  if (paypalReturned) {
+    return (
+      <div style={{ padding: '2rem', textAlign: 'center' }}>
+        <p style={{ fontSize: 'var(--text-subheading)', color: 'var(--color-text)', marginBottom: '0.5rem' }}>Thank you for your gift.</p>
+        <p style={{ margin: 0 }}>PayPal will email you a receipt directly.</p>
       </div>
     )
   }
@@ -181,6 +231,23 @@ export function GiveForm({ paystackPublicKey, stripeEnabled }: { paystackPublicK
     }
   }
 
+  function handlePaypalSubmit(numericAmount: number) {
+    if (!paypalBusinessEmail) return
+    const origin = window.location.origin
+    const url = buildPayPalDonateUrl({
+      businessEmail: paypalBusinessEmail,
+      amount: numericAmount,
+      currency: 'USD',
+      itemName: `${fund} — Just Believe International Missions`,
+      returnUrl: `${origin}/give?paypal=success`,
+      cancelUrl: `${origin}/give`,
+    })
+    // Same full-page-redirect pattern as Stripe — leaves this component
+    // behind. Unlike Stripe, PayPal's own return has nothing our server
+    // verifies; ?paypal=success just means the donor clicked back.
+    window.location.href = url
+  }
+
   async function handleSubmit(event: FormEvent) {
     event.preventDefault()
     setErrorMessage('')
@@ -197,6 +264,11 @@ export function GiveForm({ paystackPublicKey, stripeEnabled }: { paystackPublicK
 
     if (method === 'stripe') {
       await handleStripeSubmit(numericAmount)
+      return
+    }
+
+    if (method === 'paypal') {
+      handlePaypalSubmit(numericAmount)
       return
     }
 
@@ -271,12 +343,19 @@ export function GiveForm({ paystackPublicKey, stripeEnabled }: { paystackPublicK
     <>
       {paystackEnabled && <Script src="https://js.paystack.co/v1/inline.js" strategy="afterInteractive" />}
       <form onSubmit={handleSubmit} style={{ display: 'grid', gap: '1.25rem' }}>
-        {paystackEnabled && stripeEnabled && (
+        {enabledMethodCount > 1 && (
           <div>
             <p className="card-eyebrow" style={{ marginBottom: '0.5rem' }}>Payment Method</p>
-            <div style={{ display: 'flex', gap: '0.5rem' }}>
-              <button type="button" style={toggleButtonStyle(method === 'paystack')} onClick={() => handleMethodChange('paystack')}>Paystack</button>
-              <button type="button" style={toggleButtonStyle(method === 'stripe')} onClick={() => handleMethodChange('stripe')}>Stripe</button>
+            <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+              {paystackEnabled && (
+                <button type="button" style={toggleButtonStyle(method === 'paystack')} onClick={() => handleMethodChange('paystack')}>Paystack</button>
+              )}
+              {stripeEnabled && (
+                <button type="button" style={toggleButtonStyle(method === 'stripe')} onClick={() => handleMethodChange('stripe')}>Stripe</button>
+              )}
+              {paypalEnabled && (
+                <button type="button" style={toggleButtonStyle(method === 'paypal')} onClick={() => handleMethodChange('paypal')}>PayPal</button>
+              )}
             </div>
           </div>
         )}
@@ -319,13 +398,15 @@ export function GiveForm({ paystackPublicKey, stripeEnabled }: { paystackPublicK
           />
         </div>
 
-        <div>
-          <p className="card-eyebrow" style={{ marginBottom: '0.5rem' }}>Frequency</p>
-          <div style={{ display: 'flex', gap: '0.5rem' }}>
-            <button type="button" style={toggleButtonStyle(!recurring)} onClick={() => setRecurring(false)}>Give Once</button>
-            <button type="button" style={toggleButtonStyle(recurring)} onClick={() => setRecurring(true)}>Give Monthly</button>
+        {method !== 'paypal' && (
+          <div>
+            <p className="card-eyebrow" style={{ marginBottom: '0.5rem' }}>Frequency</p>
+            <div style={{ display: 'flex', gap: '0.5rem' }}>
+              <button type="button" style={toggleButtonStyle(!recurring)} onClick={() => setRecurring(false)}>Give Once</button>
+              <button type="button" style={toggleButtonStyle(recurring)} onClick={() => setRecurring(true)}>Give Monthly</button>
+            </div>
           </div>
-        </div>
+        )}
 
         <div>
           <p className="card-eyebrow" style={{ marginBottom: '0.5rem' }}>Fund</p>

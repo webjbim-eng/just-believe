@@ -12,14 +12,16 @@ export const metadata: Metadata = {
 }
 
 /**
- * Reads only paystack.publicKey and whether stripe.secretKey is set (never
- * either secretKey itself — see Tenants.ts's field-level access comment)
- * and hands them to the client GiveForm. Stripe's checkout is entirely
- * server-side (Checkout Session redirect), so the client never needs
- * stripe.publishableKey at all — just a boolean for whether to offer it.
- * Renders fine with both unset; GiveForm shows an honest "coming soon"
- * state rather than a broken checkout when a tenant hasn't configured
- * either processor in the admin yet.
+ * Reads paystack.publicKey, whether stripe.secretKey is set, and
+ * paypal.businessEmail — never paystack/stripe's secretKey itself (see
+ * Tenants.ts's field-level access comment). paypal.businessEmail isn't
+ * sensitive (it's the same email handed to a donor for a direct PayPal
+ * transfer), so it's fine to pass through as-is, unlike the other two.
+ * Stripe's checkout is entirely server-side (Checkout Session redirect),
+ * so the client never needs stripe.publishableKey at all — just a boolean
+ * for whether to offer it. Renders fine with all three unset; GiveForm
+ * shows an honest "coming soon" state rather than a broken checkout when
+ * a tenant hasn't configured any processor in the admin yet.
  */
 export default async function GivePage() {
   const tenantId = (await headers()).get(TENANT_HEADER)
@@ -31,6 +33,7 @@ export default async function GivePage() {
     : null
   const paystackPublicKey = tenant?.paystack?.publicKey ?? null
   const stripeEnabled = Boolean(tenant?.stripe?.secretKey)
+  const paypalBusinessEmail = tenant?.paypal?.businessEmail ?? null
 
   return (
     <main>
@@ -52,7 +55,7 @@ export default async function GivePage() {
       <section className="section decorative-flourish">
         <div className="container container--narrow">
           <ScrollReveal>
-            <GiveForm paystackPublicKey={paystackPublicKey} stripeEnabled={stripeEnabled} />
+            <GiveForm paystackPublicKey={paystackPublicKey} stripeEnabled={stripeEnabled} paypalBusinessEmail={paypalBusinessEmail} />
           </ScrollReveal>
         </div>
       </section>

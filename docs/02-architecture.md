@@ -184,9 +184,9 @@ jbim-platform/
 
 ---
 
-## 6. Payments Architecture (Paystack + Stripe)
+## 6. Payments Architecture (Paystack + Stripe + PayPal)
 
-Two independent, donor-selectable processors (2026-08-11 — Stripe added alongside the existing Paystack integration, see [D4](00-decisions-log.md)). `/give` renders server-side, reading only the resolved tenant's `paystack.publicKey` and *whether* `stripe.secretKey` is set (never any secret) via the Local API, and passes those to the client `GiveForm`. The payment-method toggle only appears when a tenant has configured both; with only one configured, that one is used silently. `Donations.processor` records which gateway handled a given row.
+Three independent, donor-selectable methods (2026-08-11 Stripe, 2026-08-12 PayPal — added alongside the existing Paystack integration, see [D4](00-decisions-log.md)). `/give` renders server-side, reading only the resolved tenant's `paystack.publicKey`, *whether* `stripe.secretKey` is set (never any secret), and `paypal.businessEmail` (not sensitive, safe as-is) via the Local API, and passes those to the client `GiveForm`. The payment-method toggle only appears when a tenant has configured more than one; with only one configured, that one is used silently. `Donations.processor` records which gateway handled a given row — but **only for Paystack/Stripe**, see the PayPal section below.
 
 **Paystack** (popup, stays on `/give`):
 1. Paystack Inline JS (loaded via `next/script`, not an npm dependency) opens a checkout popup using the tenant's `paystack.publicKey` — per-tenant, stored in `Tenants.paystack` (never a platform-wide shared account).
@@ -202,7 +202,12 @@ Two independent, donor-selectable processors (2026-08-11 — Stripe added alongs
 
 Both processors funnel through the same idempotent-on-unique-reference pattern (`paystackReference` / `stripeSessionId`), since each processor's client-redirect-or-popup path and its webhook can race to record the same charge.
 
-Receipt email (Resend) firing from a Payload `afterChange` hook on `Donations` is **not yet implemented** for either processor — see docs/00-decisions-log.md open items; this build covers the checkout → verified-record path only.
+**PayPal** (hosted redirect, no verification — fundamentally different from the two above):
+1. `src/lib/paypal.ts`'s `buildPayPalDonateUrl` is a pure client-side function (no server round trip, nothing to keep secret) that builds a classic PayPal hosted-donate-button URL (`cmd=_donations`) from the tenant's `paypal.businessEmail`, the donor's amount, and a fixed `USD` currency. `GiveForm` redirects the full page there directly on submit.
+2. This is the older, still-fully-supported PayPal flow that needs no PayPal Developer app, no Client ID/Secret — because only a business email was ever provided, not API credentials. Scoped to USD only (conservative default; nothing confirms what currencies this specific PayPal account can actually receive) and one-time gifts only (PayPal's classic donate button has no recurring support without the real Subscriptions API).
+3. PayPal redirects the donor back to `/give?paypal=success` on completion — `GiveForm` reads that query param client-side and shows a thank-you message, but this is **not a verified callback**: there's no signature, no API call to confirm the payment actually happened, just "the browser is back on our site." No `Donations` row is ever written for a PayPal gift. PayPal itself emails the donor and the business inbox a receipt; that email is the only record of the transaction anywhere. A real PayPal integration (Orders API, webhooks, a `Donations` row) would need actual PayPal Developer credentials, which don't exist for this tenant.
+
+Receipt email (Resend) firing from a Payload `afterChange` hook on `Donations` is **not yet implemented** for Paystack or Stripe — see docs/00-decisions-log.md open items; this build covers the checkout → verified-record path only. Not applicable to PayPal at all, since there's no `Donations` row to hook off of.
 
 ---
 

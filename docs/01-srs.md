@@ -150,11 +150,11 @@ Grouped by module. ID format: `FR-<MODULE>-<N>`.
 ### 3.8 Donations (FR-DON)
 | ID | Requirement |
 |---|---|
-| FR-DON-01 | Visitor can give a one-time or recurring monthly donation via Paystack or Stripe (donor's choice, when a tenant has both configured). Currency choice is processor-scoped: Paystack offers NGN/USD only (a real processor limit); Stripe additionally offers CAD/EUR/GBP — see [D4](00-decisions-log.md), updated 2026-08-12. Neither processor auto-converts "any currency" the way the original PayPal plan assumed. |
+| FR-DON-01 | Visitor can give via Paystack, Stripe, or PayPal (donor's choice, when a tenant has more than one configured). Paystack/Stripe support one-time or recurring monthly; PayPal is one-time only. Currency choice is processor-scoped: Paystack offers NGN/USD only (a real processor limit); Stripe additionally offers CAD/EUR/GBP; PayPal is USD only — see [D4](00-decisions-log.md), updated 2026-08-12. None of the three auto-converts "any currency" the way the original PayPal-via-REST-API plan assumed. |
 | FR-DON-02 | Donations can be earmarked to a fund/campaign (general, mission projects, child sponsorship, special campaigns). |
 | FR-DON-03 | Successful donations trigger a receipt email to the donor and a notification to the configured donations-notification address. |
 | FR-DON-04 | Finance Manager can view donation history/exports; cannot edit public content. |
-| FR-DON-05 | Donation records store which processor handled the charge and that processor's own transaction reference, amount, currency, fund, donor info (or "anonymous"), and timestamp — never raw payment credentials. |
+| FR-DON-05 | Donation records store which processor handled the charge and that processor's own transaction reference, amount, currency, fund, donor info (or "anonymous"), and timestamp — never raw payment credentials. Applies to Paystack/Stripe only; PayPal gifts (no API credentials, hosted-button redirect only) don't produce a Donations record at all — see docs/02-architecture.md §6. |
 | FR-DON-06 | Bank Transfer and Zelle are displayed as informational giving instructions (not automated) per [D4](00-decisions-log.md). |
 
 ### 3.9 Newsletter (FR-NEWS)
