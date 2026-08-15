@@ -144,12 +144,9 @@ async function seed() {
         subheading: 'A Hub of Transformation, proclaiming the Gospel and equipping believers around the world.',
         ctaLabel: 'Learn More',
         ctaHref: '/about',
-        // Real destination (the actual YouTube channel), not a fake play
-        // button — same "no video player, only real links" rule
-        // HeroMediaStrip's own comment already established for this exact
-        // channel URL, carried over now that this block replaces it.
-        secondaryCtaLabel: 'Watch Our Story',
-        secondaryCtaHref: 'https://youtube.com/@jbiminc?si=Q26o6jq34zseGPaF',
+        // 2026-08-16: "Watch Our Story" secondary CTA removed (Jimmy's
+        // call) — Hero.tsx still supports secondaryCtaLabel/Href for any
+        // future use, this just no longer sets it.
         backgroundImage: '/images/prayer-sanctuary.jpg',
       },
     },
