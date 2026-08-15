@@ -30,7 +30,10 @@ export async function BlogSpotlight({ config: blockConfig, tenantId }: { config:
     overrideAccess: true,
   })
   const [featured, ...rest] = docs
-  const featuredImage = featured && typeof featured.featuredImage === 'object' ? featured.featuredImage : undefined
+  const featuredImageDoc = featured && typeof featured.featuredImage === 'object' ? featured.featuredImage : undefined
+  // 'card' is the ~800px WebP derivative (Media.ts) — plenty for this
+  // 4/5-ratio panel, versus shipping the full-resolution original.
+  const featuredImageUrl = featuredImageDoc?.sizes?.card?.url || featuredImageDoc?.url
 
   return (
     <section className="section decorative-flourish decorative-flourish--reverse">
@@ -62,13 +65,13 @@ export async function BlogSpotlight({ config: blockConfig, tenantId }: { config:
         ) : (
           <div className="split-layout">
             <ScrollReveal className="split-layout-media">
-              {featuredImage?.url ? (
+              {featuredImageUrl ? (
                 <a
                   href={`/blog/${featured.slug}`}
                   aria-label={featured.title}
                   style={{
                     display: 'block',
-                    backgroundImage: `url(${featuredImage.url})`,
+                    backgroundImage: `url(${featuredImageUrl})`,
                     backgroundSize: 'cover',
                     backgroundPosition: 'center',
                     borderRadius: 'var(--radius-card)',
@@ -90,7 +93,7 @@ export async function BlogSpotlight({ config: blockConfig, tenantId }: { config:
               )}
             </ScrollReveal>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-              {featuredImage?.url && (
+              {featuredImageUrl && (
                 <a href={`/blog/${featured.slug}`} style={{ display: 'block', textDecoration: 'none', paddingBottom: '1.25rem', borderBottom: '1px solid var(--color-border)' }}>
                   <p className="card-eyebrow">{featured.publishedAt ? new Date(featured.publishedAt).toLocaleDateString() : 'Recent'}</p>
                   <p style={{ margin: 0, fontWeight: 600, color: 'var(--color-text)', fontFamily: 'var(--font-heading), Georgia, serif', fontSize: 'var(--text-heading-sm)' }}>
@@ -101,7 +104,7 @@ export async function BlogSpotlight({ config: blockConfig, tenantId }: { config:
                   )}
                 </a>
               )}
-              {rest.length === 0 && !featuredImage?.url ? (
+              {rest.length === 0 && !featuredImageUrl ? (
                 <p style={{ color: 'var(--color-text-muted)' }}>More reflections are on the way.</p>
               ) : (
                 rest.map((post, index) => (

@@ -33,6 +33,24 @@ export const Media: CollectionConfig = {
   },
   upload: {
     mimeTypes: ['image/*', 'video/*', 'application/pdf'],
+    // 2026-08-16: the paulinemenoru.com blog import uploaded WordPress's
+    // originals as-is — averaging ~960KB, some over 2MB — which was
+    // genuinely slowing the blog listing/spotlight down (many of them
+    // loading on one page). Sharp (already passed into buildConfig)
+    // converts every image to WebP on upload, and 'card' is a purpose-
+    // sized derivative for thumbnail contexts (blog listing, homepage
+    // spotlight) so those pages stop shipping full-resolution photos for
+    // a ~600px-wide card. The single post-detail hero still uses the
+    // (now WebP-compressed) original — only one loads per page there.
+    formatOptions: { format: 'webp', options: { quality: 80 } },
+    imageSizes: [
+      {
+        name: 'card',
+        width: 800,
+        withoutEnlargement: true,
+        formatOptions: { format: 'webp', options: { quality: 72 } },
+      },
+    ],
   },
   fields: [
     tenantField,

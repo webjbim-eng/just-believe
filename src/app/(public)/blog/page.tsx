@@ -51,15 +51,19 @@ export default async function BlogListPage() {
             <Stagger className="photo-caption-grid-2" role="list">
               {posts.map((post) => {
                 const image = typeof post.featuredImage === 'object' ? post.featuredImage : undefined
+                // 'card' is the ~800px WebP derivative (Media.ts) — a
+                // listing page with many posts shouldn't ship every
+                // full-resolution original just to render a thumbnail.
+                const imageUrl = image?.sizes?.card?.url || image?.url
                 return (
                   <StaggerItem key={post.id} role="listitem">
                     <a href={`/blog/${post.slug}`} className="card hover-zoom" style={{ display: 'block', padding: 0, overflow: 'hidden', textDecoration: 'none' }}>
-                      {image?.url && (
+                      {imageUrl && (
                         <div style={{ aspectRatio: '16 / 9', overflow: 'hidden' }}>
                           <div
                             aria-hidden="true"
                             className="hover-zoom-bg"
-                            style={{ width: '100%', height: '100%', backgroundImage: `url(${image.url})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+                            style={{ width: '100%', height: '100%', backgroundImage: `url(${imageUrl})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
                           />
                         </div>
                       )}

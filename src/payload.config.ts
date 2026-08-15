@@ -128,20 +128,25 @@ export default buildConfig({
   }),
   // 2026-08-12: R2 credentials arrived, wired in — Media.ts was already
   // storage-adapter-agnostic (see its own comment), no collection changes
-  // needed. Files are served directly from R2's public dev URL
-  // (R2_PUBLIC_URL, the "Public Development URL" — already enabled in the
-  // Cloudflare dashboard) via generateFileURL, not proxied through
-  // Payload's own API — direct CDN delivery, no cost to a serverless
-  // function on every image request. Verified the S3-compatible
-  // credentials against the real bucket before wiring in (HeadBucket +
-  // ListObjectsV2, both succeeded, 0 existing objects so this was a zero-
-  // risk switch from local disk, which doesn't survive on Vercel anyway).
-  // See docs/02-architecture.md §1.
+  // needed. Verified the S3-compatible credentials against the real
+  // bucket before wiring in (HeadBucket + ListObjectsV2, both succeeded,
+  // 0 existing objects so this was a zero-risk switch from local disk,
+  // which doesn't survive on Vercel anyway). See docs/02-architecture.md
+  // §1.
+  //
+  // 2026-08-16: switched from generateFileURL (R2's public "Public
+  // Development URL", R2_PUBLIC_URL) to signedDownloads after that URL
+  // started returning 401 "not publicly accessible" in production —
+  // Cloudflare's own docs mark r2.dev subdomains as rate-limited/dev-only,
+  // not a production guarantee. signedDownloads proxies file reads
+  // through Payload's own /api/media/file route using short-lived
+  // presigned S3 URLs generated server-side, so it has no dependency on
+  // the bucket being publicly exposed at all.
   plugins: [
     s3Storage({
       collections: {
         media: {
-          generateFileURL: ({ filename }) => `${process.env.R2_PUBLIC_URL || ''}/${filename}`,
+          signedDownloads: true,
         },
       },
       bucket: process.env.R2_BUCKET || '',
