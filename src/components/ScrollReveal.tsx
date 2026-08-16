@@ -26,7 +26,14 @@ export function ScrollReveal({
       className={className}
       initial={{ opacity: 0, y: 28 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '0px 0px -60px 0px', amount: 0.15 }}
+      // 2026-08-16: was `amount: 0.15` (15% of the wrapped element must be
+      // visible) — the exact same bug just fixed in Stagger.tsx, here too:
+      // ScrollReveal wraps a whole blog article in one motion.div, and a
+      // long post's container can be many times taller than any viewport,
+      // making 15% mathematically unreachable — the entire article,
+      // including the title at the very top, stayed stuck at opacity:0.
+      // 'some' just needs any part of the container visible.
+      viewport={{ once: true, margin: '0px 0px -60px 0px', amount: 'some' }}
       transition={{ type: 'spring', stiffness: 90, damping: 18, delay: delay / 1000 }}
     >
       {children}
