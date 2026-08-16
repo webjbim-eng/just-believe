@@ -5,6 +5,7 @@ import { getPayload } from 'payload'
 import config from '@payload-config'
 import { TENANT_HEADER } from '../../../../access/getResolvedTenantId'
 import { ScrollReveal } from '../../../../components/ScrollReveal'
+import { shortTitle } from '../../../../lib/shortTitle'
 
 const FORMAT_LABELS: Record<string, string> = {
   paperback: 'Paperback',
@@ -144,8 +145,19 @@ export default async function BookDetailPage({ params, searchParams }: { params:
                       )}
                     </div>
                     <div style={{ padding: '1.25rem' }}>
-                      <p className="card-title" style={{ fontSize: 'var(--text-heading-sm)', margin: 0 }}>
-                        {other.title}
+                      <p
+                        className="card-title"
+                        title={other.title}
+                        style={{
+                          fontSize: '1rem',
+                          margin: 0,
+                          display: '-webkit-box',
+                          WebkitLineClamp: 1,
+                          WebkitBoxOrient: 'vertical',
+                          overflow: 'hidden',
+                        }}
+                      >
+                        {shortTitle(other.title)}
                       </p>
                     </div>
                   </a>

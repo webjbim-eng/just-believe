@@ -2,25 +2,13 @@ import { getPayload } from 'payload'
 import config from '@payload-config'
 import { ScrollReveal } from '../components/ScrollReveal'
 import { Stagger, StaggerItem } from '../components/Stagger'
+import { shortTitle } from '../lib/shortTitle'
 
 export type FeaturedBooksConfig = {
   eyebrow?: string
   heading?: string
   body?: string
   limit?: number
-}
-
-/**
- * Book titles here follow a "TITLE: Subtitle" pattern (real Amazon listing
- * titles, e.g. "THE SACRED DIVIDE: Exploring the Mystery of Consecration
- * and Divine Purpose") — the subtitle is exactly the kind of detail a
- * compact homepage preview card doesn't need; the full title still shows
- * on /books and the book's own page. Falls back to the full title (clamped
- * by CSS) for the few books with no colon.
- */
-function shortTitle(title: string) {
-  const [first] = title.split(':')
-  return first.trim()
 }
 
 /**

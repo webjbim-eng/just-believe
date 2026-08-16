@@ -2,6 +2,7 @@
 
 import { useState, type CSSProperties } from 'react'
 import type { Book } from '../payload-types'
+import { shortTitle } from '../lib/shortTitle'
 
 type BookLite = Pick<Book, 'id' | 'slug' | 'title' | 'shortDescription' | 'externalLink' | 'language' | 'format' | 'coverImage'> & {
   categoryLabel?: string | null
@@ -74,10 +75,35 @@ export function BookFilterGrid({ books }: { books: BookLite[] }) {
                     {book.format && <span className="tag">{FORMAT_LABELS[book.format]}</span>}
                     {hasFrench && <span className="tag">{book.language === 'fr' ? 'Français' : 'English'}</span>}
                   </div>
-                  <p className="card-title" style={{ fontSize: 'var(--text-heading-sm)', marginBottom: book.shortDescription ? '0.375rem' : 0 }}>
-                    {book.title}
+                  <p
+                    className="card-title"
+                    title={book.title}
+                    style={{
+                      fontSize: '1rem',
+                      marginBottom: book.shortDescription ? '0.375rem' : 0,
+                      display: '-webkit-box',
+                      WebkitLineClamp: 1,
+                      WebkitBoxOrient: 'vertical',
+                      overflow: 'hidden',
+                    }}
+                  >
+                    {shortTitle(book.title)}
                   </p>
-                  {book.shortDescription && <p style={{ margin: 0, fontSize: 'var(--text-body-sm)', color: 'var(--color-text-muted)' }}>{book.shortDescription}</p>}
+                  {book.shortDescription && (
+                    <p
+                      style={{
+                        margin: 0,
+                        fontSize: 'var(--text-body-sm)',
+                        color: 'var(--color-text-muted)',
+                        display: '-webkit-box',
+                        WebkitLineClamp: 2,
+                        WebkitBoxOrient: 'vertical',
+                        overflow: 'hidden',
+                      }}
+                    >
+                      {book.shortDescription}
+                    </p>
+                  )}
                 </div>
               </a>
               {book.externalLink && (

@@ -92,7 +92,11 @@
    * scale that reads as a heading, not a headline.
    */
   --text-heading: clamp(1.5rem, 1.15rem + 1.5vw, 2rem);
-  --text-heading-lg: clamp(2.25rem, 1.25rem + 3.5vw, 3.75rem);
+  /* 2026-08-16: same pass as --text-heading above — this is the page-hero
+     H1 used on every inner page ("Our Books", "Our Ministries", etc.),
+     was clamp(2.25rem, ..., 3.75rem) i.e. 36-60px, reading oversized next
+     to the smaller section headings. */
+  --text-heading-lg: clamp(1.75rem, 1.25rem + 2.5vw, 2.75rem);
   --text-display: clamp(2.75rem, 1.5rem + 5vw, 5rem);
 
   --radius-button: 999px;
@@ -1150,6 +1154,15 @@ body {
   font-size: 1.125rem;
   line-height: 1.35;
   font-family: var(--font-heading), Georgia, serif;
+  /* 2026-08-16: some real post titles run to a full sentence ("Deception
+     Blocks Encounter. Truth Unlocks Renewal. Choose What You Keep.") and
+     were pushing that one card noticeably taller than its neighbors —
+     same fix as the book cards, clamped so row heights stay consistent. */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .blog-card-excerpt {
