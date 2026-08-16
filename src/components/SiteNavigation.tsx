@@ -121,8 +121,12 @@ export async function SiteNavigation({ tenantId }: { tenantId: string }) {
                 ))}
               </ul>
             )}
+            {/* 2026-08-16: was "Partner With Us" — confusing once "Become a
+                Partner" (organizational partnership, /partners) existed as
+                its own real destination right next to this button, which
+                actually goes to /give. */}
             <a className="btn-accent nav-cta" href="/give" style={{ padding: '0.625rem 1.5rem' }}>
-              Partner With Us
+              Give Now
             </a>
             <MobileNavToggle items={items.map((item) => ({ label: item.label, link: item.link, children: item.children ?? undefined }))} />
           </div>

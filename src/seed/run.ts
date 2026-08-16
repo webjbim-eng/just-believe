@@ -419,25 +419,38 @@ async function seed() {
   const existingNavigation = (
     await payload.find({ collection: 'navigation', where: { tenant: { equals: tenant.id } }, limit: 1, overrideAccess: true })
   ).docs[0]
+  // 2026-08-16 (Jimmy's third correction — the header still read as too
+  // many menus even after the first dropdown): down to 6 flat entries +
+  // one CTA. Blog/Books/Events all bundle under "Resources" (content you
+  // browse, not a primary action) instead of three separate top-level
+  // items. The standalone "Give" link is gone entirely — it was a plain
+  // duplicate of the "Partner With Us" CTA button, which already points
+  // at /give.
   const starterNavItems = [
     { label: 'Home', link: '/', order: 0 },
     { label: 'About', link: '/about', order: 1 },
     { label: 'Ministries', link: '/ministries', order: 2 },
-    { label: 'Blog', link: '/blog', order: 3 },
-    { label: 'Books', link: '/books', order: 4 },
-    { label: 'Events', link: '/events', order: 5 },
+    {
+      label: 'Resources',
+      link: '/blog',
+      order: 3,
+      children: [
+        { label: 'Blog', link: '/blog', order: 0 },
+        { label: 'Books', link: '/books', order: 1 },
+        { label: 'Events', link: '/events', order: 2 },
+      ],
+    },
     // 2026-08-16: Prayer/Counseling/Volunteer requests and Partners had
     // real admin collections but nowhere for a visitor to actually submit
-    // one — Jimmy's correction. One "Get Involved" dropdown (not two flat
-    // top-level items — Jimmy's second correction) linking directly to
-    // each intake form; the Get Involved children deep-link into
-    // /get-involved's tab switcher via ?tab=, Partners/Testimonials are
-    // their own pages (distinct asks) folded in here rather than adding
-    // more flat top-level nav items.
+    // one — Jimmy's correction. One "Get Involved" dropdown (not flat
+    // top-level items) linking directly to each intake form; the Get
+    // Involved children deep-link into /get-involved's tab switcher via
+    // ?tab=, Partners/Testimonials are their own pages (distinct asks)
+    // folded in here rather than adding more flat top-level nav items.
     {
       label: 'Get Involved',
       link: '/get-involved',
-      order: 6,
+      order: 4,
       children: [
         { label: 'Volunteer', link: '/get-involved?tab=volunteer', order: 0 },
         { label: 'Prayer Request', link: '/get-involved?tab=prayer', order: 1 },
@@ -446,8 +459,7 @@ async function seed() {
         { label: 'Share Your Story', link: '/testimonials', order: 4 },
       ],
     },
-    { label: 'Give', link: '/give', order: 7 },
-    { label: 'Contact', link: '/contact', order: 8 },
+    { label: 'Contact', link: '/contact', order: 5 },
   ]
 
   if (!existingNavigation) {
