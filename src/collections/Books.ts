@@ -12,7 +12,13 @@ export const Books: CollectionConfig = {
   admin: {
     useAsTitle: 'title',
     group: 'Content',
-    defaultColumns: ['title', 'author', '_status'],
+    defaultColumns: ['title', 'author', 'featured', 'displayOrder', '_status'],
+    // 2026-08-16: lets an admin open the live public page for the
+    // current draft before hitting Publish — /books/[slug] checks for
+    // ?preview=1 and fetches the draft version when present (still
+    // gated by the same books.manage permission, not publicly reachable
+    // just by knowing the URL).
+    preview: (doc) => `/books/${doc.slug}?preview=1`,
   },
   versions: { drafts: true },
   access: publicContentAccess('books.manage'),
@@ -27,6 +33,12 @@ export const Books: CollectionConfig = {
     slugField('books'),
     { name: 'category', type: 'relationship', relationTo: 'categories' },
     { name: 'featured', type: 'checkbox', defaultValue: false, admin: { position: 'sidebar' } },
+    {
+      name: 'displayOrder',
+      type: 'number',
+      defaultValue: 0,
+      admin: { position: 'sidebar', description: 'Lower numbers show first on the Books page and homepage.' },
+    },
     {
       name: 'author',
       type: 'relationship',
@@ -46,8 +58,47 @@ export const Books: CollectionConfig = {
       },
     },
     { name: 'coverImage', type: 'upload', relationTo: 'media' },
-    { name: 'externalLink', type: 'text', admin: { description: 'Mutually exclusive with coverImage+file, for an external retailer/listing link' } },
-    { name: 'description', type: 'textarea' },
+    {
+      name: 'externalLink',
+      type: 'text',
+      label: 'Amazon URL',
+      admin: { description: 'The Amazon product page for this book — used by the "Get This Book" button everywhere on the site.' },
+    },
+    {
+      // 2026-08-16: custom admin-only button, no data of its own — reads
+      // the Amazon URL field above and fills in title/author/format/
+      // description/cover from the real Amazon product page, so the
+      // admin isn't retyping everything by hand. Always editable/
+      // reviewable before Save; never auto-publishes. See
+      // src/components/admin/BookImportButton.tsx and
+      // src/app/api/internal/import-book/route.ts.
+      name: 'amazonImport',
+      type: 'ui',
+      admin: {
+        components: {
+          Field: '/src/components/admin/BookImportButton.tsx#BookImportButton',
+        },
+      },
+    },
+    {
+      name: 'shortDescription',
+      type: 'text',
+      maxLength: 200,
+      admin: { description: 'One or two sentences for cards and the homepage — the full description below is for the book\'s own page.' },
+    },
+    { name: 'description', type: 'textarea', label: 'Full Description' },
+    {
+      name: 'format',
+      type: 'select',
+      options: [
+        { label: 'Paperback', value: 'paperback' },
+        { label: 'Hardcover', value: 'hardcover' },
+        { label: 'Kindle Edition', value: 'kindle' },
+        { label: 'eBook', value: 'ebook' },
+        { label: 'Audiobook', value: 'audiobook' },
+      ],
+    },
+    { name: 'publicationDate', type: 'date' },
     seoFields,
   ],
 }

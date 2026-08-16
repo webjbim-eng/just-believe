@@ -770,13 +770,23 @@ export interface Book {
   slug: string;
   category?: (number | null) | Category;
   featured?: boolean | null;
+  /**
+   * Lower numbers show first on the Books page and homepage.
+   */
+  displayOrder?: number | null;
   author?: (number | null) | Leadership;
   coverImage?: (number | null) | Media;
   /**
-   * Mutually exclusive with coverImage+file, for an external retailer/listing link
+   * The Amazon product page for this book — used by the "Get This Book" button everywhere on the site.
    */
   externalLink?: string | null;
+  /**
+   * One or two sentences for cards and the homepage — the full description below is for the book's own page.
+   */
+  shortDescription?: string | null;
   description?: string | null;
+  format?: ('paperback' | 'hardcover' | 'kindle' | 'ebook' | 'audiobook') | null;
+  publicationDate?: string | null;
   seo?: {
     metaTitle?: string | null;
     metaDescription?: string | null;
@@ -1792,10 +1802,14 @@ export interface BooksSelect<T extends boolean = true> {
   slug?: T;
   category?: T;
   featured?: T;
+  displayOrder?: T;
   author?: T;
   coverImage?: T;
   externalLink?: T;
+  shortDescription?: T;
   description?: T;
+  format?: T;
+  publicationDate?: T;
   seo?:
     | T
     | {

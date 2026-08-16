@@ -14,7 +14,8 @@
     "generate:importmap": "payload generate:importmap",
     "payload": "payload",
     "seed": "node --env-file=.env.local --import tsx/esm src/seed/run.ts",
-    "import:blog": "node --env-file=.env.local --import tsx/esm src/seed/import-wp-blog.ts"
+    "import:blog": "node --env-file=.env.local --import tsx/esm src/seed/import-wp-blog.ts",
+    "import:books": "node --env-file=.env.local --import tsx/esm src/seed/import-books.ts"
   },
   "dependencies": {
     "@payloadcms/db-postgres": "^3.0.0",

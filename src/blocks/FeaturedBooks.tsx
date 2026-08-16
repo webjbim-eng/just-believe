@@ -6,6 +6,7 @@ import { Stagger, StaggerItem } from '../components/Stagger'
 export type FeaturedBooksConfig = {
   eyebrow?: string
   heading?: string
+  body?: string
   limit?: number
 }
 
@@ -14,13 +15,19 @@ export type FeaturedBooksConfig = {
  * (no cover, no link, no _status filter so drafts could leak onto the
  * homepage). Now shows real cover photography and links to the real
  * /books/[slug] detail page, matching the visual bar set on Ministries.
+ *
+ * 2026-08-16: sort now includes displayOrder (admin-controlled tiebreak
+ * within featured/non-featured groups, not just "whichever was marked
+ * featured"), and each card gets its short description + a real Amazon
+ * button — this section is one query against the same Books collection
+ * /books itself reads, no separate homepage-only content.
  */
 export async function FeaturedBooks({ config: blockConfig, tenantId }: { config: FeaturedBooksConfig; tenantId: string }) {
   const payload = await getPayload({ config })
   const { docs } = await payload.find({
     collection: 'books',
     where: { and: [{ tenant: { equals: tenantId } }, { _status: { equals: 'published' } }] },
-    sort: '-featured',
+    sort: ['-featured', 'displayOrder'],
     limit: blockConfig.limit ?? 4,
     overrideAccess: true,
   })
@@ -33,10 +40,11 @@ export async function FeaturedBooks({ config: blockConfig, tenantId }: { config:
             <div>
               {blockConfig.eyebrow && <p className="section-eyebrow">{blockConfig.eyebrow}</p>}
               <h2 style={{ margin: 0 }}>{blockConfig.heading || 'Books'}</h2>
+              {blockConfig.body && <p style={{ margin: '0.75rem 0 0', maxWidth: '34rem' }}>{blockConfig.body}</p>}
             </div>
             {docs.length > 0 && (
               <a className="btn-primary-pill" href="/books">
-                View All
+                View All Books
               </a>
             )}
           </div>
@@ -55,26 +63,42 @@ export async function FeaturedBooks({ config: blockConfig, tenantId }: { config:
           <Stagger className="photo-caption-grid-4" role="list">
             {docs.map((book) => {
               const cover = typeof book.coverImage === 'object' ? book.coverImage?.url : undefined
-              const author = typeof book.author === 'object' ? book.author?.name : undefined
               return (
                 <StaggerItem key={book.id} role="listitem">
-                  <a href={`/books/${book.slug}`} className="card hover-zoom" style={{ display: 'block', padding: 0, overflow: 'hidden', textAlign: 'center' }}>
-                    <div style={{ aspectRatio: '3 / 4', overflow: 'hidden', background: 'var(--color-base)' }}>
-                      {cover && (
-                        <div
-                          aria-hidden="true"
-                          className="hover-zoom-bg"
-                          style={{ width: '100%', height: '100%', backgroundImage: `url(${cover})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
-                        />
-                      )}
-                    </div>
-                    <div style={{ padding: '1.25rem' }}>
-                      <p className="card-title" style={{ fontSize: 'var(--text-heading-sm)', marginBottom: author ? '0.25rem' : 0 }}>
-                        {book.title}
-                      </p>
-                      {author && <p style={{ margin: 0, fontSize: 'var(--text-body-sm)' }}>{author}</p>}
-                    </div>
-                  </a>
+                  <div className="card hover-zoom" style={{ padding: 0, overflow: 'hidden', textAlign: 'center' }}>
+                    <a href={`/books/${book.slug}`} style={{ display: 'block', textDecoration: 'none' }}>
+                      <div style={{ aspectRatio: '3 / 4', overflow: 'hidden', background: 'var(--color-base)' }}>
+                        {cover && (
+                          <div
+                            aria-hidden="true"
+                            className="hover-zoom-bg"
+                            style={{ width: '100%', height: '100%', backgroundImage: `url(${cover})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+                          />
+                        )}
+                      </div>
+                      <div style={{ padding: '1.25rem', paddingBottom: book.externalLink ? '0.75rem' : '1.25rem' }}>
+                        <p className="card-title" style={{ fontSize: 'var(--text-heading-sm)', marginBottom: book.shortDescription ? '0.375rem' : 0 }}>
+                          {book.title}
+                        </p>
+                        {book.shortDescription && (
+                          <p style={{ margin: 0, fontSize: 'var(--text-body-sm)', color: 'var(--color-text-muted)' }}>{book.shortDescription}</p>
+                        )}
+                      </div>
+                    </a>
+                    {book.externalLink && (
+                      <div style={{ padding: '0 1.25rem 1.25rem' }}>
+                        <a
+                          className="btn-outline"
+                          href={book.externalLink}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          style={{ width: '100%', fontSize: '0.8125rem', padding: '0.5rem 1rem' }}
+                        >
+                          Get This Book
+                        </a>
+                      </div>
+                    )}
+                  </div>
                 </StaggerItem>
               )
             })}

@@ -305,6 +305,7 @@ async function seed() {
       config: {
         eyebrow: 'Resources',
         heading: 'Books',
+        body: 'Explore our founder’s writings — real teaching for real life with God.',
       },
     },
     {
