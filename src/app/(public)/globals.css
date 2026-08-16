@@ -560,6 +560,15 @@ a {
   align-items: center;
 }
 
+/* 2026-08-16: was unconstrained (stretched to fill its 1fr column — ~570px
+   square on a 1200px container), which read as oversized on every page
+   using this pattern (Foundation, Ministry Pathways, Events, Testimonials,
+   About, Contact, Ministries, Books). Capped so the photo reads as an
+   accent beside the text, not half the section. */
+.split-layout-media {
+  max-width: 22rem;
+}
+
 .split-layout--reverse .split-layout-media {
   order: 2;
 }
@@ -937,6 +946,12 @@ body {
   gap: 2.5rem;
 }
 
+/* 2026-08-16: same reduction as split-layout-media/photo-caption-grid-4 —
+   was filling the full ~570px column width. */
+.ministry-secondary-grid .hover-zoom {
+  max-width: 22rem;
+}
+
 /* 540px, not 640 — every other "2-column grid collapses to 1" case on
    the site (photo-caption-grid-2, contact-form-row) already uses 540px;
    this one was the lone outlier at 640px for no real reason (2026-08-11
@@ -1015,6 +1030,14 @@ body {
 
 .photo-caption-grid-4 {
   grid-template-columns: repeat(4, 1fr);
+}
+
+/* 2026-08-16: was stretching to fill its ~280px grid column (book covers,
+   leadership photos) — capped and centered within the column so the card
+   itself reads smaller, matching the split-layout-media reduction above. */
+.photo-caption-grid-4 .card {
+  max-width: 14rem;
+  justify-self: center;
 }
 
 @media (max-width: 860px) {

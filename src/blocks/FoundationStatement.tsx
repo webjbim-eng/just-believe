@@ -27,7 +27,7 @@ export function FoundationStatement({ config }: { config: FoundationStatementCon
               <h2 style={{ fontSize: 'var(--text-heading)' }}>{config.heading}</h2>
               {config.body && <p style={{ fontSize: 'var(--text-body)' }}>{config.body}</p>}
             </div>
-            <div style={{ position: 'relative' }}>
+            <div className="split-layout-media" style={{ position: 'relative' }}>
               <div
                 style={{
                   backgroundImage: `url(${config.image})`,
