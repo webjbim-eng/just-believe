@@ -36,7 +36,7 @@ export function MinistryPathways({ config }: { config: MinistryPathwaysConfig })
                 position: 'relative',
                 borderRadius: 'var(--radius-card)',
                 overflow: 'hidden',
-                aspectRatio: '4 / 5',
+                aspectRatio: '1 / 1',
                 boxShadow: 'var(--shadow-card-lg)',
               }}
             >

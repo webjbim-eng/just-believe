@@ -75,7 +75,7 @@ export async function BlogSpotlight({ config: blockConfig, tenantId }: { config:
                     backgroundSize: 'cover',
                     backgroundPosition: 'center',
                     borderRadius: 'var(--radius-card)',
-                    aspectRatio: '4 / 5',
+                    aspectRatio: '1 / 1',
                     boxShadow: 'var(--shadow-card-lg)',
                   }}
                 />
@@ -96,7 +96,19 @@ export async function BlogSpotlight({ config: blockConfig, tenantId }: { config:
               {featuredImageUrl && (
                 <a href={`/blog/${featured.slug}`} style={{ display: 'block', textDecoration: 'none', paddingBottom: '1.25rem', borderBottom: '1px solid var(--color-border)' }}>
                   <p className="card-eyebrow">Latest · {featured.publishedAt ? new Date(featured.publishedAt).toLocaleDateString() : 'Recent'}</p>
-                  <p style={{ margin: 0, fontWeight: 600, color: 'var(--color-text)', fontFamily: 'var(--font-heading), Georgia, serif', fontSize: 'var(--text-heading-sm)' }}>
+                  <p
+                    style={{
+                      margin: 0,
+                      fontWeight: 600,
+                      color: 'var(--color-text)',
+                      fontFamily: 'var(--font-heading), Georgia, serif',
+                      fontSize: 'var(--text-heading-sm)',
+                      display: '-webkit-box',
+                      WebkitLineClamp: 2,
+                      WebkitBoxOrient: 'vertical',
+                      overflow: 'hidden',
+                    }}
+                  >
                     {featured.title}
                   </p>
                   {(featured.excerpt || featured.body) && (
@@ -114,7 +126,19 @@ export async function BlogSpotlight({ config: blockConfig, tenantId }: { config:
                   <ScrollReveal key={post.id} delay={index * 80}>
                     <a href={`/blog/${post.slug}`} style={{ display: 'block', textDecoration: 'none', paddingBottom: '1.25rem', borderBottom: '1px solid var(--color-border)' }}>
                       <p className="card-eyebrow">{post.publishedAt ? new Date(post.publishedAt).toLocaleDateString() : 'Recent'}</p>
-                      <p style={{ margin: 0, fontWeight: 600, color: 'var(--color-text)', fontFamily: 'var(--font-heading), Georgia, serif', fontSize: 'var(--text-heading-sm)' }}>
+                      <p
+                        style={{
+                          margin: 0,
+                          fontWeight: 600,
+                          color: 'var(--color-text)',
+                          fontFamily: 'var(--font-heading), Georgia, serif',
+                          fontSize: 'var(--text-heading-sm)',
+                          display: '-webkit-box',
+                          WebkitLineClamp: 2,
+                          WebkitBoxOrient: 'vertical',
+                          overflow: 'hidden',
+                        }}
+                      >
                         {post.title}
                       </p>
                       <span className="link-arrow" style={{ marginTop: '0.25rem', fontSize: 'var(--text-body-sm)' }}>

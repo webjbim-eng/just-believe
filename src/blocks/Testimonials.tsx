@@ -72,7 +72,7 @@ export async function Testimonials({ config: blockConfig, tenantId }: { config: 
                     style={{
                       borderRadius: 'var(--radius-card)',
                       overflow: 'hidden',
-                      aspectRatio: '4 / 5',
+                      aspectRatio: '1 / 1',
                       backgroundImage: `url(${mediaImage})`,
                       backgroundSize: 'cover',
                       backgroundPosition: 'center',

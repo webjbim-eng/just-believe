@@ -49,7 +49,7 @@ export async function FeaturedEvents({ config: blockConfig, tenantId }: { config
                 style={{
                   borderRadius: 'var(--radius-card)',
                   overflow: 'hidden',
-                  aspectRatio: '4 / 5',
+                  aspectRatio: '1 / 1',
                   backgroundImage: `url(${blockConfig.image})`,
                   backgroundSize: 'cover',
                   backgroundPosition: 'center',

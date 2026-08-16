@@ -79,7 +79,17 @@ export async function FeaturedBooks({ config: blockConfig, tenantId }: { config:
                         )}
                       </div>
                       <div style={{ padding: '1.25rem', paddingBottom: book.externalLink ? '0.75rem' : '1.25rem' }}>
-                        <p className="card-title" style={{ fontSize: 'var(--text-heading-sm)', margin: 0 }}>
+                        <p
+                          className="card-title"
+                          style={{
+                            fontSize: '1.0625rem',
+                            margin: 0,
+                            display: '-webkit-box',
+                            WebkitLineClamp: 2,
+                            WebkitBoxOrient: 'vertical',
+                            overflow: 'hidden',
+                          }}
+                        >
                           {book.title}
                         </p>
                       </div>

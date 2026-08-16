@@ -34,7 +34,7 @@ export function FoundationStatement({ config }: { config: FoundationStatementCon
                   backgroundSize: 'cover',
                   backgroundPosition: 'center',
                   borderRadius: 'var(--radius-card)',
-                  aspectRatio: '4 / 5',
+                  aspectRatio: '1 / 1',
                   boxShadow: 'var(--shadow-card-lg)',
                 }}
               />
