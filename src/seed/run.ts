@@ -303,9 +303,9 @@ async function seed() {
       order: 9,
       visible: true,
       config: {
-        eyebrow: 'Resources',
+        eyebrow: 'From Our Founder',
         heading: 'Books',
-        body: 'Explore our founder’s writings — real teaching for real life with God.',
+        body: 'Explore our founder’s writings — real teaching for real life.',
       },
     },
     {

@@ -32,6 +32,22 @@ export const Books: CollectionConfig = {
     { name: 'title', type: 'text', required: true },
     slugField('books'),
     { name: 'category', type: 'relationship', relationTo: 'categories' },
+    {
+      // 2026-08-16: powers the language filter on /books — several real
+      // titles are separate French-edition Amazon listings, not a
+      // translation of the English ones, so this is a real distinguishing
+      // fact about the book (different ASIN/cover/title), not something
+      // Payload's field-level localization (one record, many locales)
+      // is the right fit for.
+      name: 'language',
+      type: 'select',
+      defaultValue: 'en',
+      options: [
+        { label: 'English', value: 'en' },
+        { label: 'Français', value: 'fr' },
+      ],
+      admin: { position: 'sidebar' },
+    },
     { name: 'featured', type: 'checkbox', defaultValue: false, admin: { position: 'sidebar' } },
     {
       name: 'displayOrder',

@@ -769,6 +769,7 @@ export interface Book {
   title: string;
   slug: string;
   category?: (number | null) | Category;
+  language?: ('en' | 'fr') | null;
   featured?: boolean | null;
   /**
    * Lower numbers show first on the Books page and homepage.
@@ -1801,6 +1802,7 @@ export interface BooksSelect<T extends boolean = true> {
   title?: T;
   slug?: T;
   category?: T;
+  language?: T;
   featured?: T;
   displayOrder?: T;
   author?: T;

@@ -87,7 +87,7 @@ export async function BlogSpotlight({ config: blockConfig, tenantId }: { config:
                     <p style={{ fontSize: 'var(--text-body)' }}>{featured.excerpt || lexicalToPlainText(featured.body).slice(0, 180)}</p>
                   )}
                   <span className="link-arrow">
-                    Read More <span className="link-arrow-glyph">→</span>
+                    Read the Reflection <span className="link-arrow-glyph">→</span>
                   </span>
                 </a>
               )}
@@ -95,13 +95,16 @@ export async function BlogSpotlight({ config: blockConfig, tenantId }: { config:
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
               {featuredImageUrl && (
                 <a href={`/blog/${featured.slug}`} style={{ display: 'block', textDecoration: 'none', paddingBottom: '1.25rem', borderBottom: '1px solid var(--color-border)' }}>
-                  <p className="card-eyebrow">{featured.publishedAt ? new Date(featured.publishedAt).toLocaleDateString() : 'Recent'}</p>
+                  <p className="card-eyebrow">Latest · {featured.publishedAt ? new Date(featured.publishedAt).toLocaleDateString() : 'Recent'}</p>
                   <p style={{ margin: 0, fontWeight: 600, color: 'var(--color-text)', fontFamily: 'var(--font-heading), Georgia, serif', fontSize: 'var(--text-heading-sm)' }}>
                     {featured.title}
                   </p>
                   {(featured.excerpt || featured.body) && (
                     <p style={{ marginTop: '0.5rem' }}>{featured.excerpt || lexicalToPlainText(featured.body).slice(0, 140)}</p>
                   )}
+                  <span className="link-arrow" style={{ marginTop: '0.5rem', display: 'inline-block' }}>
+                    Read the Reflection <span className="link-arrow-glyph">→</span>
+                  </span>
                 </a>
               )}
               {rest.length === 0 && !featuredImageUrl ? (
@@ -114,6 +117,9 @@ export async function BlogSpotlight({ config: blockConfig, tenantId }: { config:
                       <p style={{ margin: 0, fontWeight: 600, color: 'var(--color-text)', fontFamily: 'var(--font-heading), Georgia, serif', fontSize: 'var(--text-heading-sm)' }}>
                         {post.title}
                       </p>
+                      <span className="link-arrow" style={{ marginTop: '0.25rem', fontSize: 'var(--text-body-sm)' }}>
+                        Read more <span className="link-arrow-glyph">→</span>
+                      </span>
                     </a>
                   </ScrollReveal>
                 ))

@@ -18,9 +18,11 @@ export type FeaturedBooksConfig = {
  *
  * 2026-08-16: sort now includes displayOrder (admin-controlled tiebreak
  * within featured/non-featured groups, not just "whichever was marked
- * featured"), and each card gets its short description + a real Amazon
- * button — this section is one query against the same Books collection
- * /books itself reads, no separate homepage-only content.
+ * featured") — this section is one query against the same Books
+ * collection /books itself reads, no separate homepage-only content.
+ * Cards are compact (cover + title + button, no excerpt) per
+ * public/home-books-preview.html — the full description lives on
+ * /books and the book's own page, not repeated here.
  */
 export async function FeaturedBooks({ config: blockConfig, tenantId }: { config: FeaturedBooksConfig; tenantId: string }) {
   const payload = await getPayload({ config })
@@ -28,7 +30,7 @@ export async function FeaturedBooks({ config: blockConfig, tenantId }: { config:
     collection: 'books',
     where: { and: [{ tenant: { equals: tenantId } }, { _status: { equals: 'published' } }] },
     sort: ['-featured', 'displayOrder'],
-    limit: blockConfig.limit ?? 4,
+    limit: blockConfig.limit ?? 5,
     overrideAccess: true,
   })
 
@@ -77,12 +79,9 @@ export async function FeaturedBooks({ config: blockConfig, tenantId }: { config:
                         )}
                       </div>
                       <div style={{ padding: '1.25rem', paddingBottom: book.externalLink ? '0.75rem' : '1.25rem' }}>
-                        <p className="card-title" style={{ fontSize: 'var(--text-heading-sm)', marginBottom: book.shortDescription ? '0.375rem' : 0 }}>
+                        <p className="card-title" style={{ fontSize: 'var(--text-heading-sm)', margin: 0 }}>
                           {book.title}
                         </p>
-                        {book.shortDescription && (
-                          <p style={{ margin: 0, fontSize: 'var(--text-body-sm)', color: 'var(--color-text-muted)' }}>{book.shortDescription}</p>
-                        )}
                       </div>
                     </a>
                     {book.externalLink && (

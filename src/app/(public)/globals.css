@@ -1294,6 +1294,19 @@ body {
   }
 }
 
+/* ---- Small pill tag (Books' format/language chips on dark panels) ---- */
+.tag {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--radius-button);
+  border: 1px solid var(--color-border-on-dark);
+  color: var(--color-text-muted-on-dark);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
 /* ---- Leadership full-bio list (/about#leadership) ---- */
 .leadership-list {
   display: flex;
