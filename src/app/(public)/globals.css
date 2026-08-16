@@ -1301,6 +1301,12 @@ body {
   flex-direction: column;
 }
 
+.service-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
 .event-list-row {
   display: flex;
   align-items: center;

@@ -22,7 +22,13 @@ export const SiteSettings: CollectionConfig = {
     useAsTitle: 'siteName',
     group: 'Website',
   },
-  access: publicContentAccess('website.settings'),
+  // 2026-08-16: create disabled — exactly one doc already exists per
+  // tenant (the `tenant` field above is unique), seeded once and never
+  // meant to be duplicated. Payload hides "Create New" in the admin list
+  // view when this returns false, which is the actual fix here (an admin
+  // creating a second Website Settings record would silently orphan the
+  // real one, since queries take whichever row they find first).
+  access: { ...publicContentAccess('website.settings'), create: () => false },
   hooks: {
     beforeChange: [setTenantFromRequest],
     afterChange: [createAuditAfterChangeHook('site-settings')],

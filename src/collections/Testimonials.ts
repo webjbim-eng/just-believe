@@ -43,7 +43,11 @@ export const Testimonials: CollectionConfig = {
   },
   access: {
     read: testimonialRead,
-    create: withTenantScope(),
+    // 2026-08-16: unauthenticated-only, same reasoning as submissionAccess
+    // in publicContentAccess.ts — TestimonialForm posts here unauthenticated,
+    // so this only blocks the admin UI's "Create New" (a testimonial isn't
+    // something staff fabricate; they approve/moderate real submissions).
+    create: (args) => (args.req.user ? false : withTenantScope()(args)),
     update: composeAccess(hasPermission('testimonials.approve'), withTenantScope()),
     delete: composeAccess(hasPermission('testimonials.approve'), withTenantScope()),
   },

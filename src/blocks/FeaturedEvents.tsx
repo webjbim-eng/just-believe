@@ -17,6 +17,11 @@ export type FeaturedEventsConfig = {
  * 2026-08-16: /events + /events/[slug] now exist (real listing + real
  * registration form) — CTAs point there instead of the newsletter anchor
  * they used as a placeholder before that page existed.
+ * 2026-08-16: also surfaces RecurringServices (Sunday Service, Midweek
+ * Service, ...) above the one-off events list — standing weekly services
+ * with no date and no registration, just a join link, so they don't fit
+ * the Events query above and need their own. Shown whenever any exist,
+ * independent of whether one-off events are also scheduled.
  */
 export async function FeaturedEvents({ config: blockConfig, tenantId }: { config: FeaturedEventsConfig; tenantId: string }) {
   const payload = await getPayload({ config })
@@ -36,6 +41,13 @@ export async function FeaturedEvents({ config: blockConfig, tenantId }: { config
     },
     sort: 'startDate',
     limit: blockConfig.limit ?? 3,
+    overrideAccess: true,
+  })
+
+  const { docs: recurringServices } = await payload.find({
+    collection: 'recurring-services',
+    where: { and: [{ tenant: { equals: tenantId } }, { _status: { equals: 'published' } }] },
+    sort: 'displayOrder',
     overrideAccess: true,
   })
 
@@ -64,7 +76,7 @@ export async function FeaturedEvents({ config: blockConfig, tenantId }: { config
               <h2 style={{ color: '#fff' }}>{blockConfig.heading || 'Upcoming Events'}</h2>
               {blockConfig.body && <p style={{ color: 'var(--color-text-muted-on-dark)', marginBottom: '1.5rem' }}>{blockConfig.body}</p>}
 
-              {docs.length === 0 ? (
+              {recurringServices.length === 0 && docs.length === 0 ? (
                 <>
                   <p style={{ color: 'var(--color-text-muted-on-dark)' }}>
                     No upcoming events right now — subscribe and we&rsquo;ll let you know as soon as one is scheduled.
@@ -75,23 +87,50 @@ export async function FeaturedEvents({ config: blockConfig, tenantId }: { config
                 </>
               ) : (
                 <>
-                  <div style={{ marginBottom: '2rem' }}>
-                    {docs.map((event) => (
-                      <a key={event.id} href={`/events/${event.slug}`} className="event-row" style={{ textDecoration: 'none' }}>
-                        <div style={{ minWidth: 0 }}>
-                          <p style={{ margin: 0, fontWeight: 600, color: '#fff', fontFamily: 'var(--font-heading), Georgia, serif', fontSize: 'var(--text-heading-sm)' }}>
-                            {event.title}
-                          </p>
-                          {event.location && <p style={{ margin: 0, color: 'var(--color-text-muted-on-dark)', fontSize: 'var(--text-body-sm)' }}>{event.location}</p>}
+                  {recurringServices.length > 0 && (
+                    <div style={{ marginBottom: docs.length > 0 ? '1.75rem' : '2rem' }}>
+                      {recurringServices.map((service) => (
+                        <div key={service.id} className="event-row">
+                          <div style={{ minWidth: 0 }}>
+                            <p style={{ margin: 0, fontWeight: 600, color: '#fff', fontFamily: 'var(--font-heading), Georgia, serif', fontSize: 'var(--text-heading-sm)' }}>
+                              {service.name}
+                            </p>
+                            <p style={{ margin: 0, color: 'var(--color-text-muted-on-dark)', fontSize: 'var(--text-body-sm)' }}>{service.schedule}</p>
+                          </div>
+                          {service.joinLink && (
+                            <a
+                              className="btn-outline"
+                              href={service.joinLink}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              style={{ flexShrink: 0, color: '#fff', borderColor: 'rgba(255,255,255,0.6)' }}
+                            >
+                              {service.joinLabel || 'Join Live'}
+                            </a>
+                          )}
                         </div>
-                        {event.startDate && (
-                          <span className="event-row-month">
-                            {new Date(event.startDate).toLocaleDateString(undefined, { month: 'short' })}
-                          </span>
-                        )}
-                      </a>
-                    ))}
-                  </div>
+                      ))}
+                    </div>
+                  )}
+                  {docs.length > 0 && (
+                    <div style={{ marginBottom: '2rem' }}>
+                      {docs.map((event) => (
+                        <a key={event.id} href={`/events/${event.slug}`} className="event-row" style={{ textDecoration: 'none' }}>
+                          <div style={{ minWidth: 0 }}>
+                            <p style={{ margin: 0, fontWeight: 600, color: '#fff', fontFamily: 'var(--font-heading), Georgia, serif', fontSize: 'var(--text-heading-sm)' }}>
+                              {event.title}
+                            </p>
+                            {event.location && <p style={{ margin: 0, color: 'var(--color-text-muted-on-dark)', fontSize: 'var(--text-body-sm)' }}>{event.location}</p>}
+                          </div>
+                          {event.startDate && (
+                            <span className="event-row-month">
+                              {new Date(event.startDate).toLocaleDateString(undefined, { month: 'short' })}
+                            </span>
+                          )}
+                        </a>
+                      ))}
+                    </div>
+                  )}
                   <a className="btn-accent" href="/events">
                     Find Out More
                   </a>

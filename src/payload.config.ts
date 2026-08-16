@@ -30,6 +30,7 @@ import { Pages } from './collections/Pages'
 import { Partners } from './collections/Partners'
 import { Permissions } from './collections/Permissions'
 import { PrayerRequests } from './collections/PrayerRequests'
+import { RecurringServices } from './collections/RecurringServices'
 import { Resources } from './collections/Resources'
 import { Roles } from './collections/Roles'
 import { Sermons } from './collections/Sermons'
@@ -80,6 +81,7 @@ export default buildConfig({
     Leadership,
     Events,
     EventRegistrations,
+    RecurringServices,
     Sermons,
     Devotionals,
     Books,

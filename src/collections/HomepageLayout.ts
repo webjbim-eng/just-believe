@@ -21,7 +21,9 @@ export const HomepageLayout: CollectionConfig = {
     group: 'Website',
   },
   versions: { drafts: true },
-  access: publicContentAccess('homepage.manage'),
+  // 2026-08-16: create disabled — one doc per tenant, same reasoning as
+  // SiteSettings.ts.
+  access: { ...publicContentAccess('homepage.manage'), create: () => false },
   hooks: {
     beforeChange: [setTenantFromRequest],
     afterChange: [createAuditAfterChangeHook('homepage-layout')],

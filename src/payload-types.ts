@@ -81,6 +81,7 @@ export interface Config {
     leadership: Leadership;
     events: Event;
     'event-registrations': EventRegistration;
+    'recurring-services': RecurringService;
     sermons: Sermon;
     devotionals: Devotional;
     books: Book;
@@ -119,6 +120,7 @@ export interface Config {
     leadership: LeadershipSelect<false> | LeadershipSelect<true>;
     events: EventsSelect<false> | EventsSelect<true>;
     'event-registrations': EventRegistrationsSelect<false> | EventRegistrationsSelect<true>;
+    'recurring-services': RecurringServicesSelect<false> | RecurringServicesSelect<true>;
     sermons: SermonsSelect<false> | SermonsSelect<true>;
     devotionals: DevotionalsSelect<false> | DevotionalsSelect<true>;
     books: BooksSelect<false> | BooksSelect<true>;
@@ -692,6 +694,35 @@ export interface EventRegistration {
   waitlisted?: boolean | null;
   updatedAt: string;
   createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "recurring-services".
+ */
+export interface RecurringService {
+  id: number;
+  tenant: number | Tenant;
+  /**
+   * e.g. "Sunday Service", "Midweek Service"
+   */
+  name: string;
+  /**
+   * e.g. "Sundays · 10:00 AM" or "Wednesdays · 6:30 PM"
+   */
+  schedule: string;
+  description?: string | null;
+  /**
+   * Button text, e.g. "Join Live", "Watch on YouTube"
+   */
+  joinLabel?: string | null;
+  /**
+   * Livestream/Zoom/YouTube link people use to join
+   */
+  joinLink?: string | null;
+  displayOrder?: number | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1304,6 +1335,10 @@ export interface PayloadLockedDocument {
         value: number | EventRegistration;
       } | null)
     | ({
+        relationTo: 'recurring-services';
+        value: number | RecurringService;
+      } | null)
+    | ({
         relationTo: 'sermons';
         value: number | Sermon;
       } | null)
@@ -1749,6 +1784,22 @@ export interface EventRegistrationsSelect<T extends boolean = true> {
   waitlisted?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "recurring-services_select".
+ */
+export interface RecurringServicesSelect<T extends boolean = true> {
+  tenant?: T;
+  name?: T;
+  schedule?: T;
+  description?: T;
+  joinLabel?: T;
+  joinLink?: T;
+  displayOrder?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

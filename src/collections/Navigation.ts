@@ -18,7 +18,9 @@ export const Navigation: CollectionConfig = {
     useAsTitle: 'tenant',
     group: 'Website',
   },
-  access: publicContentAccess('navigation.manage'),
+  // 2026-08-16: create disabled — one doc per tenant, same reasoning as
+  // SiteSettings.ts.
+  access: { ...publicContentAccess('navigation.manage'), create: () => false },
   hooks: {
     beforeChange: [setTenantFromRequest],
     afterChange: [createAuditAfterChangeHook('navigation')],
