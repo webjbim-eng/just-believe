@@ -44,7 +44,13 @@ export function Stagger({
       role={role}
       initial="hidden"
       whileInView="visible"
-      viewport={{ once: true, margin: '0px 0px -60px 0px', amount: 0.1 }}
+      // 2026-08-16: was `amount: 0.1` (10% of the container must be
+      // visible) — fine for short grids, but breaks entirely once a list
+      // is long enough that no viewport can ever show 10% of it at once
+      // (the 55-post blog listing's ~13,500px-tall grid never fired,
+      // leaving every card stuck at opacity:0). 'some' just needs any
+      // part of the container visible, independent of its total height.
+      viewport={{ once: true, margin: '0px 0px -60px 0px', amount: 'some' }}
       variants={containerVariants}
       custom={staggerDelay}
     >
