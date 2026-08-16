@@ -553,18 +553,27 @@ a {
  * (not "desktop then squeeze"): a real breakpoint collapse to a single
  * column, image first, on tablet/mobile.
  */
+/* 2026-08-16: grid (1fr 1fr) -> flex. Capping .split-layout-media's
+   max-width under grid left a dead gap between the image and the text —
+   a grid track keeps its allotted size regardless of what its content
+   actually uses, so the column stayed ~570px wide even once the image
+   inside it shrank to 352px, and the box defaults to *start* alignment
+   within that leftover space (flush against the section's outer edge,
+   not the text). Flex doesn't have that problem: when a flex-grow item
+   hits its max-width, the algorithm hands the unused space back to its
+   sibling, so the text column grows to fill it and the two stay flush
+   against their shared `gap` automatically — no alignment hack needed. */
 .split-layout {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 3.5rem;
+  display: flex;
   align-items: center;
+  gap: 3.5rem;
 }
 
-/* 2026-08-16: was unconstrained (stretched to fill its 1fr column — ~570px
-   square on a 1200px container), which read as oversized on every page
-   using this pattern (Foundation, Ministry Pathways, Events, Testimonials,
-   About, Contact, Ministries, Books). Capped so the photo reads as an
-   accent beside the text, not half the section. */
+.split-layout > * {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
 .split-layout-media {
   max-width: 22rem;
 }
@@ -575,12 +584,17 @@ a {
 
 @media (max-width: 860px) {
   .split-layout {
-    grid-template-columns: 1fr;
+    flex-direction: column;
+    align-items: stretch;
     gap: 2rem;
   }
 
+  .split-layout-media,
   .split-layout--reverse .split-layout-media {
     order: 0;
+    max-width: 26rem;
+    width: 100%;
+    align-self: center;
   }
 }
 
