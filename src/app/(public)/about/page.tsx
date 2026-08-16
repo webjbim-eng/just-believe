@@ -38,6 +38,20 @@ export default async function AboutPage() {
       ).docs
     : []
 
+  const locations = tenantId
+    ? (
+        await getPayload({ config }).then((payload) =>
+          payload.find({
+            collection: 'locations',
+            where: { and: [{ tenant: { equals: tenantId } }, { active: { equals: true } }] },
+            sort: 'displayOrder',
+            limit: 50,
+            overrideAccess: true,
+          }),
+        )
+      ).docs
+    : []
+
   return (
     <main>
       <section className="section" style={{ paddingBottom: 0 }}>
@@ -198,6 +212,46 @@ export default async function AboutPage() {
           </ScrollReveal>
         </div>
       </section>
+
+      {locations.length > 0 && (
+        <section className="section decorative-flourish">
+          <div className="container container--narrow">
+            <ScrollReveal>
+              <p className="section-eyebrow" style={{ textAlign: 'center' }}>
+                Global Presence
+              </p>
+              <h2 style={{ textAlign: 'center' }}>
+                Our <span className="text-accent">Locations</span>
+              </h2>
+              <hr className="heading-underline heading-underline--center" />
+            </ScrollReveal>
+            <Stagger role="list" className="service-list">
+              {locations.map((location) => (
+                <StaggerItem key={location.id} role="listitem">
+                  <div className="card" style={{ padding: 'var(--card-padding)' }}>
+                    <p className="card-title" style={{ margin: '0 0 0.5rem' }}>
+                      {location.name}
+                    </p>
+                    {(location.address || location.city || location.region || location.country) && (
+                      <p style={{ margin: 0, color: 'var(--color-text-muted)' }}>
+                        {[location.address, location.city, location.region, location.postalCode, location.country].filter(Boolean).join(', ')}
+                      </p>
+                    )}
+                    {location.description && <p style={{ margin: '0.75rem 0 0' }}>{location.description}</p>}
+                    {(location.phone || location.email) && (
+                      <p style={{ margin: '0.75rem 0 0', display: 'flex', gap: '1.25rem', flexWrap: 'wrap' }}>
+                        {location.phone && <a href={`tel:${location.phone}`}>{location.phone}</a>}
+                        {location.email && <a href={`mailto:${location.email}`}>{location.email}</a>}
+                      </p>
+                    )}
+                    {location.meetingInfo && <p style={{ margin: '0.75rem 0 0', color: 'var(--color-text-muted)' }}>{location.meetingInfo}</p>}
+                  </div>
+                </StaggerItem>
+              ))}
+            </Stagger>
+          </div>
+        </section>
+      )}
 
       <section className="section section--surface">
         <div className="container container--narrow" style={{ textAlign: 'center' }}>

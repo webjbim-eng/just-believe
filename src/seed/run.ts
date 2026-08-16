@@ -257,8 +257,21 @@ async function seed() {
       },
     },
     {
-      blockType: 'Testimonials',
+      // New 2026-08-16 (Jimmy's request) — standing weekly programs
+      // (Children's Bible Institute, Word and Worship Encounter, Prayer &
+      // Intercession) get their own section, separate from one-off Events.
+      blockType: 'RecurringActivities',
       order: 7,
+      visible: true,
+      config: {
+        eyebrow: 'Every Week',
+        heading: 'Recurring Activities',
+        body: 'Standing weekly programs — join us wherever you are.',
+      },
+    },
+    {
+      blockType: 'Testimonials',
+      order: 8,
       visible: true,
       config: {
         eyebrow: 'Changed Lives',
@@ -275,7 +288,7 @@ async function seed() {
       // already carries a photo, a second consecutive photo panel would
       // repeat rather than vary the rhythm.
       blockType: 'PartnershipInvitation',
-      order: 8,
+      order: 9,
       visible: true,
       config: {
         heading: 'Partner With Us',
@@ -301,7 +314,7 @@ async function seed() {
       // fields, real /books + /books/[slug] pages) so Books has real
       // homepage presence, not just an orphaned standalone page.
       blockType: 'FeaturedBooks',
-      order: 9,
+      order: 10,
       visible: true,
       config: {
         eyebrow: 'From Our Founder',
@@ -315,7 +328,7 @@ async function seed() {
     },
     {
       blockType: 'BlogSpotlight',
-      order: 10,
+      order: 11,
       visible: true,
       config: {
         eyebrow: 'Reflections',
@@ -324,7 +337,7 @@ async function seed() {
     },
     {
       blockType: 'CTA',
-      order: 11,
+      order: 12,
       visible: true,
       config: {
         heading: 'Discover the Power of Faith & Spiritual Growth',
@@ -502,23 +515,160 @@ async function seed() {
     }
   }
 
-  const existingFooter = (
+  let existingFooter = (
     await payload.find({ collection: 'footer', where: { tenant: { equals: tenant.id } }, limit: 1, overrideAccess: true })
   ).docs[0]
   if (!existingFooter) {
-    await payload.create({
+    existingFooter = await payload.create({
       collection: 'footer',
       data: {
         tenant: tenant.id,
         socialLinks: [
-          { platform: 'youtube', url: 'https://youtube.com/@jbiminc?si=Q26o6jq34zseGPaF' },
-          { platform: 'facebook', url: 'https://www.facebook.com/profile.php?id=61570983282514' },
+          { platform: 'youtube', url: 'https://youtube.com/@jbiminc?si=Q26o6jq34zseGPaF', label: '@jbiminc' },
+          { platform: 'facebook', url: 'https://www.facebook.com/profile.php?id=61570983282514', label: 'Just Believe International Missions' },
         ],
         copyrightText: `© ${new Date().getFullYear()} Just Believe International Missions. All rights reserved.`,
       },
       overrideAccess: true,
     })
     payload.logger.info('Created starter Footer.')
+  } else if (existingFooter.socialLinks?.some((s) => !s.label)) {
+    // 2026-08-16: `label` is new on an already-seeded array — backfill the
+    // exact display text the previously-hardcoded footer/contact-page
+    // copies used, so removing those duplicates (SiteFooter.tsx,
+    // contact/page.tsx) is a pure refactor with no visible change.
+    const KNOWN_LABELS: Record<string, string> = { youtube: '@jbiminc', facebook: 'Just Believe International Missions' }
+    existingFooter = await payload.update({
+      collection: 'footer',
+      id: existingFooter.id,
+      data: {
+        socialLinks: existingFooter.socialLinks?.map((s) => ({ ...s, label: s.label || KNOWN_LABELS[s.platform] || s.platform })),
+      },
+      overrideAccess: true,
+    })
+    payload.logger.info('Backfilled labels onto Footer.socialLinks.')
+  }
+
+  const existingSiteSettings = (
+    await payload.find({ collection: 'site-settings', where: { tenant: { equals: tenant.id } }, limit: 1, overrideAccess: true })
+  ).docs[0]
+  if (!existingSiteSettings) {
+    // Real values from the client intake questionnaire (docs/source) —
+    // contactEmail/contactPhone existed as fields but were never populated
+    // or read anywhere on the frontend before this.
+    await payload.create({
+      collection: 'site-settings',
+      data: {
+        tenant: tenant.id,
+        siteName: 'Just Believe International Missions',
+        contactEmail: 'justbelieveinthot@gmail.com',
+        contactPhone: '+1 227 218 5031',
+      },
+      overrideAccess: true,
+    })
+    payload.logger.info('Created starter SiteSettings.')
+  }
+
+  const youtubeUrl = existingFooter.socialLinks?.find((s) => s.platform === 'youtube')?.url
+
+  const { docs: existingActivities } = await payload.find({
+    collection: 'recurring-activities',
+    where: { tenant: { equals: tenant.id } },
+    limit: 50,
+    overrideAccess: true,
+  })
+  if (existingActivities.length === 0) {
+    // Real content from Jimmy — verbatim schedule/CTA text, no invented
+    // details. Word and Worship Encounter's join link reuses the real
+    // YouTube URL from Footer.socialLinks (seeded just above) rather than
+    // hardcoding a fourth copy of it.
+    type Day = 'sun' | 'mon' | 'tue' | 'wed' | 'thu' | 'fri' | 'sat'
+    const recurringActivitiesSeed: {
+      name: string
+      language?: string
+      contactText: string
+      contactUrl?: string
+      onlineMeetingUrl?: string
+      schedule: { label: string; audienceLabel?: string; days: Day[]; startTime: string; endTime?: string; timezoneLabel: string }[]
+    }[] = [
+      {
+        name: "Children's Bible Institute",
+        language: 'English, French, Italian',
+        contactText: 'Contact us for more details',
+        contactUrl: '/contact',
+        schedule: [
+          { label: 'Ages 2-12', audienceLabel: 'Ages 2-12', days: ['sat'], startTime: '10:00 AM', endTime: '11:00 AM', timezoneLabel: 'Eastern Standard Time' },
+          { label: 'Ages 12+', audienceLabel: 'Ages 12+', days: ['sat'], startTime: '11:00 AM', endTime: '12:00 PM', timezoneLabel: 'Eastern Standard Time' },
+        ],
+      },
+      {
+        name: 'Word and Worship Encounter',
+        contactText: 'Join and follow us on YouTube',
+        onlineMeetingUrl: youtubeUrl,
+        schedule: [{ label: 'Sunday Service', days: ['sun'], startTime: '11:00 AM', timezoneLabel: 'Eastern Standard Time' }],
+      },
+      {
+        name: 'Prayer & Intercession',
+        contactText: 'Contact us to join us',
+        contactUrl: '/contact',
+        schedule: [
+          { label: 'Evening Prayer', days: ['sun', 'mon', 'tue', 'wed', 'thu'], startTime: '11:00 PM', timezoneLabel: 'Eastern Standard Time' },
+          { label: 'Morning Prayer — IT', days: ['mon', 'tue', 'wed', 'thu', 'fri'], startTime: '5:00 AM', timezoneLabel: 'IT' },
+          { label: 'Morning Prayer — Ivory Coast', days: ['mon', 'tue', 'wed', 'thu', 'fri'], startTime: '4:00 AM', timezoneLabel: 'Ivory Coast' },
+        ],
+      },
+    ]
+    for (const [index, activity] of recurringActivitiesSeed.entries()) {
+      await payload.create({
+        collection: 'recurring-activities',
+        data: {
+          tenant: tenant.id,
+          name: activity.name,
+          slug: activity.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, ''),
+          language: activity.language,
+          contactText: activity.contactText,
+          contactUrl: activity.contactUrl,
+          onlineMeetingUrl: activity.onlineMeetingUrl,
+          displayOrder: index,
+          schedule: activity.schedule,
+          _status: 'published',
+        },
+        overrideAccess: true,
+      })
+    }
+    payload.logger.info(`Created ${recurringActivitiesSeed.length} starter Recurring Activities.`)
+  } else {
+    payload.logger.info('Recurring Activities already exist — leaving as-is.')
+  }
+
+  const { docs: existingLocations } = await payload.find({
+    collection: 'locations',
+    where: { tenant: { equals: tenant.id } },
+    limit: 50,
+    overrideAccess: true,
+  })
+  if (existingLocations.length === 0) {
+    // Real headquarters address from the client intake questionnaire
+    // (docs/source) — city/state/postal weren't given, so left blank
+    // rather than invented.
+    await payload.create({
+      collection: 'locations',
+      data: {
+        tenant: tenant.id,
+        name: 'Headquarters',
+        country: 'United States',
+        address: '11720 South Laurel Drive, Apt 2C',
+        phone: '+1 227 218 5031',
+        email: 'justbelieveinthot@gmail.com',
+        active: true,
+        displayOrder: 0,
+        _status: 'published',
+      },
+      overrideAccess: true,
+    })
+    payload.logger.info('Created starter Location (Headquarters).')
+  } else {
+    payload.logger.info('Locations already exist — leaving as-is.')
   }
 
   payload.logger.info('Seeding system roles...')

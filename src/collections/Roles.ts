@@ -16,7 +16,7 @@ export const Roles: CollectionConfig = {
   slug: 'roles',
   admin: {
     useAsTitle: 'name',
-    group: 'Administration',
+    group: 'Settings',
     defaultColumns: ['name', 'tenant', 'isSystemRole'],
   },
   access: {

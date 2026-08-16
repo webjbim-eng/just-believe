@@ -13,7 +13,7 @@ export const Permissions: CollectionConfig = {
   slug: 'permissions',
   admin: {
     useAsTitle: 'key',
-    group: 'Administration',
+    group: 'Settings',
     defaultColumns: ['key', 'module', 'description'],
   },
   access: {

@@ -17,7 +17,7 @@ export const Missions: CollectionConfig = {
   slug: 'missions',
   admin: {
     useAsTitle: 'name',
-    group: 'Ministry',
+    group: 'Website Content',
     defaultColumns: ['name', 'location', 'phase', 'startDate'],
   },
   versions: { drafts: true },

@@ -10,7 +10,7 @@ export const Footer: CollectionConfig = {
   slug: 'footer',
   admin: {
     useAsTitle: 'tenant',
-    group: 'Website',
+    group: 'Website Content',
   },
   // 2026-08-16: create disabled — one doc per tenant, same reasoning as
   // SiteSettings.ts.
@@ -38,11 +38,19 @@ export const Footer: CollectionConfig = {
       ],
     },
     {
+      // 2026-08-16: the only real social-link mechanism now — SiteSettings
+      // used to duplicate a second, unread `socialLinks` field, and the
+      // footer's "Connect" column had a THIRD, hardcoded copy of the same
+      // real values. This one array now drives every social link on the
+      // site (see SiteFooter.tsx, contact/page.tsx). `label` is optional
+      // display-text control (e.g. "@jbiminc") — falls back to the
+      // capitalized platform name when unset.
       name: 'socialLinks',
       type: 'array',
       fields: [
         { name: 'platform', type: 'select', options: ['facebook', 'instagram', 'youtube', 'x', 'tiktok'], required: true },
         { name: 'url', type: 'text', required: true },
+        { name: 'label', type: 'text', admin: { description: 'Optional display text, e.g. "@jbiminc" — defaults to the platform name' } },
       ],
     },
     { name: 'copyrightText', type: 'text', localized: true },

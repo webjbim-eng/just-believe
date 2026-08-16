@@ -15,6 +15,7 @@ import { Prayer } from './Prayer'
 import { FeaturedSermons } from './FeaturedSermons'
 import { FeaturedEvents } from './FeaturedEvents'
 import { FeaturedBooks } from './FeaturedBooks'
+import { RecurringActivities } from './RecurringActivities'
 import { Testimonials } from './Testimonials'
 import { Leadership } from './Leadership'
 
@@ -37,6 +38,7 @@ export const blockRegistry: Record<string, ComponentType<{ config: any; tenantId
   FeaturedSermons,
   FeaturedEvents,
   FeaturedBooks,
+  RecurringActivities,
   BlogSpotlight,
   Prayer,
   Leadership,

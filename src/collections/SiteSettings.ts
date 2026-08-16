@@ -20,7 +20,7 @@ export const SiteSettings: CollectionConfig = {
   labels: { singular: 'Website Settings', plural: 'Website Settings' },
   admin: {
     useAsTitle: 'siteName',
-    group: 'Website',
+    group: 'Settings',
   },
   // 2026-08-16: create disabled — exactly one doc already exists per
   // tenant (the `tenant` field above is unique), seeded once and never
@@ -39,14 +39,6 @@ export const SiteSettings: CollectionConfig = {
     { name: 'siteName', type: 'text', required: true },
     { name: 'contactEmail', type: 'email' },
     { name: 'contactPhone', type: 'text' },
-    {
-      name: 'socialLinks',
-      type: 'array',
-      fields: [
-        { name: 'platform', type: 'select', options: ['facebook', 'instagram', 'youtube', 'x', 'tiktok'], required: true },
-        { name: 'url', type: 'text', required: true },
-      ],
-    },
     {
       name: 'notificationPreferences',
       type: 'group',

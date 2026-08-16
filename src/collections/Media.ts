@@ -15,7 +15,7 @@ import { createAuditAfterChangeHook, createAuditAfterDeleteHook } from '../hooks
  */
 export const Media: CollectionConfig = {
   slug: 'media',
-  admin: { group: 'Media' },
+  admin: { group: 'Content' },
   access: {
     // Was unconditionally public (`() => true`) — an unscoped read let any
     // request enumerate every tenant's media, not just the resolved

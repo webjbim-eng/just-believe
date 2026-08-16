@@ -19,7 +19,7 @@ export const Pages: CollectionConfig = {
   slug: 'pages',
   admin: {
     useAsTitle: 'title',
-    group: 'Website',
+    group: 'Content',
     defaultColumns: ['title', 'slug', '_status'],
   },
   versions: { drafts: true },

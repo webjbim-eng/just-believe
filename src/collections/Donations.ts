@@ -29,7 +29,7 @@ export const Donations: CollectionConfig = {
   slug: 'donations',
   admin: {
     useAsTitle: 'paystackReference',
-    group: 'Giving',
+    group: 'Platform',
     defaultColumns: ['donorName', 'amount', 'currency', 'processor', 'fund', 'status', 'createdAt'],
   },
   access: {

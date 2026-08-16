@@ -19,7 +19,7 @@ export const systemRoleDefinitions: RoleSeed[] = [
     permissions: allPermissionKeys([
       'users.create', 'users.update', 'users.delete', 'users.invite',
       'roles.manage', 'audit.view',
-      'website.settings', 'homepage.manage', 'navigation.manage',
+      'website.settings', 'homepage.manage', 'navigation.manage', 'locations.manage',
       'pages.publish', 'ministries.manage', 'missions.manage', 'leadership.manage',
       'events.manage', 'events.registrations.view', 'events.registrations.export',
       'sermons.publish', 'devotionals.publish',
@@ -42,7 +42,7 @@ export const systemRoleDefinitions: RoleSeed[] = [
     permissions: allPermissionKeys([
       'users.create', 'users.update', 'users.delete', 'users.invite',
       'audit.view',
-      'website.settings', 'homepage.manage', 'navigation.manage',
+      'website.settings', 'homepage.manage', 'navigation.manage', 'locations.manage',
       'pages.publish', 'ministries.manage', 'missions.manage', 'leadership.manage',
       'events.manage', 'events.registrations.view', 'events.registrations.export',
       'sermons.publish', 'devotionals.publish',
@@ -62,7 +62,7 @@ export const systemRoleDefinitions: RoleSeed[] = [
   {
     name: 'Content Manager',
     permissions: [
-      'pages.publish', 'homepage.manage', 'ministries.manage', 'missions.manage', 'leadership.manage',
+      'pages.publish', 'homepage.manage', 'ministries.manage', 'missions.manage', 'leadership.manage', 'locations.manage',
       'blog.publish', 'blog.categories.manage',
       'books.manage', 'resources.manage',
       'testimonials.approve', 'seo.manage',

@@ -23,6 +23,7 @@ export const permissionCatalog: PermissionSeed[] = [
   { key: 'website.settings', module: 'Website', description: 'Edit tenant branding, contact info, notification settings' },
   { key: 'homepage.manage', module: 'Website', description: 'Edit the homepage builder (sections, order, visibility)' },
   { key: 'navigation.manage', module: 'Website', description: 'Edit header navigation and footer' },
+  { key: 'locations.manage', module: 'Website', description: 'Manage physical/regional ministry locations' },
 
   { key: 'pages.publish', module: 'Content', description: 'Create/edit/publish arbitrary Pages' },
   { key: 'ministries.manage', module: 'Content', description: 'Manage Ministries program pages' },

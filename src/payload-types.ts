@@ -81,7 +81,7 @@ export interface Config {
     leadership: Leadership;
     events: Event;
     'event-registrations': EventRegistration;
-    'recurring-services': RecurringService;
+    'recurring-activities': RecurringActivity;
     sermons: Sermon;
     devotionals: Devotional;
     books: Book;
@@ -91,6 +91,7 @@ export interface Config {
     navigation: Navigation;
     footer: Footer;
     'homepage-layout': HomepageLayout;
+    locations: Location;
     messages: Message;
     'prayer-requests': PrayerRequest;
     'counseling-requests': CounselingRequest;
@@ -120,7 +121,7 @@ export interface Config {
     leadership: LeadershipSelect<false> | LeadershipSelect<true>;
     events: EventsSelect<false> | EventsSelect<true>;
     'event-registrations': EventRegistrationsSelect<false> | EventRegistrationsSelect<true>;
-    'recurring-services': RecurringServicesSelect<false> | RecurringServicesSelect<true>;
+    'recurring-activities': RecurringActivitiesSelect<false> | RecurringActivitiesSelect<true>;
     sermons: SermonsSelect<false> | SermonsSelect<true>;
     devotionals: DevotionalsSelect<false> | DevotionalsSelect<true>;
     books: BooksSelect<false> | BooksSelect<true>;
@@ -130,6 +131,7 @@ export interface Config {
     navigation: NavigationSelect<false> | NavigationSelect<true>;
     footer: FooterSelect<false> | FooterSelect<true>;
     'homepage-layout': HomepageLayoutSelect<false> | HomepageLayoutSelect<true>;
+    locations: LocationsSelect<false> | LocationsSelect<true>;
     messages: MessagesSelect<false> | MessagesSelect<true>;
     'prayer-requests': PrayerRequestsSelect<false> | PrayerRequestsSelect<true>;
     'counseling-requests': CounselingRequestsSelect<false> | CounselingRequestsSelect<true>;
@@ -697,29 +699,83 @@ export interface EventRegistration {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "recurring-services".
+ * via the `definition` "recurring-activities".
  */
-export interface RecurringService {
+export interface RecurringActivity {
   id: number;
   tenant: number | Tenant;
   /**
-   * e.g. "Sunday Service", "Midweek Service"
+   * e.g. "Children's Bible Institute", "Prayer & Intercession"
    */
   name: string;
+  slug: string;
   /**
-   * e.g. "Sundays · 10:00 AM" or "Wednesdays · 6:30 PM"
+   * Optional free label, e.g. "Children's Ministry", "Prayer"
    */
-  schedule: string;
+  category?: string | null;
+  shortDescription?: string | null;
   description?: string | null;
-  /**
-   * Button text, e.g. "Join Live", "Watch on YouTube"
-   */
-  joinLabel?: string | null;
-  /**
-   * Livestream/Zoom/YouTube link people use to join
-   */
-  joinLink?: string | null;
+  image?: (number | null) | Media;
+  featured?: boolean | null;
   displayOrder?: number | null;
+  /**
+   * e.g. "English, French, Italian" — free text, not every activity offers the same languages
+   */
+  language?: string | null;
+  /**
+   * Free label, e.g. "Online", "Main Sanctuary" — not a link to Locations
+   */
+  locationText?: string | null;
+  /**
+   * e.g. "Contact us for more details"
+   */
+  contactText?: string | null;
+  /**
+   * Where the contact text links, e.g. "/contact" or a mailto: link
+   */
+  contactUrl?: string | null;
+  registrationUrl?: string | null;
+  /**
+   * Direct join link for the whole activity, e.g. a YouTube channel or Zoom link
+   */
+  onlineMeetingUrl?: string | null;
+  socialUrl?: string | null;
+  /**
+   * One or more sessions — e.g. two age-group sessions, or three differently-timezoned prayer sessions
+   */
+  schedule: {
+    /**
+     * e.g. "Ages 2-12", "Evening Prayer", "Morning Prayer — IT"
+     */
+    label: string;
+    /**
+     * Optional, e.g. "Ages 2-12" — shown separately from Label if both are set
+     */
+    audienceLabel?: string | null;
+    days: ('sun' | 'mon' | 'tue' | 'wed' | 'thu' | 'fri' | 'sat')[];
+    /**
+     * e.g. "10:00 AM" — free text, not a time picker, so it displays exactly as typed
+     */
+    startTime: string;
+    /**
+     * Optional, e.g. "11:00 AM"
+     */
+    endTime?: string | null;
+    /**
+     * Exactly as it should display, e.g. "Eastern Standard Time", "IT", "Ivory Coast" — not every session shares the organizer's timezone
+     */
+    timezoneLabel: string;
+    /**
+     * Optional override of the activity-level location for this specific session
+     */
+    locationText?: string | null;
+    /**
+     * Optional override of the activity-level join link for this specific session
+     */
+    onlineMeetingUrl?: string | null;
+    active?: boolean | null;
+    id?: string | null;
+  }[];
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
@@ -913,13 +969,6 @@ export interface SiteSetting {
   siteName: string;
   contactEmail?: string | null;
   contactPhone?: string | null;
-  socialLinks?:
-    | {
-        platform: 'facebook' | 'instagram' | 'youtube' | 'x' | 'tiktok';
-        url: string;
-        id?: string | null;
-      }[]
-    | null;
   notificationPreferences?: {
     newPrayerRequest?: boolean | null;
     newCounselingRequest?: boolean | null;
@@ -994,6 +1043,10 @@ export interface Footer {
     | {
         platform: 'facebook' | 'instagram' | 'youtube' | 'x' | 'tiktok';
         url: string;
+        /**
+         * Optional display text, e.g. "@jbiminc" — defaults to the platform name
+         */
+        label?: string | null;
         id?: string | null;
       }[]
     | null;
@@ -1021,6 +1074,7 @@ export interface HomepageLayout {
           | 'FeaturedSermons'
           | 'FeaturedEvents'
           | 'FeaturedBooks'
+          | 'RecurringActivities'
           | 'MinistriesOverview'
           | 'HeroMediaStrip'
           | 'BlogSpotlight'
@@ -1048,6 +1102,43 @@ export interface HomepageLayout {
         id?: string | null;
       }[]
     | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "locations".
+ */
+export interface Location {
+  id: number;
+  tenant: number | Tenant;
+  /**
+   * e.g. "Headquarters", "West Africa Office"
+   */
+  name: string;
+  country?: string | null;
+  city?: string | null;
+  address?: string | null;
+  /**
+   * State/province, optional
+   */
+  region?: string | null;
+  postalCode?: string | null;
+  description?: string | null;
+  /**
+   * A Google Maps (or similar) link, optional
+   */
+  mapUrl?: string | null;
+  phone?: string | null;
+  email?: string | null;
+  /**
+   * e.g. office hours, how to schedule a visit
+   */
+  meetingInfo?: string | null;
+  image?: (number | null) | Media;
+  active?: boolean | null;
+  displayOrder?: number | null;
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
@@ -1335,8 +1426,8 @@ export interface PayloadLockedDocument {
         value: number | EventRegistration;
       } | null)
     | ({
-        relationTo: 'recurring-services';
-        value: number | RecurringService;
+        relationTo: 'recurring-activities';
+        value: number | RecurringActivity;
       } | null)
     | ({
         relationTo: 'sermons';
@@ -1373,6 +1464,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'homepage-layout';
         value: number | HomepageLayout;
+      } | null)
+    | ({
+        relationTo: 'locations';
+        value: number | Location;
       } | null)
     | ({
         relationTo: 'messages';
@@ -1787,16 +1882,39 @@ export interface EventRegistrationsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "recurring-services_select".
+ * via the `definition` "recurring-activities_select".
  */
-export interface RecurringServicesSelect<T extends boolean = true> {
+export interface RecurringActivitiesSelect<T extends boolean = true> {
   tenant?: T;
   name?: T;
-  schedule?: T;
+  slug?: T;
+  category?: T;
+  shortDescription?: T;
   description?: T;
-  joinLabel?: T;
-  joinLink?: T;
+  image?: T;
+  featured?: T;
   displayOrder?: T;
+  language?: T;
+  locationText?: T;
+  contactText?: T;
+  contactUrl?: T;
+  registrationUrl?: T;
+  onlineMeetingUrl?: T;
+  socialUrl?: T;
+  schedule?:
+    | T
+    | {
+        label?: T;
+        audienceLabel?: T;
+        days?: T;
+        startTime?: T;
+        endTime?: T;
+        timezoneLabel?: T;
+        locationText?: T;
+        onlineMeetingUrl?: T;
+        active?: T;
+        id?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
   _status?: T;
@@ -1930,13 +2048,6 @@ export interface SiteSettingsSelect<T extends boolean = true> {
   siteName?: T;
   contactEmail?: T;
   contactPhone?: T;
-  socialLinks?:
-    | T
-    | {
-        platform?: T;
-        url?: T;
-        id?: T;
-      };
   notificationPreferences?:
     | T
     | {
@@ -2005,6 +2116,7 @@ export interface FooterSelect<T extends boolean = true> {
     | {
         platform?: T;
         url?: T;
+        label?: T;
         id?: T;
       };
   copyrightText?: T;
@@ -2026,6 +2138,30 @@ export interface HomepageLayoutSelect<T extends boolean = true> {
         config?: T;
         id?: T;
       };
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "locations_select".
+ */
+export interface LocationsSelect<T extends boolean = true> {
+  tenant?: T;
+  name?: T;
+  country?: T;
+  city?: T;
+  address?: T;
+  region?: T;
+  postalCode?: T;
+  description?: T;
+  mapUrl?: T;
+  phone?: T;
+  email?: T;
+  meetingInfo?: T;
+  image?: T;
+  active?: T;
+  displayOrder?: T;
   updatedAt?: T;
   createdAt?: T;
   _status?: T;

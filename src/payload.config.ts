@@ -20,6 +20,7 @@ import { Events } from './collections/Events'
 import { Footer } from './collections/Footer'
 import { HomepageLayout } from './collections/HomepageLayout'
 import { Leadership } from './collections/Leadership'
+import { Locations } from './collections/Locations'
 import { Media } from './collections/Media'
 import { Messages } from './collections/Messages'
 import { Ministries } from './collections/Ministries'
@@ -30,7 +31,7 @@ import { Pages } from './collections/Pages'
 import { Partners } from './collections/Partners'
 import { Permissions } from './collections/Permissions'
 import { PrayerRequests } from './collections/PrayerRequests'
-import { RecurringServices } from './collections/RecurringServices'
+import { RecurringActivities } from './collections/RecurringActivities'
 import { Resources } from './collections/Resources'
 import { Roles } from './collections/Roles'
 import { Sermons } from './collections/Sermons'
@@ -81,7 +82,7 @@ export default buildConfig({
     Leadership,
     Events,
     EventRegistrations,
-    RecurringServices,
+    RecurringActivities,
     Sermons,
     Devotionals,
     Books,
@@ -92,6 +93,7 @@ export default buildConfig({
     Navigation,
     Footer,
     HomepageLayout,
+    Locations,
     // Care / submissions
     Messages,
     PrayerRequests,

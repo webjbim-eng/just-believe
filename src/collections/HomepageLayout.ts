@@ -18,7 +18,7 @@ export const HomepageLayout: CollectionConfig = {
   labels: { singular: 'Home', plural: 'Home' },
   admin: {
     useAsTitle: 'tenant',
-    group: 'Website',
+    group: 'Website Content',
   },
   versions: { drafts: true },
   // 2026-08-16: create disabled — one doc per tenant, same reasoning as
@@ -50,6 +50,7 @@ export const HomepageLayout: CollectionConfig = {
             'FeaturedSermons',
             'FeaturedEvents',
             'FeaturedBooks',
+            'RecurringActivities',
             // Not real blocks anymore — kept as select options only because
             // old rows in _homepage_layout_v_version_sections still contain
             // these strings. Narrowing the enum to drop them fails the dev

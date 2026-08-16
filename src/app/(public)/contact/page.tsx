@@ -1,4 +1,8 @@
 import type { Metadata } from 'next'
+import { headers } from 'next/headers'
+import { getPayload } from 'payload'
+import config from '@payload-config'
+import { TENANT_HEADER } from '../../../access/getResolvedTenantId'
 import { ScrollReveal } from '../../../components/ScrollReveal'
 import { Stagger, StaggerItem } from '../../../components/Stagger'
 import { ContactForm } from '../../../components/ContactForm'
@@ -8,13 +12,31 @@ export const metadata: Metadata = {
   description: 'Get in touch with Just Believe International Missions.',
 }
 
-const contactLinks = [
-  { label: 'Email', value: 'justbelieveinthot@gmail.com', href: 'mailto:justbelieveinthot@gmail.com' },
-  { label: 'YouTube', value: '@jbiminc', href: 'https://youtube.com/@jbiminc?si=Q26o6jq34zseGPaF' },
-  { label: 'Facebook', value: 'Just Believe International Missions', href: 'https://www.facebook.com/profile.php?id=61570983282514' },
-]
+export default async function ContactPage() {
+  const tenantId = (await headers()).get(TENANT_HEADER)
 
-export default function ContactPage() {
+  const [siteSettings, footer] = tenantId
+    ? await getPayload({ config }).then((payload) =>
+        Promise.all([
+          payload.find({ collection: 'site-settings', where: { tenant: { equals: tenantId } }, limit: 1, overrideAccess: true }).then((r) => r.docs[0]),
+          payload.find({ collection: 'footer', where: { tenant: { equals: tenantId } }, limit: 1, overrideAccess: true }).then((r) => r.docs[0]),
+        ]),
+      )
+    : [undefined, undefined]
+
+  // 2026-08-16: was a third hardcoded copy of the same real email/YouTube/
+  // Facebook links — see SiteFooter.tsx for the other two this now shares
+  // a single real source with (SiteSettings.contactEmail, Footer.socialLinks).
+  const contactLinks = [
+    ...(siteSettings?.contactEmail ? [{ key: 'email', label: 'Email', value: siteSettings.contactEmail, href: `mailto:${siteSettings.contactEmail}` }] : []),
+    ...(footer?.socialLinks ?? []).map((social) => ({
+      key: social.platform,
+      label: social.platform.charAt(0).toUpperCase() + social.platform.slice(1),
+      value: social.label || social.platform.charAt(0).toUpperCase() + social.platform.slice(1),
+      href: social.url,
+    })),
+  ]
+
   return (
     <main>
       <section className="section decorative-flourish">
@@ -42,28 +64,30 @@ export default function ContactPage() {
                   Whether through prayer, volunteering, financial partnership, community outreach, or collaborative
                   ministry — we&rsquo;d love to hear from you.
                 </p>
-                <Stagger role="list" staggerDelay={0.1}>
-                  {contactLinks.map((link, index) => (
-                    <StaggerItem key={link.label} role="listitem">
-                      <a
-                        href={link.href}
-                        style={{
-                          display: 'flex',
-                          alignItems: 'baseline',
-                          gap: '1rem',
-                          padding: '1rem 0',
-                          textDecoration: 'none',
-                          borderBottom: index < contactLinks.length - 1 ? '1px solid var(--color-border)' : 'none',
-                        }}
-                      >
-                        <span className="card-eyebrow" style={{ minWidth: '5.5rem', margin: 0 }}>
-                          {link.label}
-                        </span>
-                        <span style={{ color: 'var(--color-text)', fontWeight: 600 }}>{link.value}</span>
-                      </a>
-                    </StaggerItem>
-                  ))}
-                </Stagger>
+                {contactLinks.length > 0 && (
+                  <Stagger role="list" staggerDelay={0.1}>
+                    {contactLinks.map((link, index) => (
+                      <StaggerItem key={link.key} role="listitem">
+                        <a
+                          href={link.href}
+                          style={{
+                            display: 'flex',
+                            alignItems: 'baseline',
+                            gap: '1rem',
+                            padding: '1rem 0',
+                            textDecoration: 'none',
+                            borderBottom: index < contactLinks.length - 1 ? '1px solid var(--color-border)' : 'none',
+                          }}
+                        >
+                          <span className="card-eyebrow" style={{ minWidth: '5.5rem', margin: 0 }}>
+                            {link.label}
+                          </span>
+                          <span style={{ color: 'var(--color-text)', fontWeight: 600 }}>{link.value}</span>
+                        </a>
+                      </StaggerItem>
+                    ))}
+                  </Stagger>
+                )}
               </div>
             </div>
           </ScrollReveal>

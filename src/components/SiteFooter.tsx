@@ -4,12 +4,6 @@ import config from '@payload-config'
 import { SocialIcon } from './SocialIcon'
 import { NewsletterMiniForm } from './NewsletterMiniForm'
 
-const contactLinks = [
-  { label: 'Email', value: 'justbelieveinthot@gmail.com', href: 'mailto:justbelieveinthot@gmail.com' },
-  { label: 'YouTube', value: '@jbiminc', href: 'https://youtube.com/@jbiminc?si=Q26o6jq34zseGPaF' },
-  { label: 'Facebook', value: 'Just Believe International Missions', href: 'https://www.facebook.com/profile.php?id=61570983282514' },
-]
-
 /* Same real, licensed photography already used across the site (Hero,
    Prayer, MinistryPathways, ...) — reused here purely as texture, same as
    every other decorative use of these photos, not claimed to depict a
@@ -45,12 +39,28 @@ const galleryThumbnails = [
  */
 export async function SiteFooter({ tenantId }: { tenantId: string }) {
   const payload = await getPayload({ config })
-  const [{ docs: footerDocs }, { docs: navDocs }] = await Promise.all([
+  const [{ docs: footerDocs }, { docs: navDocs }, { docs: siteSettingsDocs }] = await Promise.all([
     payload.find({ collection: 'footer', where: { tenant: { equals: tenantId } }, limit: 1, overrideAccess: true }),
     payload.find({ collection: 'navigation', where: { tenant: { equals: tenantId } }, limit: 1, overrideAccess: true }),
+    payload.find({ collection: 'site-settings', where: { tenant: { equals: tenantId } }, limit: 1, overrideAccess: true }),
   ])
   const footer = footerDocs[0]
   const navItems = navDocs[0]?.items ?? []
+  const contactEmail = siteSettingsDocs[0]?.contactEmail
+  // 2026-08-16: this "Connect" column used to be a fourth hardcoded copy
+  // of the same real email/YouTube/Facebook links footer.socialLinks (the
+  // icon row above) and SiteSettings.contactEmail already store — one
+  // real source now, admin-editable in two places instead of dead code in
+  // a fifth.
+  const connectLinks = [
+    ...(contactEmail ? [{ key: 'email', label: 'Email', value: contactEmail, href: `mailto:${contactEmail}` }] : []),
+    ...(footer?.socialLinks ?? []).map((social) => ({
+      key: social.platform,
+      label: social.platform,
+      value: social.label || social.platform.charAt(0).toUpperCase() + social.platform.slice(1),
+      href: social.url,
+    })),
+  ]
 
   return (
     <footer style={{ background: 'var(--color-primary)', color: 'var(--color-text-muted-on-dark)', marginTop: '2rem', borderTop: '1px solid var(--color-border-on-dark)' }}>
@@ -103,8 +113,8 @@ export async function SiteFooter({ tenantId }: { tenantId: string }) {
         <div>
           <p className="card-eyebrow">Connect</p>
           <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>
-            {contactLinks.map((link) => (
-              <li key={link.label} style={{ marginBottom: '0.625rem' }}>
+            {connectLinks.map((link) => (
+              <li key={link.key} style={{ marginBottom: '0.625rem' }}>
                 <a href={link.href} style={{ color: 'var(--color-text-muted-on-dark)', textDecoration: 'none' }}>
                   {link.value}
                 </a>

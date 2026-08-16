@@ -16,7 +16,7 @@ export const AuditLogs: CollectionConfig = {
   labels: { singular: 'Activity Log', plural: 'Activity Log' },
   admin: {
     useAsTitle: 'documentId',
-    group: 'Administration',
+    group: 'Platform',
     defaultColumns: ['collectionSlug', 'action', 'user', 'documentId', 'createdAt'],
   },
   access: {

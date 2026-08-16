@@ -16,7 +16,7 @@ export const Navigation: CollectionConfig = {
   slug: 'navigation',
   admin: {
     useAsTitle: 'tenant',
-    group: 'Website',
+    group: 'Website Content',
   },
   // 2026-08-16: create disabled — one doc per tenant, same reasoning as
   // SiteSettings.ts.
