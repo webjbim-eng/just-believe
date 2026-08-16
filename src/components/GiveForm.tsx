@@ -350,12 +350,19 @@ export function GiveForm({
         {enabledMethodCount > 1 && (
           <div>
             <p className="card-eyebrow" style={{ marginBottom: '0.5rem' }}>Payment Method</p>
-            <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', alignItems: 'center' }}>
               {paystackEnabled && (
                 <button type="button" style={toggleButtonStyle(method === 'paystack')} onClick={() => handleMethodChange('paystack')}>Paystack</button>
               )}
+              {/* Card/Transfer and PayPal are grouped visually — both are just
+                  "how to pay online," donor-facing, no processor name shown
+                  (Jimmy's request, 2026-08-16) — Paystack alone stays
+                  labeled since that wasn't a concern raised. */}
+              {paystackEnabled && (stripeEnabled || paypalEnabled) && (
+                <span aria-hidden="true" style={{ width: 1, alignSelf: 'stretch', background: 'var(--color-border)', margin: '0 0.25rem' }} />
+              )}
               {stripeEnabled && (
-                <button type="button" style={toggleButtonStyle(method === 'stripe')} onClick={() => handleMethodChange('stripe')}>Stripe</button>
+                <button type="button" style={toggleButtonStyle(method === 'stripe')} onClick={() => handleMethodChange('stripe')}>Card / Bank Transfer</button>
               )}
               {paypalEnabled && (
                 <button type="button" style={toggleButtonStyle(method === 'paypal')} onClick={() => handleMethodChange('paypal')}>PayPal</button>
@@ -375,7 +382,7 @@ export function GiveForm({
           </div>
           {method === 'paystack' && stripeEnabled && (
             <p style={{ margin: '0.5rem 0 0', fontSize: '0.8125rem', color: 'var(--color-text-muted)' }}>
-              Need CAD, EUR, or GBP? Switch to Stripe above — Paystack settles in Naira and Dollars only.
+              Need CAD, EUR, or GBP? Switch to Card / Bank Transfer above.
             </p>
           )}
         </div>
