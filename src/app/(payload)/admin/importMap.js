@@ -24,6 +24,7 @@ import { ItalicFeatureClient as ItalicFeatureClient_e70f5e05f09f93e00b997edb1ef0
 import { AdminIcon as AdminIcon_9cecce5e84d24c2512a390b3a1b10dde } from '../../../../src/components/admin/AdminLogo.tsx'
 import { AdminLogo as AdminLogo_9cecce5e84d24c2512a390b3a1b10dde } from '../../../../src/components/admin/AdminLogo.tsx'
 import { ViewWebsiteLink as ViewWebsiteLink_351f0120d14b1f7c0598bd2e5b2321cb } from '../../../../src/components/admin/ViewWebsiteLink.tsx'
+import { S3ClientUploadHandler as S3ClientUploadHandler_f97aa6c64367fa259c5bc0567239ef24 } from '@payloadcms/storage-s3/client'
 import { MinistryDashboard as MinistryDashboard_a1f6c654985ca3c972ad405b5cbc4ee5 } from '../../../../src/components/admin/MinistryDashboard.tsx'
 import { CollectionCards as CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1 } from '@payloadcms/next/rsc'
 
@@ -55,6 +56,7 @@ export const importMap = {
   "/src/components/admin/AdminLogo.tsx#AdminIcon": AdminIcon_9cecce5e84d24c2512a390b3a1b10dde,
   "/src/components/admin/AdminLogo.tsx#AdminLogo": AdminLogo_9cecce5e84d24c2512a390b3a1b10dde,
   "/src/components/admin/ViewWebsiteLink.tsx#ViewWebsiteLink": ViewWebsiteLink_351f0120d14b1f7c0598bd2e5b2321cb,
+  "@payloadcms/storage-s3/client#S3ClientUploadHandler": S3ClientUploadHandler_f97aa6c64367fa259c5bc0567239ef24,
   "/src/components/admin/MinistryDashboard.tsx#MinistryDashboard": MinistryDashboard_a1f6c654985ca3c972ad405b5cbc4ee5,
   "@payloadcms/next/rsc#CollectionCards": CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1
 }
