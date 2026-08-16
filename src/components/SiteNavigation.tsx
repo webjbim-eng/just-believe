@@ -3,6 +3,7 @@ import { getPayload } from 'payload'
 import config from '@payload-config'
 import { AnnouncementBar } from './AnnouncementBar'
 import { MobileNavToggle } from './MobileNavToggle'
+import { NavDropdown } from './NavDropdown'
 
 /**
  * 2026-08-11 redesign (public/brand/*.html mockups): the main bar flips
@@ -96,22 +97,26 @@ export async function SiteNavigation({ tenantId }: { tenantId: string }) {
           </a>
           <div style={{ display: 'flex', alignItems: 'center', gap: '1.75rem' }}>
             {items.length > 0 && (
-              <ul className="desktop-nav-links" style={{ display: 'flex', gap: '1.5rem', listStyle: 'none', margin: 0, padding: 0 }}>
+              <ul className="desktop-nav-links" style={{ display: 'flex', gap: '1.5rem', listStyle: 'none', margin: 0, padding: 0, alignItems: 'center' }}>
                 {items.map((item, index) => (
                   <li key={index}>
-                    <a
-                      href={item.link}
-                      style={{
-                        textDecoration: 'none',
-                        color: 'var(--color-text-muted)',
-                        fontWeight: 500,
-                        fontSize: 'var(--text-body-sm)',
-                        letterSpacing: '0.01em',
-                        whiteSpace: 'nowrap',
-                      }}
-                    >
-                      {item.label}
-                    </a>
+                    {item.children && item.children.length > 0 ? (
+                      <NavDropdown label={item.label} children={item.children} />
+                    ) : (
+                      <a
+                        href={item.link}
+                        style={{
+                          textDecoration: 'none',
+                          color: 'var(--color-text-muted)',
+                          fontWeight: 500,
+                          fontSize: 'var(--text-body-sm)',
+                          letterSpacing: '0.01em',
+                          whiteSpace: 'nowrap',
+                        }}
+                      >
+                        {item.label}
+                      </a>
+                    )}
                   </li>
                 ))}
               </ul>
@@ -119,7 +124,7 @@ export async function SiteNavigation({ tenantId }: { tenantId: string }) {
             <a className="btn-accent nav-cta" href="/give" style={{ padding: '0.625rem 1.5rem' }}>
               Partner With Us
             </a>
-            <MobileNavToggle items={items.map((item) => ({ label: item.label, link: item.link }))} />
+            <MobileNavToggle items={items.map((item) => ({ label: item.label, link: item.link, children: item.children ?? undefined }))} />
           </div>
         </nav>
       </div>

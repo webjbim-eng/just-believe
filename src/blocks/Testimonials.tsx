@@ -27,6 +27,10 @@ export type TestimonialsConfig = {
  * (see Testimonials.ts). This query runs with overrideAccess: true like
  * every other block, so the status filter has to be applied explicitly
  * here to keep that same restriction.
+ *
+ * 2026-08-16: /testimonials now exists (real submission form + the full
+ * published list) — "View All"/"Share Your Story" point there instead of
+ * a bare mailto: link.
  */
 export async function Testimonials({ config: blockConfig, tenantId }: { config: TestimonialsConfig; tenantId: string }) {
   const payload = await getPayload({ config })
@@ -47,6 +51,11 @@ export async function Testimonials({ config: blockConfig, tenantId }: { config: 
             <h2>{blockConfig.heading || 'What People Are Saying'}</h2>
             <hr className="heading-underline heading-underline--center" />
             {blockConfig.body && <p style={{ maxWidth: '38rem', margin: '0 auto' }}>{blockConfig.body}</p>}
+            {spotlight && (
+              <a className="btn-primary-pill" href="/testimonials" style={{ marginTop: '1.5rem', display: 'inline-block' }}>
+                Read More Stories
+              </a>
+            )}
           </div>
         </ScrollReveal>
 
@@ -96,7 +105,7 @@ export async function Testimonials({ config: blockConfig, tenantId }: { config: 
                 <p style={{ color: 'var(--color-text-muted)', margin: 0 }}>
                   Testimonials are coming soon. Has JBIM impacted your life? We&rsquo;d love to hear your story.
                 </p>
-                <a className="btn-outline" href="mailto:justbelieveinthot@gmail.com" style={{ marginTop: '0.5rem' }}>
+                <a className="btn-outline" href="/testimonials" style={{ marginTop: '0.5rem' }}>
                   Share Your Story
                 </a>
               </div>

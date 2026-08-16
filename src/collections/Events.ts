@@ -39,5 +39,40 @@ export const Events: CollectionConfig = {
     { name: 'registrationClose', type: 'date' },
     { name: 'materials', type: 'relationship', relationTo: 'media', hasMany: true },
     { name: 'featured', type: 'checkbox', defaultValue: false, admin: { position: 'sidebar' } },
+    {
+      // 2026-08-16 (Jimmy's request): the public registration form always
+      // collects name/email/phone (EventRegistrations.ts's fixed fields)
+      // — this is for whatever ELSE a specific event needs to ask (t-shirt
+      // size, dietary restrictions, session picks, ...), varying per
+      // event, so it's admin-defined here rather than hardcoded anywhere.
+      // Answers land in EventRegistrations.responses, keyed by `label`.
+      name: 'registrationFields',
+      type: 'array',
+      admin: { description: 'Extra questions to ask at registration, beyond name/email/phone. Answers appear on each registration.' },
+      fields: [
+        { name: 'label', type: 'text', required: true },
+        {
+          name: 'fieldType',
+          type: 'select',
+          required: true,
+          defaultValue: 'text',
+          options: [
+            { label: 'Short Text', value: 'text' },
+            { label: 'Long Text', value: 'textarea' },
+            { label: 'Multiple Choice', value: 'select' },
+            { label: 'Yes / No', value: 'checkbox' },
+          ],
+        },
+        {
+          name: 'options',
+          type: 'text',
+          admin: {
+            description: 'Comma-separated choices — only used when Field Type is "Multiple Choice"',
+            condition: (_, siblingData) => siblingData?.fieldType === 'select',
+          },
+        },
+        { name: 'required', type: 'checkbox', defaultValue: false },
+      ],
+    },
   ],
 }

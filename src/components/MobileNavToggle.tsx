@@ -2,7 +2,8 @@
 
 import { useState } from 'react'
 
-type NavItem = { label: string; link: string }
+type NavChild = { label: string; link: string }
+type NavItem = { label: string; link: string; children?: NavChild[] }
 
 /**
  * Client-side hamburger toggle — receives items as props from the server
@@ -51,9 +52,26 @@ export function MobileNavToggle({ items }: { items: NavItem[] }) {
           <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: '1rem' }}>
             {items.map((item, index) => (
               <li key={index}>
-                <a href={item.link} style={{ textDecoration: 'none', color: 'var(--color-text-on-dark)', fontWeight: 500 }} onClick={() => setOpen(false)}>
-                  {item.label}
-                </a>
+                {item.children && item.children.length > 0 ? (
+                  <>
+                    <span style={{ display: 'block', color: 'var(--color-text-muted-on-dark)', fontWeight: 700, fontSize: '0.8125rem', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: '0.625rem' }}>
+                      {item.label}
+                    </span>
+                    <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: '0.875rem', paddingLeft: '1rem' }}>
+                      {item.children.map((child) => (
+                        <li key={child.link}>
+                          <a href={child.link} style={{ textDecoration: 'none', color: 'var(--color-text-on-dark)', fontWeight: 500 }} onClick={() => setOpen(false)}>
+                            {child.label}
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  </>
+                ) : (
+                  <a href={item.link} style={{ textDecoration: 'none', color: 'var(--color-text-on-dark)', fontWeight: 500 }} onClick={() => setOpen(false)}>
+                    {item.label}
+                  </a>
+                )}
               </li>
             ))}
           </ul>

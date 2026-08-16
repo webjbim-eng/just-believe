@@ -642,6 +642,21 @@ export interface Event {
   registrationClose?: string | null;
   materials?: (number | Media)[] | null;
   featured?: boolean | null;
+  /**
+   * Extra questions to ask at registration, beyond name/email/phone. Answers appear on each registration.
+   */
+  registrationFields?:
+    | {
+        label: string;
+        fieldType: 'text' | 'textarea' | 'select' | 'checkbox';
+        /**
+         * Comma-separated choices — only used when Field Type is "Multiple Choice"
+         */
+        options?: string | null;
+        required?: boolean | null;
+        id?: string | null;
+      }[]
+    | null;
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
@@ -657,6 +672,18 @@ export interface EventRegistration {
   name: string;
   email: string;
   phone?: string | null;
+  /**
+   * Answers to this event's custom registration questions (see the event's Registration Fields), keyed by question label.
+   */
+  responses?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
   registeredAt?: string | null;
   checkedIn?: boolean | null;
   /**
@@ -1682,6 +1709,15 @@ export interface EventsSelect<T extends boolean = true> {
   registrationClose?: T;
   materials?: T;
   featured?: T;
+  registrationFields?:
+    | T
+    | {
+        label?: T;
+        fieldType?: T;
+        options?: T;
+        required?: T;
+        id?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
   _status?: T;
@@ -1696,6 +1732,7 @@ export interface EventRegistrationsSelect<T extends boolean = true> {
   name?: T;
   email?: T;
   phone?: T;
+  responses?: T;
   registeredAt?: T;
   checkedIn?: T;
   waitlisted?: T;

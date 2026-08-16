@@ -425,14 +425,27 @@ async function seed() {
     { label: 'Ministries', link: '/ministries', order: 2 },
     { label: 'Blog', link: '/blog', order: 3 },
     { label: 'Books', link: '/books', order: 4 },
+    { label: 'Events', link: '/events', order: 5 },
     // 2026-08-16: Prayer/Counseling/Volunteer requests and Partners had
     // real admin collections but nowhere for a visitor to actually submit
-    // one — Jimmy's correction. Get Involved bundles the three intake
-    // forms as one page (src/app/(public)/get-involved); Partners is its
-    // own page since it's a distinct ask (org/individual partnership, not
-    // personal volunteering) — see src/app/(public)/partners.
-    { label: 'Get Involved', link: '/get-involved', order: 5 },
-    { label: 'Partners', link: '/partners', order: 6 },
+    // one — Jimmy's correction. One "Get Involved" dropdown (not two flat
+    // top-level items — Jimmy's second correction) linking directly to
+    // each intake form; the Get Involved children deep-link into
+    // /get-involved's tab switcher via ?tab=, Partners/Testimonials are
+    // their own pages (distinct asks) folded in here rather than adding
+    // more flat top-level nav items.
+    {
+      label: 'Get Involved',
+      link: '/get-involved',
+      order: 6,
+      children: [
+        { label: 'Volunteer', link: '/get-involved?tab=volunteer', order: 0 },
+        { label: 'Prayer Request', link: '/get-involved?tab=prayer', order: 1 },
+        { label: 'Counseling', link: '/get-involved?tab=counseling', order: 2 },
+        { label: 'Become a Partner', link: '/partners', order: 3 },
+        { label: 'Share Your Story', link: '/testimonials', order: 4 },
+      ],
+    },
     { label: 'Give', link: '/give', order: 7 },
     { label: 'Contact', link: '/contact', order: 8 },
   ]

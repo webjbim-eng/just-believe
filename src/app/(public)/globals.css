@@ -1226,6 +1226,74 @@ body {
   opacity: 1;
 }
 
+/* ---- Events listing (/events) — a date-first row list rather than
+ * photo cards, since Events has no image field (materials is
+ * handouts/flyers, not a hero photo) — inventing photography for every
+ * event would be dishonest content. ---- */
+.event-list-page {
+  display: flex;
+  flex-direction: column;
+}
+
+.event-list-row {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1.5rem 0;
+  border-bottom: 1px solid var(--color-border);
+  text-decoration: none;
+  color: inherit;
+  transition: padding-left 0.15s ease;
+}
+
+.event-list-row:hover {
+  padding-left: 0.5rem;
+}
+
+.event-list-row-date {
+  flex-shrink: 0;
+  width: 4rem;
+  height: 4rem;
+  border-radius: var(--radius-card);
+  border: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-surface);
+}
+
+.event-list-row-date-month {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-accent);
+}
+
+.event-list-row-date-day {
+  font-size: 1.375rem;
+  font-weight: 700;
+  font-family: var(--font-heading), Georgia, serif;
+  color: var(--color-text);
+  line-height: 1.1;
+}
+
+.event-list-row-body {
+  flex: 1;
+  min-width: 0;
+}
+
+@media (max-width: 560px) {
+  .event-list-row {
+    flex-wrap: wrap;
+  }
+
+  .event-list-row .link-arrow {
+    margin-left: calc(4rem + 1.5rem);
+  }
+}
+
 /* ---- Leadership full-bio list (/about#leadership) ---- */
 .leadership-list {
   display: flex;

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, type CSSProperties } from 'react'
+import { useState, useEffect, type CSSProperties } from 'react'
 import { VolunteerApplicationForm } from './VolunteerApplicationForm'
 import { PrayerRequestForm } from './PrayerRequestForm'
 import { CounselingRequestForm } from './CounselingRequestForm'
@@ -22,6 +22,16 @@ const TABS: { value: Tab; label: string; description: string }[] = [
  */
 export function GetInvolvedTabs() {
   const [tab, setTab] = useState<Tab>('volunteer')
+
+  // Lets the nav dropdown deep-link straight to a specific form
+  // (?tab=prayer) — same "read window.location.search in an effect"
+  // pattern GiveForm.tsx already uses for its PayPal return flag.
+  useEffect(() => {
+    const requested = new URLSearchParams(window.location.search).get('tab')
+    if (requested === 'volunteer' || requested === 'prayer' || requested === 'counseling') {
+      setTab(requested)
+    }
+  }, [])
   const active = TABS.find((t) => t.value === tab)!
 
   function tabStyle(isActive: boolean): CSSProperties {

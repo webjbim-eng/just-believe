@@ -13,16 +13,27 @@ export type FeaturedEventsConfig = {
 /**
  * 2026-08-10: rebuilt as its own dark Royal Blue panel — the reference's
  * "Pilgrimage of Faith" section (photo + month-badge event list + one
- * gold CTA, the site's single deliberate gold-button moment). No /events
- * listing page exists yet, so there's nowhere honest to send "View All" —
- * the CTA only appears in the populated state, pointing at the same
- * newsletter anchor the empty state uses, not a fabricated events page.
+ * gold CTA, the site's single deliberate gold-button moment).
+ * 2026-08-16: /events + /events/[slug] now exist (real listing + real
+ * registration form) — CTAs point there instead of the newsletter anchor
+ * they used as a placeholder before that page existed.
  */
 export async function FeaturedEvents({ config: blockConfig, tenantId }: { config: FeaturedEventsConfig; tenantId: string }) {
   const payload = await getPayload({ config })
+  // This block runs with overrideAccess: true like every other block, so
+  // the "only real, published, upcoming events" filter — which Events'
+  // own drafts/versions system would otherwise enforce — has to be
+  // re-applied explicitly here (2026-08-16 fix: was unfiltered, meaning
+  // drafts and past events could leak onto the homepage).
   const { docs } = await payload.find({
     collection: 'events',
-    where: { tenant: { equals: tenantId } },
+    where: {
+      and: [
+        { tenant: { equals: tenantId } },
+        { _status: { equals: 'published' } },
+        { startDate: { greater_than_equal: new Date().toISOString() } },
+      ],
+    },
     sort: 'startDate',
     limit: blockConfig.limit ?? 3,
     overrideAccess: true,
@@ -66,7 +77,7 @@ export async function FeaturedEvents({ config: blockConfig, tenantId }: { config
                 <>
                   <div style={{ marginBottom: '2rem' }}>
                     {docs.map((event) => (
-                      <div key={event.id} className="event-row">
+                      <a key={event.id} href={`/events/${event.slug}`} className="event-row" style={{ textDecoration: 'none' }}>
                         <div style={{ minWidth: 0 }}>
                           <p style={{ margin: 0, fontWeight: 600, color: '#fff', fontFamily: 'var(--font-heading), Georgia, serif', fontSize: 'var(--text-heading-sm)' }}>
                             {event.title}
@@ -78,10 +89,10 @@ export async function FeaturedEvents({ config: blockConfig, tenantId }: { config
                             {new Date(event.startDate).toLocaleDateString(undefined, { month: 'short' })}
                           </span>
                         )}
-                      </div>
+                      </a>
                     ))}
                   </div>
-                  <a className="btn-accent" href="#newsletter">
+                  <a className="btn-accent" href="/events">
                     Find Out More
                   </a>
                 </>

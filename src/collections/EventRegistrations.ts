@@ -44,6 +44,15 @@ export const EventRegistrations: CollectionConfig = {
     { name: 'name', type: 'text', required: true },
     { name: 'email', type: 'email', required: true },
     { name: 'phone', type: 'text' },
+    {
+      // 2026-08-16: answers to the event's admin-defined
+      // Events.registrationFields, keyed by each field's `label`. A json
+      // field rather than a fixed schema since the question set is
+      // genuinely different per event — see Events.ts's comment.
+      name: 'responses',
+      type: 'json',
+      admin: { description: "Answers to this event's custom registration questions (see the event's Registration Fields), keyed by question label." },
+    },
     { name: 'registeredAt', type: 'date', defaultValue: () => new Date().toISOString(), admin: { readOnly: true } },
     { name: 'checkedIn', type: 'checkbox', defaultValue: false },
     {
