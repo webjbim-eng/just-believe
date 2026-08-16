@@ -600,9 +600,17 @@ a {
  * first (logo mark alone is a standard, recognizable mobile pattern), CTA
  * shrinks second if still tight.
  */
+.nav-wordmark-mobile {
+  display: none;
+}
+
 @media (max-width: 480px) {
   .nav-wordmark {
     display: none;
+  }
+
+  .nav-wordmark-mobile {
+    display: inline-block;
   }
 
   .nav-cta {

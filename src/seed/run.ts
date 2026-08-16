@@ -139,6 +139,7 @@ async function seed() {
       order: 0,
       visible: true,
       config: {
+        acronym: 'JBIM',
         heading: 'For the Nations',
         accentWord: 'Nations',
         subheading: 'A Hub of Transformation, proclaiming the Gospel and equipping believers around the world.',
@@ -306,6 +307,10 @@ async function seed() {
         eyebrow: 'From Our Founder',
         heading: 'Books',
         body: 'Explore our founder’s writings — real teaching for real life.',
+        // 2026-08-16: was unset (defaulted to 5) — with 7 real books, a
+        // limit of 5 left an orphaned single card on its own row in the
+        // 4-column grid. 4 fills the row evenly.
+        limit: 4,
       },
     },
     {

@@ -11,6 +11,19 @@ export type FeaturedBooksConfig = {
 }
 
 /**
+ * Book titles here follow a "TITLE: Subtitle" pattern (real Amazon listing
+ * titles, e.g. "THE SACRED DIVIDE: Exploring the Mystery of Consecration
+ * and Divine Purpose") — the subtitle is exactly the kind of detail a
+ * compact homepage preview card doesn't need; the full title still shows
+ * on /books and the book's own page. Falls back to the full title (clamped
+ * by CSS) for the few books with no colon.
+ */
+function shortTitle(title: string) {
+  const [first] = title.split(':')
+  return first.trim()
+}
+
+/**
  * 2026-08-11: rebuilt — the previous version rendered title-only boxes
  * (no cover, no link, no _status filter so drafts could leak onto the
  * homepage). Now shows real cover photography and links to the real
@@ -30,7 +43,7 @@ export async function FeaturedBooks({ config: blockConfig, tenantId }: { config:
     collection: 'books',
     where: { and: [{ tenant: { equals: tenantId } }, { _status: { equals: 'published' } }] },
     sort: ['-featured', 'displayOrder'],
-    limit: blockConfig.limit ?? 5,
+    limit: blockConfig.limit ?? 4,
     overrideAccess: true,
   })
 
@@ -81,16 +94,17 @@ export async function FeaturedBooks({ config: blockConfig, tenantId }: { config:
                       <div style={{ padding: '1.25rem', paddingBottom: book.externalLink ? '0.75rem' : '1.25rem' }}>
                         <p
                           className="card-title"
+                          title={book.title}
                           style={{
-                            fontSize: '1.0625rem',
+                            fontSize: '1rem',
                             margin: 0,
                             display: '-webkit-box',
-                            WebkitLineClamp: 2,
+                            WebkitLineClamp: 1,
                             WebkitBoxOrient: 'vertical',
                             overflow: 'hidden',
                           }}
                         >
-                          {book.title}
+                          {shortTitle(book.title)}
                         </p>
                       </div>
                     </a>

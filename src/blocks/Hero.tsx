@@ -2,6 +2,8 @@ import { renderHeadingWithAccent } from '../lib/renderHeadingWithAccent'
 import { Stagger, StaggerItem } from '../components/Stagger'
 
 export type HeroConfig = {
+  /** Short org acronym (e.g. "JBIM") rendered as a large wordmark above the heading. Omit to skip it. */
+  acronym?: string
   eyebrow?: string
   heading: string
   /** Substring within `heading` to render in gold — e.g. "International Missions". */
@@ -84,6 +86,25 @@ export function Hero({ config }: { config: HeroConfig }) {
       )}
       <div className="container" style={{ textAlign: 'center', position: 'relative', zIndex: 2 }}>
         <Stagger staggerDelay={0.12}>
+          {config.acronym && (
+            <StaggerItem>
+              <p
+                style={{
+                  fontFamily: 'var(--font-heading), Georgia, serif',
+                  fontWeight: 700,
+                  fontSize: 'clamp(3.5rem, 2.25rem + 7vw, 7.5rem)',
+                  letterSpacing: '0.05em',
+                  lineHeight: 1,
+                  margin: '0 0 0.75rem',
+                  color: hasImage ? 'rgba(255,255,255,0.96)' : 'var(--color-text)',
+                  textShadow: hasImage ? '0 4px 40px rgba(0,0,0,0.4)' : undefined,
+                }}
+              >
+                <span style={{ color: 'var(--color-accent)' }}>{config.acronym.charAt(0)}</span>
+                {config.acronym.slice(1)}
+              </p>
+            </StaggerItem>
+          )}
           {config.eyebrow && (
             <StaggerItem>
               <p className="section-eyebrow" style={hasImage ? { color: 'var(--color-accent)' } : undefined}>

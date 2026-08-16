@@ -94,6 +94,22 @@ export async function SiteNavigation({ tenantId }: { tenantId: string }) {
                 International Missions
               </span>
             </span>
+            {/* 2026-08-16: the full two-line wordmark drops below 480px
+                (see .nav-wordmark's media query) to avoid overflow — this
+                short acronym takes its place so the header isn't logo-only
+                on the smallest screens. */}
+            <span
+              className="nav-wordmark-mobile"
+              style={{
+                fontFamily: 'var(--font-heading), Georgia, serif',
+                fontWeight: 700,
+                fontSize: '1.15rem',
+                letterSpacing: '0.03em',
+                color: 'var(--color-text)',
+              }}
+            >
+              JBIM
+            </span>
           </a>
           <div style={{ display: 'flex', alignItems: 'center', gap: '1.75rem' }}>
             {items.length > 0 && (
