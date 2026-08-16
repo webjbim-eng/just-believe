@@ -232,8 +232,21 @@ async function seed() {
       },
     },
     {
-      blockType: 'FeaturedEvents',
+      // New (2026-08-16, Jimmy's request): Leadership had zero public
+      // presence despite being real, admin-managed content — this is the
+      // homepage teaser (see src/blocks/Leadership.tsx), founder/leaders
+      // first, linking to the full-bio section on /about#leadership.
+      blockType: 'Leadership',
       order: 5,
+      visible: true,
+      config: {
+        eyebrow: 'Meet the Team',
+        heading: 'Our Leadership',
+      },
+    },
+    {
+      blockType: 'FeaturedEvents',
+      order: 6,
       visible: true,
       config: {
         eyebrow: 'Bringing the Church Together',
@@ -244,7 +257,7 @@ async function seed() {
     },
     {
       blockType: 'Testimonials',
-      order: 6,
+      order: 7,
       visible: true,
       config: {
         eyebrow: 'Changed Lives',
@@ -261,7 +274,7 @@ async function seed() {
       // already carries a photo, a second consecutive photo panel would
       // repeat rather than vary the rhythm.
       blockType: 'PartnershipInvitation',
-      order: 7,
+      order: 8,
       visible: true,
       config: {
         heading: 'Partner With Us',
@@ -287,7 +300,7 @@ async function seed() {
       // fields, real /books + /books/[slug] pages) so Books has real
       // homepage presence, not just an orphaned standalone page.
       blockType: 'FeaturedBooks',
-      order: 8,
+      order: 9,
       visible: true,
       config: {
         eyebrow: 'Resources',
@@ -296,7 +309,7 @@ async function seed() {
     },
     {
       blockType: 'BlogSpotlight',
-      order: 9,
+      order: 10,
       visible: true,
       config: {
         eyebrow: 'Reflections',
@@ -305,7 +318,7 @@ async function seed() {
     },
     {
       blockType: 'CTA',
-      order: 10,
+      order: 11,
       visible: true,
       config: {
         heading: 'Discover the Power of Faith & Spiritual Growth',
@@ -412,8 +425,16 @@ async function seed() {
     { label: 'Ministries', link: '/ministries', order: 2 },
     { label: 'Blog', link: '/blog', order: 3 },
     { label: 'Books', link: '/books', order: 4 },
-    { label: 'Give', link: '/give', order: 5 },
-    { label: 'Contact', link: '/contact', order: 6 },
+    // 2026-08-16: Prayer/Counseling/Volunteer requests and Partners had
+    // real admin collections but nowhere for a visitor to actually submit
+    // one — Jimmy's correction. Get Involved bundles the three intake
+    // forms as one page (src/app/(public)/get-involved); Partners is its
+    // own page since it's a distinct ask (org/individual partnership, not
+    // personal volunteering) — see src/app/(public)/partners.
+    { label: 'Get Involved', link: '/get-involved', order: 5 },
+    { label: 'Partners', link: '/partners', order: 6 },
+    { label: 'Give', link: '/give', order: 7 },
+    { label: 'Contact', link: '/contact', order: 8 },
   ]
 
   if (!existingNavigation) {

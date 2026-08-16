@@ -16,6 +16,7 @@ import { FeaturedSermons } from './FeaturedSermons'
 import { FeaturedEvents } from './FeaturedEvents'
 import { FeaturedBooks } from './FeaturedBooks'
 import { Testimonials } from './Testimonials'
+import { Leadership } from './Leadership'
 
 /**
  * Maps HomepageLayout.sections[].blockType (a plain string field, see
@@ -38,6 +39,7 @@ export const blockRegistry: Record<string, ComponentType<{ config: any; tenantId
   FeaturedBooks,
   BlogSpotlight,
   Prayer,
+  Leadership,
   Testimonials,
   PartnershipInvitation,
   NewsletterSignup,

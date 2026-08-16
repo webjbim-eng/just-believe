@@ -1,9 +1,14 @@
 import type { Metadata } from 'next'
+import { headers } from 'next/headers'
+import { getPayload } from 'payload'
+import config from '@payload-config'
+import { TENANT_HEADER } from '../../../access/getResolvedTenantId'
 import { renderHeadingWithAccent } from '../../../lib/renderHeadingWithAccent'
 import { Accordion } from '../../../components/Accordion'
 import { ministryDefinitions } from '../../../seed/ministries'
 import { ScrollReveal } from '../../../components/ScrollReveal'
 import { Stagger, StaggerItem } from '../../../components/Stagger'
+import { RichText } from '@payloadcms/richtext-lexical/react'
 
 export const metadata: Metadata = {
   title: 'About — Just Believe International Missions',
@@ -17,7 +22,22 @@ const commitments = [
   'Compassionate service that reflects the love of Jesus Christ in practical ways.',
 ]
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const tenantId = (await headers()).get(TENANT_HEADER)
+  const leaders = tenantId
+    ? (
+        await getPayload({ config }).then((payload) =>
+          payload.find({
+            collection: 'leadership',
+            where: { tenant: { equals: tenantId } },
+            sort: ['-isFounder', 'order'],
+            limit: 50,
+            overrideAccess: true,
+          }),
+        )
+      ).docs
+    : []
+
   return (
     <main>
       <section className="section" style={{ paddingBottom: 0 }}>
@@ -96,6 +116,45 @@ export default function AboutPage() {
         </div>
       </section>
 
+      {leaders.length > 0 && (
+        <section id="leadership" className="section decorative-flourish">
+          <div className="container container--narrow">
+            <ScrollReveal>
+              <p className="section-eyebrow" style={{ textAlign: 'center' }}>
+                Meet the Team
+              </p>
+              <h2 style={{ textAlign: 'center' }}>
+                Our <span className="text-accent">Leadership</span>
+              </h2>
+              <hr className="heading-underline heading-underline--center" />
+            </ScrollReveal>
+            <Stagger className="leadership-list" role="list">
+              {leaders.map((leader) => {
+                const photo = typeof leader.photo === 'object' ? leader.photo : undefined
+                return (
+                  <StaggerItem key={leader.id} role="listitem">
+                    <div className="leadership-profile">
+                      <div
+                        className="leadership-photo"
+                        aria-hidden={!photo?.url}
+                        style={photo?.url ? { backgroundImage: `url(${photo.url})`, backgroundSize: 'cover', backgroundPosition: 'center' } : undefined}
+                      />
+                      <div>
+                        <p className="card-title" style={{ marginBottom: '0.125rem' }}>
+                          {leader.name}
+                        </p>
+                        {leader.title && <p style={{ margin: '0 0 0.75rem', color: 'var(--color-accent)', fontWeight: 600, fontSize: 'var(--text-body-sm)' }}>{leader.title}</p>}
+                        {leader.bio && <RichText data={leader.bio} />}
+                      </div>
+                    </div>
+                  </StaggerItem>
+                )
+              })}
+            </Stagger>
+          </div>
+        </section>
+      )}
+
       <section className="section section--primary decorative-flourish">
         <div className="container container--narrow">
           <ScrollReveal>
@@ -151,9 +210,14 @@ export default function AboutPage() {
               Whether through prayer, volunteering, financial partnership, community outreach, or collaborative ministry,
               we invite you to join us in sharing the hope of Jesus Christ and helping transform lives around the world.
             </p>
-            <a className="btn-accent" href="/contact">
-              Get In Touch
-            </a>
+            <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+              <a className="btn-accent" href="/get-involved">
+                Get Involved
+              </a>
+              <a className="btn-outline" href="/contact">
+                Contact Us
+              </a>
+            </div>
           </ScrollReveal>
         </div>
       </section>

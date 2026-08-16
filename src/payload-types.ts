@@ -956,6 +956,7 @@ export interface HomepageLayout {
           | 'HeroMediaStrip'
           | 'BlogSpotlight'
           | 'Prayer'
+          | 'Leadership'
           | 'Testimonials'
           | 'PartnershipInvitation'
           | 'NewsletterSignup'

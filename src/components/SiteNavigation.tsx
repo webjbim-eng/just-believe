@@ -94,9 +94,9 @@ export async function SiteNavigation({ tenantId }: { tenantId: string }) {
               </span>
             </span>
           </a>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '2.25rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1.75rem' }}>
             {items.length > 0 && (
-              <ul className="desktop-nav-links" style={{ display: 'flex', gap: '2rem', listStyle: 'none', margin: 0, padding: 0 }}>
+              <ul className="desktop-nav-links" style={{ display: 'flex', gap: '1.5rem', listStyle: 'none', margin: 0, padding: 0 }}>
                 {items.map((item, index) => (
                   <li key={index}>
                     <a
@@ -107,6 +107,7 @@ export async function SiteNavigation({ tenantId }: { tenantId: string }) {
                         fontWeight: 500,
                         fontSize: 'var(--text-body-sm)',
                         letterSpacing: '0.01em',
+                        whiteSpace: 'nowrap',
                       }}
                     >
                       {item.label}

@@ -63,6 +63,7 @@ export const HomepageLayout: CollectionConfig = {
             'HeroMediaStrip',
             'BlogSpotlight',
             'Prayer',
+            'Leadership',
             'Testimonials',
             'PartnershipInvitation',
             'NewsletterSignup',
