@@ -4,11 +4,15 @@ import { getPayload } from 'payload'
 import config from '@payload-config'
 import { TENANT_HEADER } from '../../../access/getResolvedTenantId'
 import { renderHeadingWithAccent } from '../../../lib/renderHeadingWithAccent'
-import { Accordion } from '../../../components/Accordion'
 import { ministryDefinitions } from '../../../seed/ministries'
 import { ScrollReveal } from '../../../components/ScrollReveal'
 import { Stagger, StaggerItem } from '../../../components/Stagger'
+import { IconCardGrid, type IconKey } from '../../../components/IconCardGrid'
 import { RichText } from '@payloadcms/richtext-lexical/react'
+
+// Matches ministryDefinitions' order (src/seed/ministries.ts) exactly —
+// evangelism, prayer, leadership, family, children, youth, women, compassion.
+const MINISTRY_ICONS: IconKey[] = ['evangelism', 'prayer', 'leadership', 'family', 'children', 'youth', 'women', 'compassion']
 
 export const metadata: Metadata = {
   title: 'About — Just Believe International Missions',
@@ -114,19 +118,27 @@ export default async function AboutPage() {
         </div>
       </section>
 
-      <section className="section section--surface decorative-flourish decorative-flourish--reverse">
-        <div className="container container--narrow">
+      <section className="section section--primary decorative-flourish">
+        <div className="container">
           <ScrollReveal>
-            <h2 style={{ textAlign: 'center' }}>
-              What <span className="text-accent">We Do</span>
-            </h2>
-            <hr className="heading-underline heading-underline--center" />
-            <p style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
-              Lasting change begins with transformed hearts — through evangelism, discipleship, leadership development,
-              prayer, and compassionate outreach.
-            </p>
+            <div style={{ maxWidth: '38rem', margin: '0 auto 2.5rem', textAlign: 'center' }}>
+              <p className="section-eyebrow" style={{ justifyContent: 'center', color: 'var(--color-accent)' }}>
+                What We Do
+              </p>
+              <h2 style={{ margin: '0.9rem 0 0', color: '#fff' }}>Lasting change begins with transformed hearts.</h2>
+              <p style={{ color: 'var(--color-text-muted-on-dark)', marginTop: '0.75rem' }}>
+                Through evangelism, discipleship, leadership development, prayer, and compassionate outreach, we
+                demonstrate both the truth and the love of Christ.
+              </p>
+            </div>
           </ScrollReveal>
-          <Accordion items={ministryDefinitions.map((ministry) => ({ title: ministry.name, body: ministry.description }))} />
+          <IconCardGrid
+            items={ministryDefinitions.map((ministry, index) => ({
+              icon: MINISTRY_ICONS[index],
+              title: ministry.name,
+              subtitle: ministry.shortDescription,
+            }))}
+          />
         </div>
       </section>
 

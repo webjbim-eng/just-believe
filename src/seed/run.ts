@@ -215,6 +215,9 @@ async function seed() {
       // which MinistryPathways' icon row already conveys.
       // 2026-08-11: 'dark-numbered' layout (mockup's "Our Ministries" dark
       // panel) — was 'list' (light panel) before this redesign.
+      // 2026-08-17: 'dark-numbered' -> 'icon-grid' (docs/index.html
+      // redesign) — real icon badge per ministry instead of numbered
+      // rows, same dark panel as before.
       blockType: 'MinistryFeatureGrid',
       order: 4,
       visible: true,
@@ -223,12 +226,12 @@ async function seed() {
         heading: 'Our Ministries',
         ctaLabel: 'View All',
         ctaHref: '/ministries',
-        layout: 'dark-numbered',
+        layout: 'icon-grid',
         items: [
-          { image: '/images/worship-service.jpg', title: ministryDefinitions[0].name, subtitle: 'Outreach and discipleship that turns encounters into lifelong faith.' },
-          { image: '/images/prayer-silhouette.jpg', title: ministryDefinitions[1].name, subtitle: 'A global network standing watch in prayer, day and night.' },
-          { image: '/images/pastoral-moment.jpg', title: ministryDefinitions[2].name, subtitle: 'Raising up servant leaders equipped to shepherd their communities.' },
-          { image: '/images/community-hands.jpg', title: ministryDefinitions[7].name, subtitle: 'Meeting practical needs as an expression of the Gospel.' },
+          { icon: 'evangelism', title: ministryDefinitions[0].name, subtitle: 'Outreach and discipleship that turns encounters into lifelong faith.' },
+          { icon: 'prayer', title: ministryDefinitions[1].name, subtitle: 'A global network standing watch in prayer, day and night.' },
+          { icon: 'leadership', title: ministryDefinitions[2].name, subtitle: 'Raising up servant leaders equipped to shepherd their communities.' },
+          { icon: 'compassion', title: ministryDefinitions[7].name, subtitle: 'Meeting practical needs as an expression of the Gospel.' },
         ],
       },
     },
@@ -246,6 +249,9 @@ async function seed() {
       },
     },
     {
+      // 2026-08-17: photo config dropped — FeaturedEvents.tsx no longer
+      // renders a split-layout photo (docs/index.html shows a plain
+      // 3-card event grid instead).
       blockType: 'FeaturedEvents',
       order: 6,
       visible: true,
@@ -253,7 +259,6 @@ async function seed() {
         eyebrow: 'Bringing the Church Together',
         heading: 'Upcoming Events',
         body: 'Join us as we gather to worship, learn, and grow together.',
-        image: '/images/congregation-seated.jpg',
       },
     },
     {

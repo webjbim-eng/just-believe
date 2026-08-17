@@ -1,12 +1,12 @@
 import { getPayload } from 'payload'
 import config from '@payload-config'
 import { ScrollReveal } from '../components/ScrollReveal'
+import { Stagger, StaggerItem } from '../components/Stagger'
 
 export type FeaturedEventsConfig = {
   eyebrow?: string
   heading?: string
   body?: string
-  image?: string
   limit?: number
 }
 
@@ -21,6 +21,11 @@ export type FeaturedEventsConfig = {
  * Intercession, ...) live in their own RecurringActivities block/page
  * instead of here — they don't have a startDate and never need
  * registration, which doesn't fit this block's Events query.
+ * 2026-08-17: photo+list-rows -> a plain 3-card event grid (docs/
+ * index.html) — no photo config anymore. Date badge reuses
+ * .event-list-row-date/-month/-day verbatim from the /events listing
+ * page (src/app/(public)/events/page.tsx) rather than inventing new CSS
+ * for the same "month + day" badge shape.
  */
 export async function FeaturedEvents({ config: blockConfig, tenantId }: { config: FeaturedEventsConfig; tenantId: string }) {
   const payload = await getPayload({ config })
@@ -46,64 +51,48 @@ export async function FeaturedEvents({ config: blockConfig, tenantId }: { config
   return (
     <section id="events" className="section decorative-flourish" style={{ background: 'var(--color-primary)' }}>
       <div className="container">
-        <div className="split-layout">
-          {blockConfig.image && (
-            <ScrollReveal className="split-layout-media">
-              <div
-                style={{
-                  borderRadius: 'var(--radius-card)',
-                  overflow: 'hidden',
-                  aspectRatio: '1 / 1',
-                  backgroundImage: `url(${blockConfig.image})`,
-                  backgroundSize: 'cover',
-                  backgroundPosition: 'center',
-                  boxShadow: 'var(--shadow-card-lg)',
-                }}
-              />
-            </ScrollReveal>
-          )}
-          <ScrollReveal delay={100}>
+        <ScrollReveal>
+          <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1.5rem', marginBottom: '2.5rem' }}>
             <div>
               {blockConfig.eyebrow && <p className="section-eyebrow">{blockConfig.eyebrow}</p>}
-              <h2 style={{ color: '#fff' }}>{blockConfig.heading || 'Upcoming Events'}</h2>
-              {blockConfig.body && <p style={{ color: 'var(--color-text-muted-on-dark)', marginBottom: '1.5rem' }}>{blockConfig.body}</p>}
-
-              {docs.length === 0 ? (
-                <>
-                  <p style={{ color: 'var(--color-text-muted-on-dark)' }}>
-                    No upcoming events right now — subscribe and we&rsquo;ll let you know as soon as one is scheduled.
-                  </p>
-                  <a className="btn-outline" href="#newsletter" style={{ marginTop: '0.5rem' }}>
-                    Get Notified
-                  </a>
-                </>
-              ) : (
-                <>
-                  <div style={{ marginBottom: '2rem' }}>
-                    {docs.map((event) => (
-                      <a key={event.id} href={`/events/${event.slug}`} className="event-row" style={{ textDecoration: 'none' }}>
-                        <div style={{ minWidth: 0 }}>
-                          <p style={{ margin: 0, fontWeight: 600, color: '#fff', fontFamily: 'var(--font-heading), Georgia, serif', fontSize: 'var(--text-heading-sm)' }}>
-                            {event.title}
-                          </p>
-                          {event.location && <p style={{ margin: 0, color: 'var(--color-text-muted-on-dark)', fontSize: 'var(--text-body-sm)' }}>{event.location}</p>}
-                        </div>
-                        {event.startDate && (
-                          <span className="event-row-month">
-                            {new Date(event.startDate).toLocaleDateString(undefined, { month: 'short' })}
-                          </span>
-                        )}
-                      </a>
-                    ))}
-                  </div>
-                  <a className="btn-accent" href="/events">
-                    Find Out More
-                  </a>
-                </>
-              )}
+              <h2 style={{ margin: 0, color: '#fff' }}>{blockConfig.heading || 'Upcoming Events'}</h2>
+              {blockConfig.body && <p style={{ margin: '0.75rem 0 0', color: 'var(--color-text-muted-on-dark)', maxWidth: '34rem' }}>{blockConfig.body}</p>}
             </div>
-          </ScrollReveal>
-        </div>
+            {docs.length > 0 && (
+              <a className="btn-outline" href="/events" style={{ color: '#fff', borderColor: 'rgba(255,255,255,0.6)' }}>
+                See All Events
+              </a>
+            )}
+          </div>
+        </ScrollReveal>
+
+        {docs.length === 0 ? (
+          <p style={{ color: 'var(--color-text-muted-on-dark)' }}>
+            No upcoming events right now — subscribe and we&rsquo;ll let you know as soon as one is scheduled.
+          </p>
+        ) : (
+          <Stagger className="event-card-grid" role="list">
+            {docs.map((event) => {
+              const start = new Date(event.startDate)
+              return (
+                <StaggerItem key={event.id} role="listitem">
+                  <a href={`/events/${event.slug}`} className="card" style={{ display: 'flex', gap: '1.25rem', alignItems: 'center', textDecoration: 'none' }}>
+                    <div className="event-list-row-date">
+                      <span className="event-list-row-date-month">{start.toLocaleDateString(undefined, { month: 'short' })}</span>
+                      <span className="event-list-row-date-day">{start.getDate()}</span>
+                    </div>
+                    <div style={{ minWidth: 0 }}>
+                      <p className="card-title" style={{ margin: 0, fontSize: 'var(--text-heading-sm)' }}>
+                        {event.title}
+                      </p>
+                      {event.location && <p style={{ margin: 0, fontSize: 'var(--text-body-sm)', color: 'var(--color-text-muted)' }}>{event.location}</p>}
+                    </div>
+                  </a>
+                </StaggerItem>
+              )
+            })}
+          </Stagger>
+        )}
       </div>
     </section>
   )

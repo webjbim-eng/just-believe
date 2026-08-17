@@ -1,8 +1,10 @@
 import { ScrollReveal } from '../components/ScrollReveal'
 import { Stagger, StaggerItem } from '../components/Stagger'
+import { IconCardGrid, type IconKey } from '../components/IconCardGrid'
 
 export type MinistryFeatureGridItem = {
-  image: string
+  image?: string
+  icon?: IconKey
   title: string
   subtitle?: string
 }
@@ -19,10 +21,15 @@ export type MinistryFeatureGridConfig = {
    * 'grid': the original large photo-card treatment, kept for contexts
    * where this section IS the page's primary content (not currently used
    * on the homepage, but available for an admin-configured page).
-   * 'dark-numbered': the homepage mockup's "Our Ministries" section — a
-   * dark ink panel, numbered rows (01, 02, ...), added 2026-08-11.
+   * 'dark-numbered': an earlier homepage treatment — dark ink panel,
+   * numbered rows (01, 02, ...), added 2026-08-11, superseded 2026-08-17
+   * by 'icon-grid' (below) but kept as a selectable option since existing
+   * version-history rows may still reference it.
+   * 'icon-grid': docs/index.html's "Our Ministries" section — a real
+   * icon badge per ministry (IconCardGrid), light panel. Items need
+   * `icon`, not `image`, for this layout.
    */
-  layout?: 'grid' | 'list' | 'dark-numbered'
+  layout?: 'grid' | 'list' | 'dark-numbered' | 'icon-grid'
   items: MinistryFeatureGridItem[]
 }
 
@@ -37,6 +44,29 @@ export type MinistryFeatureGridConfig = {
  */
 export function MinistryFeatureGrid({ config }: { config: MinistryFeatureGridConfig }) {
   const layout = config.layout ?? 'list'
+
+  if (layout === 'icon-grid') {
+    return (
+      <section className="section section--primary decorative-flourish">
+        <div className="container">
+          <ScrollReveal>
+            <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1.5rem', marginBottom: '2.5rem' }}>
+              <div>
+                {config.eyebrow && <p className="section-eyebrow" style={{ color: 'var(--color-accent)' }}>{config.eyebrow}</p>}
+                <h2 style={{ margin: 0, color: '#fff' }}>{config.heading}</h2>
+              </div>
+              {config.ctaLabel && config.ctaHref && (
+                <a className="btn-outline" href={config.ctaHref} style={{ color: '#fff', borderColor: 'rgba(255,255,255,0.6)' }}>
+                  {config.ctaLabel}
+                </a>
+              )}
+            </div>
+          </ScrollReveal>
+          <IconCardGrid items={config.items.map((item) => ({ icon: item.icon ?? 'compassion', title: item.title, subtitle: item.subtitle }))} />
+        </div>
+      </section>
+    )
+  }
 
   if (layout === 'dark-numbered') {
     return (

@@ -510,6 +510,35 @@ a {
   flex-shrink: 0;
 }
 
+/* ---- Icon card grid (src/components/IconCardGrid.tsx) — the "What We
+   Do"/"Our Ministries" icon-badge grid, homepage + About page ---- */
+.icon-card-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+}
+
+.icon-card {
+  text-align: center;
+  padding: 2rem 1.5rem;
+}
+
+.icon-card .icon-feature-ring {
+  margin-inline: auto;
+}
+
+@media (max-width: 860px) {
+  .icon-card-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 540px) {
+  .icon-card-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* Numbered list device (Reference 1: 01 / 02 / 03 / 04 service list) */
 .numbered-item {
   display: flex;
@@ -1305,6 +1334,21 @@ body {
   display: flex;
   flex-direction: column;
   gap: 1rem;
+}
+
+/* ---- Homepage "Upcoming Events" card grid (FeaturedEvents.tsx) — 3
+   cards by default (blockConfig.limit), not the 4-column
+   photo-caption-grid-4, which would leave a visibly empty 4th slot. ---- */
+.event-card-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+
+@media (max-width: 860px) {
+  .event-card-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .event-list-row {

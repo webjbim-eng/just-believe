@@ -1,22 +1,26 @@
 import { getPayload } from 'payload'
 import config from '@payload-config'
 import { ScrollReveal } from '../components/ScrollReveal'
-import { Stagger, StaggerItem } from '../components/Stagger'
 import { lexicalToPlainText } from '../lib/lexicalToPlainText'
 
 export type LeadershipConfig = {
   eyebrow?: string
   heading?: string
-  limit?: number
 }
 
 /**
  * New (2026-08-16, Jimmy's request) — Leadership had zero public
  * presence despite being real, admin-managed content: creating a record
- * in /admin never showed up anywhere on the site. This is the homepage
- * teaser (founder/leaders first, via `order`/`isFounder`), linking to
- * the full-bio /about#leadership section — same "collection -> homepage
- * block -> full page" shape as BlogSpotlight/FeaturedBooks.
+ * in /admin never showed up anywhere on the site.
+ *
+ * 2026-08-17: was a photo-caption-grid-4 card grid (with exactly 1 real
+ * leader today, that read as one small orphaned card in an otherwise-
+ * empty row — the same "orphaned card" problem fixed elsewhere this
+ * session). docs/index.html's homepage spotlights the founder in a full
+ * split-media section instead (same visual pattern as FoundationStatement)
+ * — featuring the top-sorted leader (`-isFounder, order`), which is the
+ * real content shape today (one founder), not a hypothetical multi-
+ * leader grid.
  */
 export async function Leadership({ config: blockConfig, tenantId }: { config: LeadershipConfig; tenantId: string }) {
   const payload = await getPayload({ config })
@@ -24,55 +28,45 @@ export async function Leadership({ config: blockConfig, tenantId }: { config: Le
     collection: 'leadership',
     where: { tenant: { equals: tenantId } },
     sort: ['-isFounder', 'order'],
-    limit: blockConfig.limit ?? 4,
+    limit: 1,
     overrideAccess: true,
   })
+  const leader = docs[0]
+  if (!leader) return null
 
-  if (docs.length === 0) return null
+  const photo = typeof leader.photo === 'object' ? leader.photo : undefined
+  const bioExcerpt = leader.bio ? lexicalToPlainText(leader.bio).slice(0, 320) : undefined
 
   return (
     <section className="section decorative-flourish">
       <div className="container">
         <ScrollReveal>
-          <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1.5rem', marginBottom: '2.5rem' }}>
+          <div className="split-layout split-layout--reverse">
+            <div className="split-layout-media" style={{ position: 'relative' }}>
+              <div
+                style={{
+                  backgroundImage: photo?.url ? `url(${photo.url})` : undefined,
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center',
+                  background: photo?.url ? undefined : 'var(--color-base)',
+                  borderRadius: 'var(--radius-card)',
+                  aspectRatio: '4 / 5',
+                  boxShadow: 'var(--shadow-card-lg)',
+                }}
+              />
+            </div>
             <div>
               {blockConfig.eyebrow && <p className="section-eyebrow">{blockConfig.eyebrow}</p>}
               <h2 style={{ margin: 0 }}>{blockConfig.heading || 'Our Leadership'}</h2>
+              <h3 style={{ fontSize: 'var(--text-subheading)', color: 'var(--color-accent)', margin: '1.1rem 0 0.125rem' }}>{leader.name}</h3>
+              {leader.title && <p style={{ margin: 0, fontWeight: 600, color: 'var(--color-text)' }}>{leader.title}</p>}
+              {bioExcerpt && <p style={{ marginTop: '1rem' }}>{bioExcerpt}…</p>}
+              <a className="link-arrow" href="/about#leadership" style={{ marginTop: '1.25rem', display: 'inline-flex' }}>
+                Meet the Team <span className="link-arrow-glyph">→</span>
+              </a>
             </div>
-            <a className="btn-primary-pill" href="/about#leadership">
-              Meet the Team
-            </a>
           </div>
         </ScrollReveal>
-
-        <Stagger className="photo-caption-grid-4" role="list">
-          {docs.map((leader) => {
-            const photo = typeof leader.photo === 'object' ? leader.photo : undefined
-            const bioExcerpt = leader.bio ? lexicalToPlainText(leader.bio).slice(0, 90) : undefined
-            return (
-              <StaggerItem key={leader.id} role="listitem">
-                <a href="/about#leadership" className="card hover-zoom" style={{ display: 'block', padding: 0, overflow: 'hidden', textAlign: 'center', textDecoration: 'none' }}>
-                  <div style={{ aspectRatio: '1 / 1', overflow: 'hidden', background: 'var(--color-base)' }}>
-                    {photo?.url && (
-                      <div
-                        aria-hidden="true"
-                        className="hover-zoom-bg"
-                        style={{ width: '100%', height: '100%', backgroundImage: `url(${photo.url})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
-                      />
-                    )}
-                  </div>
-                  <div style={{ padding: '1.25rem' }}>
-                    <p className="card-title" style={{ fontSize: 'var(--text-heading-sm)', marginBottom: leader.title ? '0.25rem' : 0 }}>
-                      {leader.name}
-                    </p>
-                    {leader.title && <p style={{ margin: 0, color: 'var(--color-accent)', fontSize: 'var(--text-body-sm)', fontWeight: 600 }}>{leader.title}</p>}
-                    {bioExcerpt && <p style={{ margin: '0.5rem 0 0', fontSize: 'var(--text-body-sm)', color: 'var(--color-text-muted)' }}>{bioExcerpt}…</p>}
-                  </div>
-                </a>
-              </StaggerItem>
-            )
-          })}
-        </Stagger>
       </div>
     </section>
   )
