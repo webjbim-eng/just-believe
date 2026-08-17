@@ -5,6 +5,8 @@ export type CTAConfig = {
   body?: string
   ctaLabel: string
   ctaHref: string
+  secondaryCtaLabel?: string
+  secondaryCtaHref?: string
   /** Path under /public. Optional — falls back to the plain surface panel when unset. */
   backgroundImage?: string
 }
@@ -50,9 +52,20 @@ export function CTA({ config }: { config: CTAConfig }) {
               {config.body}
             </p>
           )}
-          <a className={hasImage ? 'btn-pill-light' : 'btn-accent'} href={config.ctaHref}>
-            {config.ctaLabel}
-          </a>
+          <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+            <a className={hasImage ? 'btn-pill-light' : 'btn-accent'} href={config.ctaHref}>
+              {config.ctaLabel}
+            </a>
+            {config.secondaryCtaLabel && config.secondaryCtaHref && (
+              <a
+                className="btn-outline"
+                href={config.secondaryCtaHref}
+                style={hasImage ? { color: '#fff', borderColor: 'rgba(255,255,255,0.6)' } : undefined}
+              >
+                {config.secondaryCtaLabel}
+              </a>
+            )}
+          </div>
         </div>
       </ScrollReveal>
     </section>

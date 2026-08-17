@@ -6,6 +6,7 @@ export type PartnershipInvitationWay = {
 }
 
 export type PartnershipInvitationConfig = {
+  eyebrow?: string
   heading: string
   body?: string
   ctaLabel: string
@@ -96,7 +97,7 @@ export function PartnershipInvitation({ config }: { config: PartnershipInvitatio
       )}
       <ScrollReveal>
         <div className="container container--narrow" style={{ textAlign: 'center', position: 'relative', zIndex: 2 }}>
-          <p className="section-eyebrow">Giving</p>
+          <p className="section-eyebrow">{config.eyebrow || 'Giving'}</p>
           <h2 style={{ color: '#fff' }}>{config.heading}</h2>
           {config.body && (
             <p style={{ maxWidth: '36rem', margin: '0 auto 2rem', color: 'rgba(255,255,255,0.85)' }}>{config.body}</p>

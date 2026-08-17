@@ -171,6 +171,10 @@ async function seed() {
     },
     {
       // New block (2026-08-11) — the mockup's "Our Foundation" section.
+      // 2026-08-17: legacy copy kept as-is (Jimmy's call) — only the "Pray
+      // with us" link is new (docs/index.html shows one, ours had none),
+      // routed to the real prayer-request form rather than the mockup's
+      // placeholder "#".
       blockType: 'FoundationStatement',
       order: 2,
       visible: true,
@@ -180,6 +184,8 @@ async function seed() {
         body: "Every ministry we carry begins in prayer and ends in changed lives. It's the rhythm beneath everything Just Believe does, at home and around the world.",
         image: '/images/hands-on-bible.jpg',
         imageTag: 'Prayer & Worship',
+        linkLabel: 'Pray with us',
+        linkHref: '/get-involved?tab=prayer',
       },
     },
     {

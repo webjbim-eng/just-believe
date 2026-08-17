@@ -6,6 +6,8 @@ export type FoundationStatementConfig = {
   body?: string
   image: string
   imageTag?: string
+  linkLabel?: string
+  linkHref?: string
 }
 
 /**
@@ -26,6 +28,11 @@ export function FoundationStatement({ config }: { config: FoundationStatementCon
               {config.eyebrow && <p className="section-eyebrow">{config.eyebrow}</p>}
               <h2 style={{ fontSize: 'var(--text-heading)' }}>{config.heading}</h2>
               {config.body && <p style={{ fontSize: 'var(--text-body)' }}>{config.body}</p>}
+              {config.linkLabel && config.linkHref && (
+                <a className="link-arrow" href={config.linkHref} style={{ marginTop: '0.5rem', display: 'inline-flex' }}>
+                  {config.linkLabel} <span className="link-arrow-glyph">→</span>
+                </a>
+              )}
             </div>
             <div className="split-layout-media" style={{ position: 'relative' }}>
               <div
