@@ -7,6 +7,7 @@ export type IconCardItem = {
   icon: IconKey
   title: string
   subtitle?: string
+  href?: string
 }
 
 /**
@@ -75,9 +76,9 @@ const ICONS: Record<IconKey, ReactNode> = {
 export function IconCardGrid({ items }: { items: IconCardItem[] }) {
   return (
     <Stagger className="icon-card-grid" role="list">
-      {items.map((item) => (
-        <StaggerItem key={item.title} role="listitem">
-          <div className="icon-card">
+      {items.map((item) => {
+        const inner = (
+          <>
             <span className="icon-feature-ring" aria-hidden="true">
               {ICONS[item.icon]}
             </span>
@@ -85,9 +86,20 @@ export function IconCardGrid({ items }: { items: IconCardItem[] }) {
               {item.title}
             </p>
             {item.subtitle && <p style={{ margin: 0, fontSize: 'var(--text-body-sm)', color: 'var(--color-text-muted-on-dark)' }}>{item.subtitle}</p>}
-          </div>
-        </StaggerItem>
-      ))}
+          </>
+        )
+        return (
+          <StaggerItem key={item.title} role="listitem">
+            {item.href ? (
+              <a className="icon-card" href={item.href} style={{ textDecoration: 'none', display: 'block' }}>
+                {inner}
+              </a>
+            ) : (
+              <div className="icon-card">{inner}</div>
+            )}
+          </StaggerItem>
+        )
+      })}
     </Stagger>
   )
 }

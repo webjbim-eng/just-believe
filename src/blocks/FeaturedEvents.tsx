@@ -76,17 +76,15 @@ export async function FeaturedEvents({ config: blockConfig, tenantId }: { config
               const start = new Date(event.startDate)
               return (
                 <StaggerItem key={event.id} role="listitem">
-                  <a href={`/events/${event.slug}`} className="card" style={{ display: 'flex', gap: '1.25rem', alignItems: 'center', textDecoration: 'none' }}>
-                    <div className="event-list-row-date">
-                      <span className="event-list-row-date-month">{start.toLocaleDateString(undefined, { month: 'short' })}</span>
-                      <span className="event-list-row-date-day">{start.getDate()}</span>
+                  <a href={`/events/${event.slug}`} className="card" style={{ display: 'block', textDecoration: 'none' }}>
+                    <div className="event-date-strip">
+                      <span className="event-date-strip-day">{start.getDate()}</span>
+                      <span className="event-date-strip-month">{start.toLocaleDateString(undefined, { month: 'short' })}</span>
                     </div>
-                    <div style={{ minWidth: 0 }}>
-                      <p className="card-title" style={{ margin: 0, fontSize: 'var(--text-heading-sm)' }}>
-                        {event.title}
-                      </p>
-                      {event.location && <p style={{ margin: 0, fontSize: 'var(--text-body-sm)', color: 'var(--color-text-muted)' }}>{event.location}</p>}
-                    </div>
+                    <p className="card-title" style={{ margin: 0, fontSize: 'var(--text-heading-sm)' }}>
+                      {event.title}
+                    </p>
+                    {event.location && <p style={{ margin: '0.5rem 0 0', fontSize: 'var(--text-body-sm)', color: 'var(--color-text-muted)' }}>{event.location}</p>}
                   </a>
                 </StaggerItem>
               )

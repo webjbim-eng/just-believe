@@ -59,30 +59,30 @@ export async function Testimonials({ config: blockConfig, tenantId }: { config: 
           </div>
         </ScrollReveal>
 
-        <ScrollReveal delay={100}>
-          <div className="split-layout">
-            {(() => {
-              const photo = spotlight?.photo
-              const spotlightImage = photo && typeof photo === 'object' && 'url' in photo ? (photo.url ?? undefined) : undefined
-              const mediaImage = spotlightImage || blockConfig.image
-              return (
-                mediaImage && (
-                  <div
-                    className="split-layout-media"
-                    style={{
-                      borderRadius: 'var(--radius-card)',
-                      overflow: 'hidden',
-                      aspectRatio: '1 / 1',
-                      backgroundImage: `url(${mediaImage})`,
-                      backgroundSize: 'cover',
-                      backgroundPosition: 'center',
-                      boxShadow: 'var(--shadow-card-lg)',
-                    }}
-                  />
+        {spotlight ? (
+          <ScrollReveal delay={100}>
+            <div className="split-layout">
+              {(() => {
+                const photo = spotlight.photo
+                const spotlightImage = photo && typeof photo === 'object' && 'url' in photo ? (photo.url ?? undefined) : undefined
+                const mediaImage = spotlightImage || blockConfig.image
+                return (
+                  mediaImage && (
+                    <div
+                      className="split-layout-media"
+                      style={{
+                        borderRadius: 'var(--radius-card)',
+                        overflow: 'hidden',
+                        aspectRatio: '1 / 1',
+                        backgroundImage: `url(${mediaImage})`,
+                        backgroundSize: 'cover',
+                        backgroundPosition: 'center',
+                        boxShadow: 'var(--shadow-card-lg)',
+                      }}
+                    />
+                  )
                 )
-              )
-            })()}
-            {spotlight ? (
+              })()}
               <div className="card card--tactile" style={{ padding: '2.5rem' }}>
                 <span className="quote-mark" aria-hidden="true">
                   &ldquo;
@@ -97,21 +97,22 @@ export async function Testimonials({ config: blockConfig, tenantId }: { config: 
                   <p style={{ fontWeight: 600, color: 'var(--color-text)', margin: 0 }}>{spotlight.submitterName}</p>
                 </div>
               </div>
-            ) : (
-              <div className="icon-feature" style={{ alignItems: 'flex-start', textAlign: 'left' }}>
-                <span className="icon-feature-ring" aria-hidden="true" style={{ fontFamily: 'var(--font-heading), Georgia, serif', fontSize: '1.5rem' }}>
-                  &ldquo;
-                </span>
-                <p style={{ color: 'var(--color-text-muted)', margin: 0 }}>
-                  Testimonials are coming soon. Has JBIM impacted your life? We&rsquo;d love to hear your story.
-                </p>
-                <a className="btn-outline" href="/testimonials" style={{ marginTop: '0.5rem' }}>
-                  Share Your Story
-                </a>
-              </div>
-            )}
-          </div>
-        </ScrollReveal>
+            </div>
+          </ScrollReveal>
+        ) : (
+          <ScrollReveal delay={100}>
+            <div className="empty-card">
+              <span className="icon-feature-ring" aria-hidden="true" style={{ fontFamily: 'var(--font-heading), Georgia, serif', fontSize: '1.5rem' }}>
+                &ldquo;
+              </span>
+              <h4 style={{ fontSize: '1.05rem', margin: '1rem 0 0' }}>Testimonials are coming soon</h4>
+              <p>Has JBIM impacted your life? We&rsquo;d love to hear your story.</p>
+              <a className="btn-accent" href="/testimonials">
+                Share Your Story
+              </a>
+            </div>
+          </ScrollReveal>
+        )}
       </div>
     </section>
   )

@@ -192,17 +192,14 @@ export default async function AboutPage() {
               Our ministry is built upon four foundational commitments.
             </p>
           </ScrollReveal>
-          <Stagger className="numbered-item-list" role="list">
+          <Stagger className="approach-list" role="list">
             {commitments.map((commitment, index) => (
               <StaggerItem key={commitment} role="listitem">
-                <div
-                  className="numbered-item"
-                  style={{ borderBottom: index < commitments.length - 1 ? '1px solid rgba(255,255,255,0.15)' : 'none', paddingBottom: '1.75rem' }}
-                >
+                <div className="approach-item">
                   <span className="numbered-item-index" style={{ opacity: 0.85 }}>
                     {String(index + 1).padStart(2, '0')}
                   </span>
-                  <span style={{ color: '#fff', fontSize: 'var(--text-body)' }}>{commitment}</span>
+                  <span style={{ color: 'var(--color-text)', fontSize: '0.92rem', paddingTop: '0.15rem' }}>{commitment}</span>
                 </div>
               </StaggerItem>
             ))}

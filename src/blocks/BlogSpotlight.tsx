@@ -63,86 +63,62 @@ export async function BlogSpotlight({ config: blockConfig, tenantId }: { config:
             <p style={{ color: 'var(--color-text-muted)', margin: 0 }}>Reflections and updates from JBIM are coming soon.</p>
           </div>
         ) : (
-          <div className="split-layout">
-            <ScrollReveal className="split-layout-media">
-              {featuredImageUrl ? (
-                <a
-                  href={`/blog/${featured.slug}`}
-                  aria-label={featured.title}
+          <div className="ref-preview">
+            <ScrollReveal>
+              <a href={`/blog/${featured.slug}`} className="card" style={{ display: 'flex', flexDirection: 'column', padding: 0, overflow: 'hidden', textDecoration: 'none' }}>
+                <div
                   style={{
-                    display: 'block',
-                    backgroundImage: `url(${featuredImageUrl})`,
+                    aspectRatio: '16 / 10',
+                    backgroundImage: featuredImageUrl ? `url(${featuredImageUrl})` : undefined,
                     backgroundSize: 'cover',
                     backgroundPosition: 'center',
-                    borderRadius: 'var(--radius-card)',
-                    aspectRatio: '1 / 1',
-                    boxShadow: 'var(--shadow-card-lg)',
+                    background: featuredImageUrl ? undefined : 'var(--color-base)',
                   }}
                 />
-              ) : (
-                <a href={`/blog/${featured.slug}`} className="card" style={{ display: 'block', textDecoration: 'none', padding: '2.5rem', minHeight: '18rem' }}>
-                  <p className="card-eyebrow">{featured.publishedAt ? new Date(featured.publishedAt).toLocaleDateString() : 'Recent'}</p>
-                  <h3 style={{ fontSize: 'var(--text-heading)', marginBottom: '1rem' }}>{featured.title}</h3>
+                <div style={{ padding: 'var(--card-padding)', display: 'flex', flexDirection: 'column', flex: 1 }}>
+                  <p className="card-eyebrow">Latest · {featured.publishedAt ? new Date(featured.publishedAt).toLocaleDateString() : 'Recent'}</p>
+                  <h3 style={{ fontSize: 'var(--text-heading-sm)', marginBottom: '0.6rem' }}>{featured.title}</h3>
                   {(featured.excerpt || featured.body) && (
-                    <p style={{ fontSize: 'var(--text-body)' }}>{featured.excerpt || lexicalToPlainText(featured.body).slice(0, 180)}</p>
+                    <p style={{ flex: 1 }}>{featured.excerpt || lexicalToPlainText(featured.body).slice(0, 180)}</p>
                   )}
                   <span className="link-arrow">
-                    Read the Reflection <span className="link-arrow-glyph">→</span>
+                    Read the reflection <span className="link-arrow-glyph">→</span>
                   </span>
-                </a>
-              )}
+                </div>
+              </a>
             </ScrollReveal>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-              {featuredImageUrl && (
-                <a href={`/blog/${featured.slug}`} style={{ display: 'block', textDecoration: 'none', paddingBottom: '1.25rem', borderBottom: '1px solid var(--color-border)' }}>
-                  <p className="card-eyebrow">Latest · {featured.publishedAt ? new Date(featured.publishedAt).toLocaleDateString() : 'Recent'}</p>
-                  <p
-                    style={{
-                      margin: 0,
-                      fontWeight: 600,
-                      color: 'var(--color-text)',
-                      fontFamily: 'var(--font-heading), Georgia, serif',
-                      fontSize: 'var(--text-heading-sm)',
-                      display: '-webkit-box',
-                      WebkitLineClamp: 2,
-                      WebkitBoxOrient: 'vertical',
-                      overflow: 'hidden',
-                    }}
-                  >
-                    {featured.title}
-                  </p>
-                  {(featured.excerpt || featured.body) && (
-                    <p style={{ marginTop: '0.5rem' }}>{featured.excerpt || lexicalToPlainText(featured.body).slice(0, 140)}</p>
-                  )}
-                  <span className="link-arrow" style={{ marginTop: '0.5rem', display: 'inline-block' }}>
-                    Read the Reflection <span className="link-arrow-glyph">→</span>
-                  </span>
-                </a>
-              )}
-              {rest.length === 0 && !featuredImageUrl ? (
+            <div className="ref-mini-list">
+              {rest.length === 0 ? (
                 <p style={{ color: 'var(--color-text-muted)' }}>More reflections are on the way.</p>
               ) : (
                 rest.map((post, index) => (
                   <ScrollReveal key={post.id} delay={index * 80}>
-                    <a href={`/blog/${post.slug}`} style={{ display: 'block', textDecoration: 'none', paddingBottom: '1.25rem', borderBottom: '1px solid var(--color-border)' }}>
-                      <p className="card-eyebrow">{post.publishedAt ? new Date(post.publishedAt).toLocaleDateString() : 'Recent'}</p>
-                      <p
-                        style={{
-                          margin: 0,
-                          fontWeight: 600,
-                          color: 'var(--color-text)',
-                          fontFamily: 'var(--font-heading), Georgia, serif',
-                          fontSize: 'var(--text-heading-sm)',
-                          display: '-webkit-box',
-                          WebkitLineClamp: 2,
-                          WebkitBoxOrient: 'vertical',
-                          overflow: 'hidden',
-                        }}
-                      >
-                        {post.title}
-                      </p>
-                      <span className="link-arrow" style={{ marginTop: '0.25rem', fontSize: 'var(--text-body-sm)' }}>
-                        Read more <span className="link-arrow-glyph">→</span>
+                    <a href={`/blog/${post.slug}`} className="ref-mini-card">
+                      <span className="icon-feature-ring" aria-hidden="true" style={{ flexShrink: 0 }}>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                          <path d="M5 4.5h14v15H5z" strokeLinejoin="round" />
+                          <path d="M8 9h8M8 12.5h8M8 16h5" strokeLinecap="round" />
+                        </svg>
+                      </span>
+                      <span style={{ minWidth: 0 }}>
+                        <p
+                          style={{
+                            margin: 0,
+                            fontWeight: 600,
+                            color: 'var(--color-text)',
+                            fontFamily: 'var(--font-heading), Georgia, serif',
+                            fontSize: '0.92rem',
+                            display: '-webkit-box',
+                            WebkitLineClamp: 1,
+                            WebkitBoxOrient: 'vertical',
+                            overflow: 'hidden',
+                          }}
+                        >
+                          {post.title}
+                        </p>
+                        <span style={{ fontSize: '0.74rem', color: 'var(--color-accent)' }}>
+                          {post.publishedAt ? new Date(post.publishedAt).toLocaleDateString() : 'Recent'}
+                        </span>
                       </span>
                     </a>
                   </ScrollReveal>

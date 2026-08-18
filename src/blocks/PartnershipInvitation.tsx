@@ -96,7 +96,7 @@ export function PartnershipInvitation({ config }: { config: PartnershipInvitatio
         </>
       )}
       <ScrollReveal>
-        <div className="container container--narrow" style={{ textAlign: 'center', position: 'relative', zIndex: 2 }}>
+        <div className="container" style={{ textAlign: 'center', position: 'relative', zIndex: 2 }}>
           <p className="section-eyebrow">{config.eyebrow || 'Giving'}</p>
           <h2 style={{ color: '#fff' }}>{config.heading}</h2>
           {config.body && (
@@ -104,44 +104,14 @@ export function PartnershipInvitation({ config }: { config: PartnershipInvitatio
           )}
 
           {config.ways && config.ways.length > 0 && (
-            <div
-              className="photo-caption-grid-2"
-              style={{
-                textAlign: 'left',
-                marginBottom: '2.5rem',
-                gap: 0,
-                border: '1px solid rgba(255,255,255,0.18)',
-                borderRadius: 'var(--radius-card)',
-                overflow: 'hidden',
-              }}
-            >
+            <div className="partner-grid" style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
               {config.ways.map((way, index) => (
-                <div
-                  key={way.label}
-                  style={{
-                    padding: '1.75rem',
-                    borderRight: index % 2 === 0 ? '1px solid rgba(255,255,255,0.18)' : 'none',
-                    borderBottom: index < config.ways!.length - 2 ? '1px solid rgba(255,255,255,0.18)' : 'none',
-                  }}
-                >
-                  <span
-                    aria-hidden="true"
-                    style={{
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      width: '2.75rem',
-                      height: '2.75rem',
-                      borderRadius: '50%',
-                      border: '1px solid var(--color-accent)',
-                      color: 'var(--color-accent)',
-                      marginBottom: '0.875rem',
-                    }}
-                  >
+                <div key={way.label} className="partner-card">
+                  <span aria-hidden="true" className="icon-feature-ring">
                     {WAY_ICONS[index % WAY_ICONS.length]}
                   </span>
-                  <p style={{ color: '#fff', fontWeight: 600, fontFamily: 'var(--font-heading), Georgia, serif', margin: '0 0 0.375rem' }}>{way.label}</p>
-                  <p style={{ color: 'rgba(255,255,255,0.8)', margin: 0, fontSize: 'var(--text-body-sm)' }}>{way.description}</p>
+                  <p style={{ color: '#fff', fontWeight: 600, fontFamily: 'var(--font-heading), Georgia, serif', margin: '1.1rem 0 0.4rem', fontSize: '0.95rem' }}>{way.label}</p>
+                  <p style={{ color: 'rgba(255,255,255,0.8)', margin: 0, fontSize: '0.82rem' }}>{way.description}</p>
                 </div>
               ))}
             </div>

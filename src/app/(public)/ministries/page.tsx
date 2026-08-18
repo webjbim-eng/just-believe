@@ -6,7 +6,16 @@ import type { Ministry } from '../../../payload-types'
 import { TENANT_HEADER } from '../../../access/getResolvedTenantId'
 import { ScrollReveal } from '../../../components/ScrollReveal'
 import { Stagger, StaggerItem } from '../../../components/Stagger'
+import { IconCardGrid, type IconKey } from '../../../components/IconCardGrid'
 import { ministryDefinitions } from '../../../seed/ministries'
+
+// Matches ministryDefinitions' order (src/seed/ministries.ts) exactly —
+// same mapping the About page's "What We Do" icon-grid uses.
+const MINISTRY_ICON_ORDER: IconKey[] = ['evangelism', 'prayer', 'leadership', 'family', 'children', 'youth', 'women', 'compassion']
+function iconFor(ministry: Ministry): IconKey {
+  const index = ministryDefinitions.findIndex((m) => m.name === ministry.name)
+  return index >= 0 ? MINISTRY_ICON_ORDER[index] : 'compassion'
+}
 
 export const metadata: Metadata = {
   title: 'Our Ministries — Just Believe International Missions',
@@ -132,7 +141,9 @@ export default async function MinistriesPage() {
             </section>
           )}
 
-          {/* Supporting: compact directory — real thumbnail photography, not letter avatars, one line each. */}
+          {/* Supporting: icon-card grid, matching public/jbim/ministries.html's
+              "More Ways We Serve" section exactly — same treatment as the
+              About page's "What We Do" grid, not a bare thumbnail row list. */}
           {rest.length > 0 && (
             <section className="section decorative-flourish decorative-flourish--reverse">
               <div className="container container--narrow">
@@ -141,26 +152,14 @@ export default async function MinistriesPage() {
                     More Ways We Serve
                   </p>
                 </ScrollReveal>
-                <Stagger role="list">
-                  {rest.map((ministry) => (
-                    <StaggerItem key={ministry.id} role="listitem">
-                      <a href={`/ministries/${ministry.slug}`} className="ministry-directory-row">
-                        {imageFor(ministry) && (
-                          <div aria-hidden="true" className="ministry-directory-thumb" style={{ backgroundImage: `url(${imageFor(ministry)})` }} />
-                        )}
-                        <div style={{ minWidth: 0, flex: 1 }}>
-                          <p style={{ margin: 0, fontWeight: 600, color: 'var(--color-text)', fontFamily: 'var(--font-heading), Georgia, serif', fontSize: 'var(--text-heading-sm)' }}>
-                            {ministry.name}
-                          </p>
-                          {shortTextFor(ministry) && <p style={{ margin: 0, fontSize: 'var(--text-body-sm)' }}>{shortTextFor(ministry)}</p>}
-                        </div>
-                        <span className="link-arrow-glyph" style={{ color: 'var(--color-accent)', flexShrink: 0 }} aria-hidden="true">
-                          →
-                        </span>
-                      </a>
-                    </StaggerItem>
-                  ))}
-                </Stagger>
+                <IconCardGrid
+                  items={rest.map((ministry) => ({
+                    icon: iconFor(ministry),
+                    title: ministry.name,
+                    subtitle: shortTextFor(ministry),
+                    href: `/ministries/${ministry.slug}`,
+                  }))}
+                />
               </div>
             </section>
           )}

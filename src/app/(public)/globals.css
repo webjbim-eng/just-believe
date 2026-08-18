@@ -508,9 +508,23 @@ a {
   gap: 1.5rem;
 }
 
+/* A real card (background/border/radius/hover), matching ministry.css's
+   .icon-card exactly — was text-align+padding only with no card
+   treatment at all, so these read as floating icon+text pairs rather
+   than the bordered cards the mockup uses everywhere else. */
 .icon-card {
   text-align: center;
-  padding: 2rem 1.5rem;
+  padding: 1.75rem 1.5rem;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-on-dark);
+  border-radius: var(--radius-card);
+  transition: transform 0.5s ease, box-shadow 0.5s ease, border-color 0.5s ease;
+}
+
+.icon-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-gold);
+  border-color: var(--gold-dark);
 }
 
 .icon-card .icon-feature-ring {
@@ -548,6 +562,31 @@ a {
 .numbered-item-list {
   display: grid;
   gap: 1.75rem;
+}
+
+/* ---- "Our Approach" (About page) — matches .approach-list/.approach-item:
+   each commitment is its own bordered card in a 2-col grid, not a plain
+   row divided by a bottom border. ---- */
+.approach-list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem 2rem;
+  margin-top: 2.5rem;
+}
+
+@media (max-width: 640px) {
+  .approach-list {
+    grid-template-columns: 1fr;
+  }
+}
+
+.approach-item {
+  display: flex;
+  gap: 1.1rem;
+  padding: 1.3rem;
+  border: 1px solid var(--color-border-on-dark);
+  border-radius: 14px;
+  background: var(--color-surface);
 }
 
 /*
@@ -995,34 +1034,6 @@ body {
   }
 }
 
-/* ---- Compact ministry directory rows (image-led, not letter avatars) ---- */
-.ministry-directory-row {
-  display: flex;
-  align-items: center;
-  gap: 1.25rem;
-  padding: 1.25rem 0;
-  border-bottom: 1px solid var(--color-border);
-  text-decoration: none;
-}
-
-.ministry-directory-row:last-child {
-  border-bottom: none;
-}
-
-.ministry-directory-thumb {
-  width: 4rem;
-  height: 4rem;
-  border-radius: 50%;
-  flex-shrink: 0;
-  background-size: cover;
-  background-position: center;
-  transition: transform 0.3s ease;
-}
-
-.ministry-directory-row:hover .ministry-directory-thumb {
-  transform: scale(1.08);
-}
-
 /* ---- QuickLinksBar (2026-08-11 homepage redesign, replaces
    HeroMediaStrip's quick-link-row/quick-link-pill) ---- */
 .quick-links-bar {
@@ -1339,6 +1350,195 @@ body {
   .event-card-grid {
     grid-template-columns: 1fr;
   }
+}
+
+/* Full-width date strip across the top of a FeaturedEvents .card — matches
+   public/jbim/css/ministry.css's .event-date exactly. Distinct from
+   .event-list-row-date (a small square icon for the /events row list) —
+   this is a vertical card, that's a horizontal row, same "month + day"
+   information but a different shape for a different layout. */
+.event-date-strip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: var(--gold-soft);
+  color: var(--gold-light);
+  padding: 0.9rem;
+  margin: calc(-1 * var(--card-padding)) calc(-1 * var(--card-padding)) 1rem;
+  border-radius: var(--radius-card) var(--radius-card) 0 0;
+}
+
+.event-date-strip-day {
+  font-family: var(--font-heading), Georgia, serif;
+  font-weight: 800;
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.event-date-strip-month {
+  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-top: 0.2rem;
+}
+
+/* ---- Recurring Activities homepage teaser (RecurringActivities.tsx) —
+   matches .activity-grid/.activity-card exactly: a 2-col grid of cards
+   with a gold left accent border and label/value schedule rows, not a
+   full-width stacked list. ---- */
+.activity-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+}
+
+@media (max-width: 860px) {
+  .activity-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.activity-card {
+  border-left: 3px solid var(--color-accent);
+}
+
+.activity-schedule {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  margin-bottom: 1.25rem;
+}
+
+.activity-schedule-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  font-size: 0.84rem;
+}
+
+.activity-schedule-row-label {
+  color: var(--color-text-muted);
+}
+
+.activity-schedule-row-value {
+  color: var(--color-text);
+  font-weight: 500;
+  text-align: right;
+}
+
+/* ---- Partner With Us (PartnershipInvitation.tsx) — matches .partner-grid
+   /.partner-card: each "way to give" is its own bordered card, not a
+   quadrant of one shared box. ---- */
+.partner-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.4rem;
+}
+
+@media (max-width: 860px) {
+  .partner-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 540px) {
+  .partner-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.partner-card {
+  text-align: center;
+  padding: 1.6rem 1.2rem;
+  border: 1px solid var(--color-border-on-dark);
+  border-radius: var(--radius-card);
+  transition: transform 0.4s ease, border-color 0.4s ease;
+}
+
+.partner-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--gold-dark);
+}
+
+.partner-card .icon-feature-ring {
+  margin-inline: auto;
+}
+
+/* ---- Empty-state card (Testimonials.tsx, and anywhere else a "coming
+   soon" moment needs the mockup's dashed-border centered treatment) —
+   matches .empty-card exactly. ---- */
+.empty-card {
+  background: var(--color-surface);
+  border: 1px dashed var(--line-strong);
+  border-radius: var(--radius-card);
+  padding: clamp(2rem, 4vw, 3rem);
+  text-align: center;
+  max-width: 560px;
+  margin-inline: auto;
+}
+
+.empty-card .icon-feature-ring {
+  margin-inline: auto;
+}
+
+/* ---- Reflections/Blog spotlight (BlogSpotlight.tsx) — matches
+   .ref-preview: a wider featured .ref-card-style card beside a stacked
+   list of .ref-mini-card rows, not a bare photo beside plain text links. ---- */
+.ref-preview {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 1.5rem;
+}
+
+.ref-mini-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+@media (max-width: 860px) {
+  .ref-preview {
+    grid-template-columns: 1fr;
+  }
+}
+
+.ref-mini-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  padding: 1.1rem 1.25rem;
+  text-decoration: none;
+  transition: border-color 0.3s ease, transform 0.4s ease;
+}
+
+.ref-mini-card:hover {
+  border-color: var(--gold-dark);
+  transform: translateX(4px);
+}
+
+/* Dark glass pill overlaid on a split-layout photo (FoundationStatement,
+   Leadership) — matches .media-caption exactly. Distinct from
+   .btn-pill-light (solid light pill, used for real buttons): this is a
+   non-interactive label, so it gets its own translucent-dark treatment
+   rather than borrowing a button style. */
+.media-caption {
+  position: absolute;
+  left: 1.1rem;
+  bottom: 1.1rem;
+  background: rgba(7, 12, 24, 0.72);
+  backdrop-filter: blur(6px);
+  border: 1px solid var(--line-strong);
+  border-radius: 10px;
+  padding: 0.5rem 0.9rem;
+  font-size: 0.78rem;
+  color: var(--cream);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .event-list-row {

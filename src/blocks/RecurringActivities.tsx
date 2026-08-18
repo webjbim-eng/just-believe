@@ -47,7 +47,7 @@ export async function RecurringActivities({ config: blockConfig, tenantId }: { c
           </div>
         </ScrollReveal>
 
-        <Stagger role="list" className="service-list">
+        <Stagger role="list" className="activity-grid">
           {activities.map((activity) => {
             // A single CTA per activity, labeled by contactText regardless
             // of which link backs it — real examples mix "Contact us for
@@ -58,25 +58,22 @@ export async function RecurringActivities({ config: blockConfig, tenantId }: { c
             const ctaIsExternal = Boolean(activity.onlineMeetingUrl || activity.registrationUrl)
             return (
               <StaggerItem key={activity.id} role="listitem">
-                <div className="card" style={{ padding: 'var(--card-padding)' }}>
+                <div className="card activity-card" style={{ padding: 'var(--card-padding)' }}>
                   <p className="card-title" style={{ margin: '0 0 0.25rem' }}>
                     {activity.name}
                   </p>
                   {activity.shortDescription && <p style={{ margin: '0 0 0.75rem', color: 'var(--color-text-muted)' }}>{activity.shortDescription}</p>}
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.375rem', marginBottom: '1rem' }}>
+                  <div className="activity-schedule">
                     {(activity.schedule || [])
                       .filter((entry) => entry.active !== false)
                       .map((entry, index) => (
-                        <p key={index} style={{ margin: 0, fontSize: 'var(--text-body-sm)' }}>
-                          <strong>{entry.audienceLabel || entry.label}</strong>
-                          {' · '}
-                          {formatDaysOfWeek(entry.days || [])}
-                          {' · '}
-                          {entry.startTime}
-                          {entry.endTime ? `–${entry.endTime}` : ''}
-                          {' '}
-                          {entry.timezoneLabel}
-                        </p>
+                        <div key={index} className="activity-schedule-row">
+                          <span className="activity-schedule-row-label">{entry.audienceLabel || entry.label}</span>
+                          <span className="activity-schedule-row-value">
+                            {formatDaysOfWeek(entry.days || [])} · {entry.startTime}
+                            {entry.endTime ? `–${entry.endTime}` : ''} {entry.timezoneLabel}
+                          </span>
+                        </div>
                       ))}
                   </div>
                   {activity.contactText && (
