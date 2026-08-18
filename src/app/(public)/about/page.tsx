@@ -83,17 +83,24 @@ export default async function AboutPage() {
         <div className="container">
           <ScrollReveal>
             <div className="split-layout">
-              <div
-                className="split-layout-media"
-                style={{
-                  backgroundImage: 'url(/images/worship-service.jpg)',
-                  backgroundSize: 'cover',
-                  backgroundPosition: 'center',
-                  borderRadius: 'var(--radius-card)',
-                  aspectRatio: '4 / 5',
-                  boxShadow: 'var(--shadow-card-lg)',
-                }}
-              />
+              <div className="split-layout-media" style={{ position: 'relative' }}>
+                <div
+                  style={{
+                    backgroundImage: 'url(/images/worship-service.jpg)',
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                    borderRadius: 'var(--radius-card)',
+                    aspectRatio: '4 / 5',
+                    boxShadow: 'var(--shadow-card-lg)',
+                  }}
+                />
+                <span className="media-caption">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+                    <path d="M12 21s-7-4.6-9.5-9.2C.8 8.4 2.4 5 6 5c2 0 3.3 1 4 2 .7-1 2-2 4-2 3.6 0 5.2 3.4 3.5 6.8C19 16.4 12 21 12 21Z" />
+                  </svg>
+                  Gathered in Worship
+                </span>
+              </div>
               <div>
                 <p className="section-eyebrow">Our Mission</p>
                 <h2 style={{ fontSize: 'var(--text-heading)' }}>

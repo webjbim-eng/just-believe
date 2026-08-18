@@ -24,16 +24,6 @@ export function FoundationStatement({ config }: { config: FoundationStatementCon
       <div className="container">
         <ScrollReveal>
           <div className="split-layout" style={{ alignItems: 'center' }}>
-            <div>
-              {config.eyebrow && <p className="section-eyebrow">{config.eyebrow}</p>}
-              <h2 style={{ fontSize: 'var(--text-heading)' }}>{config.heading}</h2>
-              {config.body && <p style={{ fontSize: 'var(--text-body)' }}>{config.body}</p>}
-              {config.linkLabel && config.linkHref && (
-                <a className="link-arrow" href={config.linkHref} style={{ marginTop: '0.5rem', display: 'inline-flex' }}>
-                  {config.linkLabel} <span className="link-arrow-glyph">→</span>
-                </a>
-              )}
-            </div>
             <div className="split-layout-media" style={{ position: 'relative' }}>
               <div
                 style={{
@@ -52,6 +42,16 @@ export function FoundationStatement({ config }: { config: FoundationStatementCon
                   </svg>
                   {config.imageTag}
                 </span>
+              )}
+            </div>
+            <div>
+              {config.eyebrow && <p className="section-eyebrow">{config.eyebrow}</p>}
+              <h2 style={{ fontSize: 'var(--text-heading)' }}>{config.heading}</h2>
+              {config.body && <p style={{ fontSize: 'var(--text-body)' }}>{config.body}</p>}
+              {config.linkLabel && config.linkHref && (
+                <a className="link-arrow" href={config.linkHref} style={{ marginTop: '0.5rem', display: 'inline-flex' }}>
+                  {config.linkLabel} <span className="link-arrow-glyph">→</span>
+                </a>
               )}
             </div>
           </div>
