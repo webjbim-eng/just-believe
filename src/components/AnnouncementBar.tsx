@@ -15,12 +15,12 @@ export function AnnouncementBar({ children }: { children: React.ReactNode }) {
   return (
     <div
       style={{
-        background: 'var(--color-primary)',
+        background: 'var(--navy-950)',
         padding: '0.55rem 2.5rem',
         textAlign: 'center',
         fontSize: '0.78rem',
         letterSpacing: '0.02em',
-        color: 'var(--color-text-muted-on-dark)',
+        color: 'var(--gold-light)',
         position: 'relative',
       }}
     >
@@ -36,7 +36,7 @@ export function AnnouncementBar({ children }: { children: React.ReactNode }) {
           transform: 'translateY(-50%)',
           background: 'none',
           border: 'none',
-          color: 'var(--color-text-muted-on-dark)',
+          color: 'var(--gold-light)',
           cursor: 'pointer',
           fontSize: '1rem',
           lineHeight: 1,

@@ -56,7 +56,7 @@ export function MinistryFeatureGrid({ config }: { config: MinistryFeatureGridCon
                 <h2 style={{ margin: 0, color: '#fff' }}>{config.heading}</h2>
               </div>
               {config.ctaLabel && config.ctaHref && (
-                <a className="btn-outline" href={config.ctaHref} style={{ color: '#fff', borderColor: 'rgba(255,255,255,0.6)' }}>
+                <a className="btn-outline" href={config.ctaHref}>
                   {config.ctaLabel}
                 </a>
               )}
@@ -79,7 +79,7 @@ export function MinistryFeatureGrid({ config }: { config: MinistryFeatureGridCon
                 <h2 style={{ margin: 0, color: '#fff' }}>{config.heading}</h2>
               </div>
               {config.ctaLabel && config.ctaHref && (
-                <a className="btn-outline" href={config.ctaHref} style={{ color: '#fff', borderColor: 'rgba(255,255,255,0.6)' }}>
+                <a className="btn-outline" href={config.ctaHref}>
                   {config.ctaLabel}
                 </a>
               )}

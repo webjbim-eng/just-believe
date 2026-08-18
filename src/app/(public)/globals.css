@@ -1,74 +1,87 @@
 /*
- * Design-token layer, v7 (2026-08-11). Full visual redesign from six real
- * page mockups Jimmy provided (public/brand/*.html — published via Claude
- * Artifacts against our actual real copy, not a third-party reference).
- * Ink/Indigo/Gold/Sage/Dawn/Paper palette with full dark-mode support,
- * replacing v6's Royal Blue/Deep Purple/Gold. Same "remap existing
- * semantic tokens rather than rename" approach as v6 — every block/
- * component already reads --color-primary/--color-accent/etc., so this is
- * a value change, not a structural one. New role: --color-sage (no v6
- * equivalent — the mockups use it for a few accent icons/checks).
+ * Design-token layer, v8 (2026-08-18). Full dark-navy redesign from
+ * public/jbim/css/ministry.css — the first mockup this session to ship
+ * with its actual CSS (every earlier mockup, public/brand/*.html and
+ * docs/index.html/about.html, was structure-only, which is why those
+ * passes never actually looked like what Jimmy was picturing). Replaces
+ * v7's light dawn/paper base + alternating dark panels with a single dark
+ * navy canvas site-wide. Same "remap existing semantic tokens rather than
+ * rename" approach as v6/v7 — every block/component already reads
+ * --color-primary/--color-base/--color-text/etc., so this is a value
+ * change, not a structural one.
  *
  * Every existing dark-panel component (PartnershipInvitation, Prayer,
  * SiteNavigation's announcement strip, SiteFooter) sets its own white text
  * explicitly via inline styles rather than relying on the global h1-h6
- * default — same safety property v6 relied on, still holds here.
+ * default — harmless now that the default is dark-appropriate too, but
+ * left as-is since removing it is a no-op.
  *
  * :root values are fallback defaults only — the real per-tenant color
- * values are injected as inline CSS custom properties on <html> by
- * layout.tsx, read from the resolved tenant's branding.colors. Never
- * hardcode a specific tenant's colors here, this file is shared across
- * every tenant. (The live JBIM tenant's stored branding.colors also needs
- * updating to match — see src/seed/run.ts's brandColors constant and the
- * one-time admin-API patch applied at ship time, docs left in that file's
- * comment.)
+ * values (--color-primary/--color-secondary/--color-accent) are injected
+ * as inline CSS custom properties on <html> by layout.tsx, read from the
+ * resolved tenant's branding.colors. Never hardcode a specific tenant's
+ * colors here, this file is shared across every tenant. (The live JBIM
+ * tenant's stored branding.colors also needs updating to match — see
+ * src/seed/run.ts's brandColors constant and the one-time admin-API patch
+ * applied at ship time.)
  */
 :root {
-  --color-primary: #10182e;
-  --color-secondary: #232c55;
-  --color-accent: #c9973c;
-  --color-accent-hover: #e3b94e;
+  /* Structural navy/gold/cream/slate scale — the actual design system,
+     not tenant-customizable. Values match public/jbim/css/ministry.css
+     exactly. */
+  --navy-950: #070c18;
+  --navy-900: #0c1830;
+  --navy-850: #0f1e3a;
+  --navy-800: #142645;
+  --navy-700: #1b3462;
+  --navy-600: #294578;
+  --gold-light: #eccb7a;
+  --gold-dark: #a97e22;
+  --gold-soft: rgba(211, 164, 65, 0.14);
+  --cream: #f2ede1;
+  --slate: #b7c0d6;
+  --slate-dim: #7c88a6;
+  --line: rgba(255, 255, 255, 0.09);
+  --line-strong: rgba(255, 255, 255, 0.16);
+
+  --color-primary: #0f1e3a;
+  --color-secondary: #1b3462;
+  --color-accent: #d3a441;
+  --color-accent-hover: #eccb7a;
   --color-sage: #6b7a5e;
   --color-sage-2: #8b9c7c;
   /* Dark text for anything filled with --color-accent (gold-on-white text
      reads poorly) — gold buttons/badges use this, not --color-text. */
-  --color-on-accent: #10182e;
+  --color-on-accent: #070c18;
 
-  /* Page background: cool light gray-blue "dawn", not literal white. */
-  --color-base: #eef0f4;
-  /* Card/panel surface: crisp white ("paper"), one step lighter than
-     --color-base, so .section--surface and .card read as a distinct plane
-     against the page. */
-  --color-surface: #ffffff;
-  --color-text: #161c33;
-  --color-text-muted: #4d5570;
-  --color-border: #dcdfe6;
+  /* Page background: dark navy everywhere now, not a light dawn tone —
+     the mockup has no light panels at all. */
+  --color-base: var(--navy-900);
+  /* Card/panel surface: one step lighter than --color-base, so .card
+     still reads as a distinct plane against the page. */
+  --color-surface: var(--navy-800);
+  --color-text: var(--cream);
+  --color-text-muted: var(--slate);
+  --color-border: var(--line);
 
-  /* Dark-panel-only counterparts — used by components that render on
-     --color-primary/--color-secondary and need to know they're on a dark
-     fill without hardcoding raw white/rgba values everywhere. */
-  --color-text-on-dark: #f2efe6;
-  --color-text-muted-on-dark: #b9c0d8;
-  --color-border-on-dark: rgba(242, 239, 230, 0.14);
+  /* Dark-panel-only counterparts — the light/dark-panel distinction these
+     existed for no longer applies (everything is dark now), but ~20 call
+     sites already reference the -on-dark names, so keep them defined
+     rather than touching every file. */
+  --color-text-on-dark: var(--cream);
+  --color-text-muted-on-dark: var(--slate);
+  --color-border-on-dark: var(--line);
 
   /* Translucent header fill, separate from --color-surface — matches the
-     mockups' --header-bg. Not tenant-injected (unlike primary/secondary/
-     accent), so it dark-mode-swaps normally below. Its own token rather
-     than a hardcoded rgba() in SiteNavigation.tsx, which is exactly the
-     bug that made nav text nearly invisible in dark mode before this was
-     added — light-gray text over a background that never went dark. */
-  --color-header-bg: rgba(238, 240, 244, 0.85);
+     mockup's nav background exactly. Not tenant-injected (unlike
+     primary/secondary/accent), so it dark-mode-swaps normally below. */
+  --color-header-bg: rgba(12, 24, 48, 0.85);
 
-  /* Serif for headings, system sans for body — matches the mockups
-     exactly (they don't load Google Fonts at all) rather than
-     approximating with Playfair Display/Inter. Redefining the SAME
-     --font-heading/--font-body names every existing var(--font-heading)
-     call site already uses (8+ places in this file, plus components) means
-     none of them need to change — layout.tsx no longer sets these via
-     next/font/google's `variable` option, so this :root definition is now
-     the only source. */
-  --font-heading: "Iowan Old Style", "Palatino Linotype", Palatino, "URW Palladio L", Georgia, serif;
-  --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  /* Playfair Display (headings) + Inter (body) — matches the mockup
+     exactly, loaded via next/font/google in layout.tsx and fed into these
+     same variable names, so no call site below needs to change. */
+  --font-heading: var(--font-playfair), Georgia, serif;
+  --font-body: var(--font-inter), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 
   --text-body-sm: 1rem;
   --text-body: 1.125rem;
@@ -101,8 +114,9 @@
 
   --radius-button: 999px;
   --radius-card: 16px;
-  --shadow-card: 0 10px 15px -3px rgb(26 33 56 / 0.08), 0 4px 6px -4px rgb(26 33 56 / 0.08);
-  --shadow-card-lg: 0 20px 40px -12px rgb(26 33 56 / 0.18);
+  --shadow-card: 0 10px 15px -3px rgb(0 0 0 / 0.25), 0 4px 6px -4px rgb(0 0 0 / 0.25);
+  --shadow-card-lg: 0 24px 60px -24px rgba(0, 0, 0, 0.5);
+  --shadow-gold: 0 24px 48px -24px rgba(211, 164, 65, 0.35);
 
   --container-max-width: 1200px;
   --container-narrow: 720px;
@@ -118,80 +132,14 @@
   --motion-reveal-distance: 28px;
 }
 
-/* Header logo theme swap — see the comment in SiteNavigation.tsx. Default
-   (light mode) shows the dark logo mark; dark-mode blocks below flip it. */
+/* Header logo theme swap — see the comment in SiteNavigation.tsx. The site
+   is dark navy everywhere now (v8 redesign), so the white mark is always
+   the correct one; the black mark stays available for a future light
+   surface (e.g. a printed/email context) but is hidden by default. */
+.logo-mark-light {
+  display: none;
+}
 .logo-mark-dark {
-  display: none;
-}
-
-/*
- * Dark mode. Deliberately does NOT override --color-primary/--color-secondary
- * /--color-accent here — those three are injected as *inline* custom
- * properties on <html> by layout.tsx (per-tenant branding.colors), and an
- * inline style always wins over any stylesheet rule regardless of media
- * query, so a dark-mode override for them here would silently never apply.
- * Real per-tenant dark-mode brand colors would need Tenants.ts to store a
- * light/dark pair and layout.tsx to inject both, aliased via a stylesheet
- * rule — out of scope for this pass. In practice this is a small gap:
- * --color-primary is already a near-black ink (#10182e) in light mode, and
- * the mockups' own dark-mode ink (#0a0f22) is barely different from it, so
- * every dark-panel component (header, footer, PartnershipInvitation, ...)
- * still reads correctly in dark mode without a dedicated override.
- *
- * :root[data-theme="dark"]/[data-theme="light"] are included alongside the
- * prefers-color-scheme media query so a future manual toggle has something
- * to attach to — matches the structure already fully specified in every
- * mockup, even though no toggle UI exists yet.
- */
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --color-sage: #8b9c7c;
-    --color-sage-2: #a3b393;
-    --color-accent-hover: #f0cd72;
-    --color-on-accent: #0a0f22;
-
-    --color-base: #0d1226;
-    --color-surface: #141b36;
-    --color-text: #f2efe6;
-    --color-text-muted: #b9c0d8;
-    --color-border: rgba(242, 239, 230, 0.14);
-
-    --color-text-on-dark: #f2efe6;
-    --color-text-muted-on-dark: #b9c0d8;
-    --color-border-on-dark: rgba(242, 239, 230, 0.14);
-    --color-header-bg: rgba(13, 18, 38, 0.85);
-  }
-
-  :root:not([data-theme="light"]) .logo-mark-light {
-    display: none;
-  }
-  :root:not([data-theme="light"]) .logo-mark-dark {
-    display: block;
-  }
-}
-
-:root[data-theme="dark"] {
-  --color-sage: #8b9c7c;
-  --color-sage-2: #a3b393;
-  --color-accent-hover: #f0cd72;
-  --color-on-accent: #0a0f22;
-
-  --color-base: #0d1226;
-  --color-surface: #141b36;
-  --color-text: #f2efe6;
-  --color-text-muted: #b9c0d8;
-  --color-border: rgba(242, 239, 230, 0.14);
-
-  --color-text-on-dark: #f2efe6;
-  --color-text-muted-on-dark: #b9c0d8;
-  --color-border-on-dark: rgba(242, 239, 230, 0.14);
-  --color-header-bg: rgba(13, 18, 38, 0.85);
-}
-
-:root[data-theme="dark"] .logo-mark-light {
-  display: none;
-}
-:root[data-theme="dark"] .logo-mark-dark {
   display: block;
 }
 
@@ -261,8 +209,11 @@ a {
   padding: var(--section-gap) 0;
 }
 
+/* Was the light "paper" surface tone pre-v8; the mockup's rhythm has no
+   light panels at all, just navy-900 (default) alternating with navy-850
+   (--color-primary) — remapped to match, same as .section--primary. */
 .section--surface {
-  background: var(--color-surface);
+  background: var(--color-primary);
 }
 
 /* Filled, high-contrast section — Airbnb.org's restrained dark banners,
@@ -276,12 +227,24 @@ a {
 }
 
 .section-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
   color: var(--color-accent);
-  font-weight: 600;
-  font-size: 0.8rem;
+  font-weight: 700;
+  font-size: 0.72rem;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.16em;
   margin: 0 0 0.75rem;
+}
+
+.section-eyebrow::before,
+.section-eyebrow::after {
+  content: '';
+  width: 20px;
+  height: 1px;
+  background: var(--gold-dark);
+  flex-shrink: 0;
 }
 
 /* Gold emphasis word inside an otherwise white heading — the RTNM
@@ -396,10 +359,23 @@ a {
   box-shadow: var(--shadow-card-lg);
 }
 
+/* Neutral by default, gold only on hover — matches ministry.css exactly.
+   Was gold-by-default here, which made every secondary "Read More"/"See
+   All" button compete visually with the real .btn-accent CTAs next to
+   them; the mockup deliberately keeps outline buttons quiet until
+   interaction. */
 .btn-outline {
   background: transparent;
-  color: var(--color-accent);
-  border: 1.5px solid var(--color-accent);
+  /* Literal white, not --color-text (cream) — matches ministry.css's
+     --white exactly; this is also what makes the no-inline-override
+     default legible over a photo hero (see Hero.tsx/CTA.tsx). */
+  color: #fff;
+  border: 1.5px solid var(--line-strong);
+}
+
+.btn-outline:hover {
+  color: var(--gold-light);
+  border-color: var(--color-accent);
 }
 
 .card {
@@ -408,6 +384,17 @@ a {
   border-radius: var(--radius-card);
   box-shadow: var(--shadow-card);
   padding: var(--card-padding);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+/* Lift + gold-glow interaction — every dark card variant in the mockup
+   (.book-card, .icon-card, .ref-card, .event-card, .partner-card) uses
+   this identically, so it lives once here on the shared .card rather than
+   copied per variant. */
+.card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-gold);
+  border-color: var(--gold-dark);
 }
 
 /*
@@ -485,10 +472,13 @@ a {
 
 /*
  * Icon + label quick-scan row (References 2 & 3: "Morning Meditation /
- * Holy Communion / ...", "Sunday worship / Outreach programs / ..."). An
- * outlined ring, not a filled circle — visually distinct from
+ * Holy Communion / ...", "Sunday worship / Outreach programs / ..."). A
+ * filled rounded-square badge, not a circle — visually distinct from
  * .avatar-circle so the two don't compete when they appear near each
  * other (avatar-circle = a person/entry; icon-feature = a value prop).
+ * Matches public/jbim/css/ministry.css's .ic-badge exactly (44px,
+ * 12px radius, gold-soft fill, gold-light icon, no border) — was a 56px
+ * outlined ring before the v8 dark redesign.
  */
 .icon-feature {
   display: flex;
@@ -499,14 +489,14 @@ a {
 }
 
 .icon-feature-ring {
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
-  border: 1.5px solid var(--color-accent);
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: var(--gold-soft);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--color-accent);
+  color: var(--gold-light);
   flex-shrink: 0;
 }
 

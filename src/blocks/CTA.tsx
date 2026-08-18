@@ -57,11 +57,7 @@ export function CTA({ config }: { config: CTAConfig }) {
               {config.ctaLabel}
             </a>
             {config.secondaryCtaLabel && config.secondaryCtaHref && (
-              <a
-                className="btn-outline"
-                href={config.secondaryCtaHref}
-                style={hasImage ? { color: '#fff', borderColor: 'rgba(255,255,255,0.6)' } : undefined}
-              >
+              <a className="btn-outline" href={config.secondaryCtaHref}>
                 {config.secondaryCtaLabel}
               </a>
             )}

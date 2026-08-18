@@ -59,7 +59,7 @@ export async function FeaturedEvents({ config: blockConfig, tenantId }: { config
               {blockConfig.body && <p style={{ margin: '0.75rem 0 0', color: 'var(--color-text-muted-on-dark)', maxWidth: '34rem' }}>{blockConfig.body}</p>}
             </div>
             {docs.length > 0 && (
-              <a className="btn-outline" href="/events" style={{ color: '#fff', borderColor: 'rgba(255,255,255,0.6)' }}>
+              <a className="btn-outline" href="/events">
                 See All Events
               </a>
             )}

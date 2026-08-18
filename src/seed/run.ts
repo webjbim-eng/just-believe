@@ -79,17 +79,17 @@ async function seed() {
     })
   ).docs[0]
 
-  // 2026-08-11: superseded by the public/brand/*.html mockup redesign —
-  // Ink/Indigo/Gold, not the original brief's Royal Blue/Deep Purple/Gold
-  // (docs/00-decisions-log.md). Only ever set on first create below —
-  // re-running seed must never clobber colors an admin has since
-  // customized via the UI. The already-seeded live tenant was updated
-  // directly via the admin API at ship time (this branch alone wouldn't
-  // reach it — see the recurring seed-backfill gotcha in memory/docs).
+  // 2026-08-18: superseded by the public/jbim (full dark-navy) redesign —
+  // Navy-850/Navy-700/Gold, not v7's Ink/Indigo/Gold (docs/00-decisions-log.md).
+  // Only ever set on first create below — re-running seed must never clobber
+  // colors an admin has since customized via the UI. The already-seeded live
+  // tenant was updated directly via the admin API at ship time (this branch
+  // alone wouldn't reach it — see the recurring seed-backfill gotcha in
+  // memory/docs).
   const brandColors = {
-    primary: '#10182E', // Ink
-    secondary: '#232C55', // Indigo
-    accent: '#C9973C', // Gold
+    primary: '#0F1E3A', // Navy-850
+    secondary: '#1B3462', // Navy-700
+    accent: '#D3A441', // Gold
   }
 
   if (!tenant) {

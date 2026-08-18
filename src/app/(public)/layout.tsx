@@ -4,19 +4,32 @@ import { headers } from 'next/headers'
 import { getPayload } from 'payload'
 import config from '@payload-config'
 import { MotionConfig } from 'motion/react'
+import { Playfair_Display, Inter } from 'next/font/google'
 import { TENANT_HEADER } from '../../access/getResolvedTenantId'
 import { SiteNavigation } from '../../components/SiteNavigation'
 import { SiteFooter } from '../../components/SiteFooter'
 import './globals.css'
 
-// 2026-08-11 redesign: --font-heading/--font-body are now plain system font
-// stacks defined once in globals.css's :root, matching the public/brand/*
-// mockups exactly (they don't load Google Fonts at all). Previously these
-// were injected here via next/font/google's `variable` option (Playfair
-// Display/Inter) — removed entirely rather than left alongside a competing
-// :root definition, since a next/font `variable` class and :root have equal
-// CSS specificity and whichever wins would depend on injection order, not
-// anything explicit.
+// 2026-08-18 v8 redesign: public/jbim/css/ministry.css specifies Playfair
+// Display (headings) + Inter (body) explicitly, so these are back after a
+// brief stretch on system fonts for an earlier mockup that didn't load
+// Google Fonts at all. Fed into --font-heading/--font-body by name via the
+// `variable` option, so globals.css's :root definitions (which reference
+// var(--font-playfair)/var(--font-inter)) are the only call sites that
+// needed to change — every other var(--font-heading)/var(--font-body) use
+// sitewide keeps working unmodified.
+const playfairDisplay = Playfair_Display({
+  subsets: ['latin'],
+  weight: ['500', '600', '700'],
+  variable: '--font-playfair',
+  display: 'swap',
+})
+const inter = Inter({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-inter',
+  display: 'swap',
+})
 
 export const metadata: Metadata = {
   title: 'Just Believe International Missions',
@@ -31,9 +44,9 @@ type BrandColors = { primary: string; secondary: string; accent: string }
 // branding.colors below; this is what renders if that lookup can't run
 // (no tenant resolved, e.g. an unrecognized host) or fails.
 const DEFAULT_COLORS: BrandColors = {
-  primary: '#10182E',
-  secondary: '#232C55',
-  accent: '#C9973C',
+  primary: '#0F1E3A',
+  secondary: '#1B3462',
+  accent: '#D3A441',
 }
 
 async function getTenantBrandColors(tenantId: string | null): Promise<BrandColors> {
@@ -63,7 +76,7 @@ export default async function PublicLayout({ children }: { children: React.React
   } as React.CSSProperties
 
   return (
-    <html lang="en" style={cssVars}>
+    <html lang="en" className={`${playfairDisplay.variable} ${inter.variable}`} style={cssVars}>
       <body>
         {/* reducedMotion="user" makes every motion.* component site-wide
             automatically honor prefers-reduced-motion — one place to get
