@@ -70,10 +70,10 @@ export const ministryDefinitions: MinistrySeed[] = [
     image: '/images/worship-hands-raised.jpg',
   },
   {
-    name: "Women's Empowerment",
-    shortDescription: 'Equipping women for healing, restoration, and confident Kingdom service.',
+    name: "Women's/Men's Empowerment",
+    shortDescription: 'Equipping women and men for healing, restoration, and confident Kingdom service.',
     description:
-      "We believe women play a vital role in God's redemptive work within families, churches, and communities. JBIM equips women through biblical teaching, mentorship, leadership development, and supportive relationships that encourage healing, restoration, spiritual growth, and confident service.",
+      "We believe women and men play a vital role in God's redemptive work within families, churches, and communities. JBIM equips them through biblical teaching, mentorship, leadership development, and supportive relationships that encourage healing, restoration, spiritual growth, and confident service.",
     image: '/images/congregation-seated.jpg',
   },
   {

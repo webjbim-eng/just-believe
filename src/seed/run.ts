@@ -628,6 +628,28 @@ async function seed() {
           { label: 'Morning Prayer — Ivory Coast', days: ['mon', 'tue', 'wed', 'thu', 'fri'], startTime: '4:00 AM', timezoneLabel: 'Ivory Coast' },
         ],
       },
+      {
+        name: 'Cry of Rachel / Cris de Rachel Intercession',
+        contactText: 'Contact us to join us',
+        contactUrl: '/contact',
+        schedule: [
+          { label: 'Parents Praying — EST', days: ['fri'], startTime: '10:00 PM', timezoneLabel: 'Eastern Standard Time' },
+          { label: 'Parents Praying — IT', days: ['fri'], startTime: '4:00 AM', timezoneLabel: 'IT' },
+          { label: 'Parents Praying — CMR/NG/UK', days: ['fri'], startTime: '3:00 AM', timezoneLabel: 'CMR/NG/UK' },
+          { label: 'Parents Praying — Ivory Coast', days: ['fri'], startTime: '2:00 AM', timezoneLabel: 'Ivory Coast' },
+        ],
+      },
+      {
+        name: 'Kingdom Minded Women',
+        contactText: 'Contact us to join us',
+        contactUrl: '/contact',
+        schedule: [
+          { label: 'Women Bible Study and Prayer — EST', days: ['fri'], startTime: '11:00 PM', endTime: '12:00 AM', timezoneLabel: 'Eastern Standard Time' },
+          { label: 'Women Bible Study and Prayer — IT', days: ['fri'], startTime: '5:00 AM', endTime: '6:00 AM', timezoneLabel: 'IT' },
+          { label: 'Women Bible Study and Prayer — CMR/NG/UK', days: ['fri'], startTime: '4:00 AM', endTime: '5:00 AM', timezoneLabel: 'CMR/NG/UK' },
+          { label: 'Women Bible Study and Prayer — Ivory Coast', days: ['fri'], startTime: '3:00 AM', endTime: '4:00 AM', timezoneLabel: 'Ivory Coast' },
+        ],
+      },
     ]
     for (const [index, activity] of recurringActivitiesSeed.entries()) {
       await payload.create({
@@ -659,9 +681,11 @@ async function seed() {
     overrideAccess: true,
   })
   if (existingLocations.length === 0) {
-    // Real headquarters address from the client intake questionnaire
-    // (docs/source) — city/state/postal weren't given, so left blank
-    // rather than invented.
+    // 2026-08-18: Jimmy asked (after review by JBIM's registered agent) that
+    // the street address not be published publicly — address/country stay
+    // on the record for admin reference, but the About page's "Our Global
+    // Presence" section now renders `description` instead of the address
+    // fields. See src/app/(public)/about/page.tsx.
     await payload.create({
       collection: 'locations',
       data: {
@@ -669,6 +693,7 @@ async function seed() {
         name: 'Headquarters',
         country: 'United States',
         address: '11720 South Laurel Drive, Apt 2C',
+        description: 'One mission. Many nations. JBIM is headquartered in the United States.',
         phone: '+1 227 218 5031',
         email: 'justbelieveinthot@gmail.com',
         active: true,

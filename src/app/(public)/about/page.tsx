@@ -219,11 +219,11 @@ export default async function AboutPage() {
           <ScrollReveal>
             <p className="section-eyebrow">Our Commitment</p>
             <p style={{ fontSize: 'var(--text-body)' }}>
-              As a legally registered nonprofit organization in the United States, Just Believe International Missions is
-              committed to faithful stewardship, ethical governance, financial integrity, and accountability in every
-              aspect of our work. We strive to honor God through responsible management of the resources entrusted to us
-              while partnering with churches, ministries, organizations, volunteers, and supporters who share our passion
-              for advancing God&rsquo;s Kingdom.
+              Just Believe International Missions Inc. (JBIM) is a U.S.-registered 501(c)(3) nonprofit organization
+              incorporated in the State of Texas, committed to faithful stewardship, ethical governance, financial
+              integrity, and accountability in every aspect of our work. We strive to honor God through responsible
+              management of the resources entrusted to us while partnering with churches, ministries, organizations,
+              volunteers, and supporters who share our passion for advancing God&rsquo;s Kingdom.
             </p>
           </ScrollReveal>
         </div>
@@ -237,25 +237,27 @@ export default async function AboutPage() {
                 Global Presence
               </p>
               <h2 style={{ textAlign: 'center' }}>
-                Our <span className="text-accent">Locations</span>
+                Our <span className="text-accent">Global Presence</span>
               </h2>
               <hr className="heading-underline heading-underline--center" />
             </ScrollReveal>
+            {/* 2026-08-18: no street address here anymore (registered-agent
+                request) — a general tagline + phone/email instead of a
+                per-location name/address card. */}
             <Stagger role="list" className="service-list">
               {locations.map((location) => (
                 <StaggerItem key={location.id} role="listitem">
-                  <div className="card" style={{ padding: 'var(--card-padding)' }}>
-                    <p className="card-title" style={{ margin: '0 0 0.5rem' }}>
-                      {location.name}
-                    </p>
-                    {(location.address || location.city || location.region || location.country) && (
-                      <p style={{ margin: 0, color: 'var(--color-text-muted)' }}>
-                        {[location.address, location.city, location.region, location.postalCode, location.country].filter(Boolean).join(', ')}
+                  <div className="card" style={{ padding: 'var(--card-padding)', textAlign: 'center', maxWidth: '32rem', margin: '0 auto' }}>
+                    {location.description && (
+                      <p className="card-title" style={{ margin: '0 0 0.5rem', fontSize: 'var(--text-heading-sm)' }}>
+                        {location.description}
                       </p>
                     )}
-                    {location.description && <p style={{ margin: '0.75rem 0 0' }}>{location.description}</p>}
+                    <p className="card-eyebrow" style={{ margin: 0 }}>
+                      {[location.country, 'Serving Globally'].filter(Boolean).join(' · ')}
+                    </p>
                     {(location.phone || location.email) && (
-                      <p style={{ margin: '0.75rem 0 0', display: 'flex', gap: '1.25rem', flexWrap: 'wrap' }}>
+                      <p style={{ margin: '0.75rem 0 0', display: 'flex', gap: '1.25rem', flexWrap: 'wrap', justifyContent: 'center' }}>
                         {location.phone && <a href={`tel:${location.phone}`}>{location.phone}</a>}
                         {location.email && <a href={`mailto:${location.email}`}>{location.email}</a>}
                       </p>
