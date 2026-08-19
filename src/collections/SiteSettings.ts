@@ -37,7 +37,17 @@ export const SiteSettings: CollectionConfig = {
   fields: [
     { ...tenantField, unique: true },
     { name: 'siteName', type: 'text', required: true },
-    { name: 'contactEmail', type: 'email' },
+    { name: 'contactEmail', type: 'email', admin: { description: 'General inquiries — shown on the Contact page' } },
+    {
+      name: 'infoEmail',
+      type: 'email',
+      admin: { description: 'General info address — shown in the footer and About page' },
+    },
+    {
+      name: 'supportEmail',
+      type: 'email',
+      admin: { description: 'Donor/giving support — shown on donation receipt emails' },
+    },
     { name: 'contactPhone', type: 'text' },
     {
       name: 'notificationPreferences',

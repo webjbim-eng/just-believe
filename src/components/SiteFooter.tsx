@@ -41,14 +41,16 @@ export async function SiteFooter({ tenantId }: { tenantId: string }) {
   ])
   const footer = footerDocs[0]
   const navItems = navDocs[0]?.items ?? []
-  const contactEmail = siteSettingsDocs[0]?.contactEmail
+  // 2026-08-19: infoEmail (not contactEmail — that's the Contact page's own
+  // address) — three purpose-specific addresses now exist on SiteSettings,
+  // see sendDonationReceipt.ts and contact/page.tsx for the other two.
+  const infoEmail = siteSettingsDocs[0]?.infoEmail
   // 2026-08-16: this "Connect" column used to be a fourth hardcoded copy
   // of the same real email/YouTube/Facebook links footer.socialLinks (the
-  // icon row above) and SiteSettings.contactEmail already store — one
-  // real source now, admin-editable in two places instead of dead code in
-  // a fifth.
+  // icon row above) and SiteSettings already store — one real source now,
+  // admin-editable in two places instead of dead code in a fifth.
   const connectLinks = [
-    ...(contactEmail ? [{ key: 'email', label: 'Email', value: contactEmail, href: `mailto:${contactEmail}` }] : []),
+    ...(infoEmail ? [{ key: 'email', label: 'Email', value: infoEmail, href: `mailto:${infoEmail}` }] : []),
     ...(footer?.socialLinks ?? []).map((social) => ({
       key: social.platform,
       label: social.platform,

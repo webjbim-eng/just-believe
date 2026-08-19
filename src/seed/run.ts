@@ -564,15 +564,19 @@ async function seed() {
     await payload.find({ collection: 'site-settings', where: { tenant: { equals: tenant.id } }, limit: 1, overrideAccess: true })
   ).docs[0]
   if (!existingSiteSettings) {
-    // Real values from the client intake questionnaire (docs/source) —
-    // contactEmail/contactPhone existed as fields but were never populated
-    // or read anywhere on the frontend before this.
+    // 2026-08-19: replaced the client-intake-questionnaire Gmail address
+    // with three purpose-specific @justbelieveintmissions.org addresses
+    // Jimmy set up — contactEmail (Contact page), infoEmail (footer/About),
+    // supportEmail (donation receipts). See SiteFooter.tsx,
+    // hooks/sendDonationReceipt.ts, and about/page.tsx's Locations section.
     await payload.create({
       collection: 'site-settings',
       data: {
         tenant: tenant.id,
         siteName: 'Just Believe International Missions',
-        contactEmail: 'justbelieveinthot@gmail.com',
+        contactEmail: 'contact@justbelieveintmissions.org',
+        infoEmail: 'info@justbelieveintmissions.org',
+        supportEmail: 'support@justbelieveintmissions.org',
         contactPhone: '+1 227 218 5031',
       },
       overrideAccess: true,
@@ -695,7 +699,9 @@ async function seed() {
         address: '11720 South Laurel Drive, Apt 2C',
         description: 'One mission. Many nations. JBIM is headquartered in the United States.',
         phone: '+1 227 218 5031',
-        email: 'justbelieveinthot@gmail.com',
+        // 2026-08-19: info@ (general info), not the Gmail address — matches
+        // SiteSettings.infoEmail's purpose, see seed/run.ts's SiteSettings block.
+        email: 'info@justbelieveintmissions.org',
         active: true,
         displayOrder: 0,
         _status: 'published',

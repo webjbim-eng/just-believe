@@ -30,7 +30,9 @@ export const sendDonationReceipt: CollectionAfterChangeHook = async ({ doc, oper
   const { docs: siteSettingsDocs } = await req.payload
     .find({ collection: 'site-settings', where: { tenant: { equals: tenantId } }, limit: 1, overrideAccess: true })
     .catch(() => ({ docs: [] }))
-  const contactEmail = siteSettingsDocs[0]?.contactEmail
+  // supportEmail, not contactEmail (Contact page) or infoEmail (footer) —
+  // donor/giving support gets its own address.
+  const supportEmail = siteSettingsDocs[0]?.supportEmail
 
   const amountFormatted = new Intl.NumberFormat('en-US', { style: 'currency', currency: doc.currency, currencyDisplay: 'narrowSymbol' }).format(
     doc.amount,
@@ -55,7 +57,7 @@ export const sendDonationReceipt: CollectionAfterChangeHook = async ({ doc, oper
             <tr><td style="padding: 0.5rem 0; color: #555;">Reference</td><td style="padding: 0.5rem 0; text-align: right; font-family: monospace; font-size: 0.85em;">${reference}</td></tr>
           </table>
           <p style="color: #555; font-size: 0.9em;">
-            Please keep this email for your records.${contactEmail ? ` Questions? Reach us at <a href="mailto:${contactEmail}">${contactEmail}</a>.` : ''}
+            Please keep this email for your records.${supportEmail ? ` Questions? Reach us at <a href="mailto:${supportEmail}">${supportEmail}</a>.` : ''}
           </p>
         </div>
       `,

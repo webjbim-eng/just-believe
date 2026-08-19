@@ -967,7 +967,18 @@ export interface SiteSetting {
   id: number;
   tenant: number | Tenant;
   siteName: string;
+  /**
+   * General inquiries — shown on the Contact page
+   */
   contactEmail?: string | null;
+  /**
+   * General info address — shown in the footer and About page
+   */
+  infoEmail?: string | null;
+  /**
+   * Donor/giving support — shown on donation receipt emails
+   */
+  supportEmail?: string | null;
   contactPhone?: string | null;
   notificationPreferences?: {
     newPrayerRequest?: boolean | null;
@@ -2047,6 +2058,8 @@ export interface SiteSettingsSelect<T extends boolean = true> {
   tenant?: T;
   siteName?: T;
   contactEmail?: T;
+  infoEmail?: T;
+  supportEmail?: T;
   contactPhone?: T;
   notificationPreferences?:
     | T
