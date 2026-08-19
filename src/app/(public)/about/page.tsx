@@ -170,7 +170,10 @@ export default async function AboutPage() {
                       <div
                         className="leadership-photo"
                         aria-hidden={!photo?.url}
-                        style={photo?.url ? { backgroundImage: `url(${photo.url})`, backgroundSize: 'cover', backgroundPosition: 'center' } : undefined}
+                        // 'center top', not 'center' — see Leadership.tsx's
+                        // comment: a square crop of a tall portrait clips
+                        // the head under true centering.
+                        style={photo?.url ? { backgroundImage: `url(${photo.url})`, backgroundSize: 'cover', backgroundPosition: 'center top' } : undefined}
                       />
                       <div>
                         <p className="card-title" style={{ marginBottom: '0.125rem' }}>

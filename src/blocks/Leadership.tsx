@@ -47,7 +47,12 @@ export async function Leadership({ config: blockConfig, tenantId }: { config: Le
                 style={{
                   backgroundImage: photo?.url ? `url(${photo.url})` : undefined,
                   backgroundSize: 'cover',
-                  backgroundPosition: 'center',
+                  // 'top', not 'center' — real leader photos are tall
+                  // portraits with headroom above the subject; centering
+                  // crops evenly off both edges and clips the top of the
+                  // head, since the container's aspect ratio is wider than
+                  // the source image's.
+                  backgroundPosition: 'center top',
                   background: photo?.url ? undefined : 'var(--color-base)',
                   borderRadius: 'var(--radius-card)',
                   aspectRatio: '4 / 5',
