@@ -4,6 +4,7 @@ import { hasPermission } from '../access/hasPermission'
 import { withTenantScope } from '../access/withTenantScope'
 import { tenantField } from '../fields/tenantField'
 import { createAuditAfterChangeHook, createAuditAfterDeleteHook } from '../hooks/auditLog'
+import { sendDonationReceipt } from '../hooks/sendDonationReceipt'
 
 /**
  * Records of truth for donations are written exclusively by server-side
@@ -39,7 +40,7 @@ export const Donations: CollectionConfig = {
     delete: () => false,
   },
   hooks: {
-    afterChange: [createAuditAfterChangeHook('donations')],
+    afterChange: [createAuditAfterChangeHook('donations'), sendDonationReceipt],
     afterDelete: [createAuditAfterDeleteHook('donations')],
   },
   fields: [
