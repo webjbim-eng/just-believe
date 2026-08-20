@@ -53,6 +53,7 @@ export const SiteSettings: CollectionConfig = {
       name: 'notificationPreferences',
       type: 'group',
       fields: [
+        { name: 'newMessage', type: 'checkbox', defaultValue: true },
         { name: 'newPrayerRequest', type: 'checkbox', defaultValue: true },
         { name: 'newCounselingRequest', type: 'checkbox', defaultValue: true },
         { name: 'newVolunteerApplication', type: 'checkbox', defaultValue: true },

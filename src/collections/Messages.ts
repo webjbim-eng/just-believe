@@ -3,6 +3,7 @@ import { submissionAccess } from '../access/publicContentAccess'
 import { tenantField } from '../fields/tenantField'
 import { setTenantFromRequest } from '../hooks/setTenantFromRequest'
 import { createAuditAfterChangeHook, createAuditAfterDeleteHook } from '../hooks/auditLog'
+import { sendMessageNotification } from '../hooks/sendMessageNotification'
 
 /**
  * General website enquiries (the public /contact form) — distinct from
@@ -21,7 +22,7 @@ export const Messages: CollectionConfig = {
   access: submissionAccess('messages.view', 'messages.manage'),
   hooks: {
     beforeChange: [setTenantFromRequest],
-    afterChange: [createAuditAfterChangeHook('messages')],
+    afterChange: [createAuditAfterChangeHook('messages'), sendMessageNotification],
     afterDelete: [createAuditAfterDeleteHook('messages')],
   },
   fields: [

@@ -981,6 +981,7 @@ export interface SiteSetting {
   supportEmail?: string | null;
   contactPhone?: string | null;
   notificationPreferences?: {
+    newMessage?: boolean | null;
     newPrayerRequest?: boolean | null;
     newCounselingRequest?: boolean | null;
     newVolunteerApplication?: boolean | null;
@@ -2064,6 +2065,7 @@ export interface SiteSettingsSelect<T extends boolean = true> {
   notificationPreferences?:
     | T
     | {
+        newMessage?: T;
         newPrayerRequest?: T;
         newCounselingRequest?: T;
         newVolunteerApplication?: T;
